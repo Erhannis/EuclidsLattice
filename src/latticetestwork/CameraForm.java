@@ -310,8 +310,8 @@ public class CameraForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     public ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
-    public int imWidth = 700;
-    public int imHeight = 700;
+    public int imWidth = 300;
+    public int imHeight = 300;
     public int imagecount = 0;
     private void btnDTLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDTLActionPerformed
         images.clear();
@@ -387,14 +387,14 @@ public class CameraForm extends javax.swing.JFrame {
         writer.close();
 
     }//GEN-LAST:event_btnEncodeActionPerformed
-    public double gaitLength = 0.01;
+    public double gaitLength = 0.001;
     public double prevFloating = 0;
     public double curFloating = 0;
 
     private void btnStrafeLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStrafeLActionPerformed
         images.clear();
         //int count = 0;
-        for (int count = 0; count < 1; count++) {
+        for (int count = 0; count < 500; count++) {
             //count++;
 
             camera.move(camera.orientation[1].multS(-gaitLength), null);
@@ -439,46 +439,64 @@ public class CameraForm extends javax.swing.JFrame {
             } else {
                 final byte[] latticeBytes = parent.engine.lattice.toByteArray();
 
-                RemoteWorkerIcon worker = parent.mobBoss.requestWorker();
+                final RemoteWorkerIcon worker = parent.mobBoss.requestWorker();
                 try {
                     worker.updateWorker(latticeBytes);
-                    int[] picDims = new int[]{imWidth, imHeight};
-                    int camNum = parent.engine.lattice.cameras.indexOf(this.camera);
+                    final int[] picDims = new int[]{imWidth, imHeight};
+                    final int camNum = parent.engine.lattice.cameras.indexOf(this.camera);
 
                     System.out.println("CamPos: " + parent.engine.lattice.cameras.get(camNum).pos);
                     System.out.println("CamOrient:");
                     for (int i = 0; i < parent.engine.lattice.cameras.get(camNum).orientation.length; i++) {
                         System.out.println(parent.engine.lattice.cameras.get(camNum).orientation[i]);
                     }
-                    
-                    Tensor<Color> result = worker.renderFrame(camNum, dtl, picDims);
-                    Tensor<Color> result2 = camera.aRender(dtl, picDims);
-                    BufferedImage image = new BufferedImage(imWidth, imHeight, BufferedImage.TYPE_3BYTE_BGR);
-                    BufferedImage image2 = new BufferedImage(imWidth, imHeight, BufferedImage.TYPE_3BYTE_BGR);
-                    for (int x = 0; x < imWidth; x++) {
-                        for (int y = 0; y < imHeight; y++) {
-                            image.setRGB(x, y, result.get(x, y).getRGB());
-                            image2.setRGB(x, y, result2.get(x, y).getRGB());
+                    final int imageNum = imagecount++;
+                    new Thread(new Runnable() {
+                        public void run() {
+                            try {
+                                Tensor<Color> result = worker.renderFrame(camNum, dtl, picDims);
+                                BufferedImage image = new BufferedImage(imWidth, imHeight, BufferedImage.TYPE_3BYTE_BGR);
+                                for (int x = 0; x < imWidth; x++) {
+                                    for (int y = 0; y < imHeight; y++) {
+                                        image.setRGB(x, y, result.get(x, y).getRGB());
+                                    }
+                                }
+                                try {
+                                    java.io.FileOutputStream fout = new java.io.FileOutputStream("image" + imageNum + ".jpg");
+                                    javax.imageio.ImageIO.write(image, "JPG", fout);
+                                    fout.close();
+                                } catch (FileNotFoundException ex) {
+                                    Logger.getLogger(CameraForm.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (IOException ex) {
+                                    Logger.getLogger(CameraForm.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                images.add(image);
+                            } catch (IOException ex) {
+                                Logger.getLogger(CameraForm.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            parent.mobBoss.returnWorker(worker);
                         }
-                    }
-                    try {
-                        java.io.FileOutputStream fout = new java.io.FileOutputStream("image" + imagecount++ + ".jpg");
-                        javax.imageio.ImageIO.write(image, "JPG", fout);
-                        fout.close();
-                        java.io.FileOutputStream fout2 = new java.io.FileOutputStream("image2-" + imagecount++ + ".jpg");
-                        javax.imageio.ImageIO.write(image2, "JPG", fout2);
-                        fout2.close();
-                    } catch (FileNotFoundException ex) {
-                        Logger.getLogger(CameraForm.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IOException ex) {
-                        Logger.getLogger(CameraForm.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    }).start();
+//                    Tensor<Color> result2 = camera.aRender(dtl, picDims);
+//                    BufferedImage image2 = new BufferedImage(imWidth, imHeight, BufferedImage.TYPE_3BYTE_BGR);
+//                    for (int x = 0; x < imWidth; x++) {
+//                        for (int y = 0; y < imHeight; y++) {
+//                            image2.setRGB(x, y, result2.get(x, y).getRGB());
+//                        }
+//                    }
+//                    try {
+//                        java.io.FileOutputStream fout2 = new java.io.FileOutputStream("image2-" + imagecount++ + ".jpg");
+//                        javax.imageio.ImageIO.write(image2, "JPG", fout2);
+//                        fout2.close();
+//                    } catch (FileNotFoundException ex) {
+//                        Logger.getLogger(CameraForm.class.getName()).log(Level.SEVERE, null, ex);
+//                    } catch (IOException ex) {
+//                        Logger.getLogger(CameraForm.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
 
-                    images.add(image);
                 } catch (IOException ex) {
                     Logger.getLogger(CameraForm.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                parent.mobBoss.returnWorker(worker);
             }
         }
         //btnEncodeActionPerformed(evt);
