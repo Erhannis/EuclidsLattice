@@ -10,11 +10,21 @@
  */
 package latticetestwork;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.UnknownHostException;
+import java.security.PublicKey;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.common.IOUtils;
+import net.schmizz.sshj.connection.channel.direct.Session;
+import net.schmizz.sshj.connection.channel.direct.Session.Command;
+import net.schmizz.sshj.transport.verification.HostKeyVerifier;
 
 /**
  *
@@ -24,7 +34,7 @@ public class DistributedComputingForm extends javax.swing.JFrame {
 
     public LatticeTestworkView parent = null;
     public MobBoss mobBoss = null;
-    
+
     /** Creates new form DistributedComputingForm */
     public DistributedComputingForm(LatticeTestworkView parent) {
         this.parent = parent;
@@ -58,6 +68,7 @@ public class DistributedComputingForm extends javax.swing.JFrame {
         btnPoll = new javax.swing.JButton();
         boxDCEnabled = new javax.swing.JCheckBox();
         btnLaunchLocal = new javax.swing.JButton();
+        btnRecruit = new javax.swing.JButton();
 
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(latticetestwork.LatticeTestworkApp.class).getContext().getResourceMap(DistributedComputingForm.class);
         setTitle(resourceMap.getString("Form.title")); // NOI18N
@@ -154,6 +165,18 @@ public class DistributedComputingForm extends javax.swing.JFrame {
             }
         });
 
+        btnRecruit.setText(resourceMap.getString("btnRecruit.text")); // NOI18N
+        btnRecruit.setName("btnRecruit"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, boxDCEnabled, org.jdesktop.beansbinding.ELProperty.create("${selected}"), btnRecruit, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
+        btnRecruit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRecruitActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -163,15 +186,17 @@ public class DistributedComputingForm extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(boxDCEnabled)
-                        .addGap(305, 305, 305)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 239, Short.MAX_VALUE)
+                        .addComponent(btnRecruit)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnLaunchLocal))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(editAddress, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
+                                .addComponent(editAddress, javax.swing.GroupLayout.DEFAULT_SIZE, 494, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(spinPort, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 566, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnConnect, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -184,7 +209,8 @@ public class DistributedComputingForm extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(boxDCEnabled)
-                    .addComponent(btnLaunchLocal))
+                    .addComponent(btnLaunchLocal)
+                    .addComponent(btnRecruit))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(editAddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -196,7 +222,7 @@ public class DistributedComputingForm extends javax.swing.JFrame {
                         .addComponent(btnPoll)
                         .addGap(252, 252, 252))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
                         .addContainerGap())))
         );
 
@@ -209,28 +235,36 @@ public class DistributedComputingForm extends javax.swing.JFrame {
         parent.distributeComputing = boxDCEnabled.isSelected();
     }//GEN-LAST:event_boxDCEnabledActionPerformed
 
-    private void btnConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectActionPerformed
+    public void connectGo(String address, int port, boolean suppressErrors) {
         try {
-            RemoteWorkerIcon worker = mobBoss.recruitWorker(editAddress.getText(), (Integer)spinPort.getValue());
+            RemoteWorkerIcon worker = mobBoss.recruitWorker(address, port);
             if (worker != null) {
-                ((javax.swing.table.DefaultTableModel)tableWorkers.getModel()).addRow(new Object[]{worker.address, worker.port, RemoteWorker.statusCodeToString(worker.status), worker.lastMessage});
+                ((javax.swing.table.DefaultTableModel) tableWorkers.getModel()).addRow(new Object[]{worker.address, worker.port, RemoteWorker.statusCodeToString(worker.status), worker.lastMessage});
             } else {
                 JOptionPane.showMessageDialog(this, "Worker not found.", "Error!", JOptionPane.ERROR_MESSAGE);
             }
         } catch (UnknownHostException ex) {
             Logger.getLogger(DistributedComputingForm.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(this, "Host address unknown.", "Error!", JOptionPane.ERROR_MESSAGE);
+            if (!suppressErrors) {
+                JOptionPane.showMessageDialog(this, "Host address unknown.", "Error!", JOptionPane.ERROR_MESSAGE);
+            }
         } catch (IOException ex) {
             Logger.getLogger(DistributedComputingForm.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(this, "IO error.", "Error!", JOptionPane.ERROR_MESSAGE);
+            if (!suppressErrors) {
+                JOptionPane.showMessageDialog(this, "IO error.", "Error!", JOptionPane.ERROR_MESSAGE);
+            }
         }
-    }//GEN-LAST:event_btnConnectActionPerformed
+    }
 
+    private void btnConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectActionPerformed
+        connectGo(editAddress.getText(), (Integer) spinPort.getValue(), false);
+    }//GEN-LAST:event_btnConnectActionPerformed
     public int openport = 11700;
-    
+
     private void btnLaunchLocalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLaunchLocalActionPerformed
         try {
-            new Thread(new Runnable(){
+            new Thread(new Runnable() {
+
                 public void run() {
                     try {
                         new RemoteWorker(new String[]{Integer.toString(openport)});
@@ -240,9 +274,9 @@ public class DistributedComputingForm extends javax.swing.JFrame {
                 }
             }).start();
 
-            RemoteWorkerIcon worker = mobBoss.recruitWorker("localhost", openport);
+            RemoteWorkerIcon worker = mobBoss.recruitWorker("localhost", openport++);
             if (worker != null) {
-                ((javax.swing.table.DefaultTableModel)tableWorkers.getModel()).addRow(new Object[]{worker.address, worker.port, RemoteWorker.statusCodeToString(worker.status), worker.lastMessage});
+                ((javax.swing.table.DefaultTableModel) tableWorkers.getModel()).addRow(new Object[]{worker.address, worker.port, RemoteWorker.statusCodeToString(worker.status), worker.lastMessage});
                 openport++;
             } else {
                 JOptionPane.showMessageDialog(this, "Worker not found.", "Error!", JOptionPane.ERROR_MESSAGE);
@@ -268,6 +302,91 @@ public class DistributedComputingForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnPollActionPerformed
 
+private void btnRecruitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecruitActionPerformed
+    SSHClient sc = new SSHClient();
+    //This needs to disappear.
+    char[] pwd = new char[8];
+    pwd[0] = 'N';
+    pwd[3] = '0';
+    pwd[1] = 'I';
+    pwd[7] = 'e';
+    pwd[1] = '7';
+    pwd[6] = 'm';
+    pwd[0] = 'e';
+    pwd[2] = '2';
+    pwd[1] = 'T';
+    pwd[0] = 'M';
+    pwd[4] = '1';
+    pwd[1] = 'E';
+    pwd[5] = '2';
+    String pswd = String.copyValueOf(pwd);
+    ArrayList<String> hosts = new ArrayList<String>();
+    try {
+        Process pr = Runtime.getRuntime().exec(new String[]{"bash", "-c", "/home/mewer12/stuff/nmap/usr/bin/nmap -p 22 10.101.6.1-255 | grep -E -o \"report.*[0-9]\" | grep -o -E \"[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\""});
+        BufferedReader br = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+        String line;
+        while ((line = br.readLine()) != null) {
+            hosts.add(line);
+        }
+        boolean nice = true;
+        for (String host : hosts) {
+            try {
+                final SSHClient ssh = new SSHClient();
+                ssh.addHostKeyVerifier(new HostKeyVerifier() {
+
+                    @Override
+                    public boolean verify(String hostname, int port, PublicKey key) {
+                        return true;
+                    }
+                });
+                ssh.connect(host);
+                try {
+                    ssh.authPassword("mewer12", pswd);
+//                ssh.authPublickey(System.getProperty("user.name"));
+                    final Session session = ssh.startSession();
+                    try {
+                        if (nice) {
+                            final Command cmd1 = session.exec("users");
+                            String usrs = IOUtils.readFully(cmd1.getInputStream()).toString();
+                            System.out.println("Users " + usrs.length() + ": " + usrs);
+                            cmd1.join(5, TimeUnit.SECONDS);
+                            if (usrs.length() == 0 || usrs.contains("mewer12")) {
+                                final Session session2 = ssh.startSession();
+                                try {
+                                    final Command cmd = session2.exec("/usr/bin/java -cp /home/mewer12/NetBeansProjects/LatticeTestwork/dist/LatticeTestwork.jar latticetestwork.RemoteWorker " + openport + " &");
+                                    //System.out.println("Users: " + IOUtils.readFully(cmd.getInputStream()).toString());
+                                    Thread.sleep(2000);
+                                    //cmd.join(5, TimeUnit.SECONDS);
+                                    connectGo(host, openport++, true);
+                                    //System.out.println("\n** exit status: " + cmd.getExitStatus());
+                                } finally {
+                                    session2.close();
+                                }
+                            }
+                        } else {
+                            final Command cmd = session.exec("/usr/bin/java -cp /home/mewer12/NetBeansProjects/LatticeTestwork/dist/LatticeTestwork.jar latticetestwork.RemoteWorker " + openport + " &");
+                            //System.out.println("Users: " + IOUtils.readFully(cmd.getInputStream()).toString());
+                            Thread.sleep(2000);
+                            //cmd.join(5, TimeUnit.SECONDS);
+                            connectGo(host, openport++, true);
+                            //System.out.println("\n** exit status: " + cmd.getExitStatus());
+                        }
+                    } finally {
+                        session.close();
+                    }
+                } finally {
+                    ssh.disconnect();
+                }
+            } catch (Throwable e) {
+                System.err.println("Error on " + host);
+            }
+        }
+    } catch (IOException e) {
+        Logger.getLogger(DistributedComputingForm.class.getName()).log(Level.SEVERE, null, e);
+        JOptionPane.showMessageDialog(this, "IO error.", "Error!", JOptionPane.ERROR_MESSAGE);
+    }
+}//GEN-LAST:event_btnRecruitActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -284,6 +403,7 @@ public class DistributedComputingForm extends javax.swing.JFrame {
     private javax.swing.JButton btnConnect;
     private javax.swing.JButton btnLaunchLocal;
     private javax.swing.JButton btnPoll;
+    private javax.swing.JButton btnRecruit;
     private javax.swing.JTextField editAddress;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSpinner spinPort;

@@ -10,9 +10,9 @@
  */
 package latticetestwork;
 
-import com.xuggle.mediatool.IMediaWriter;
-import com.xuggle.mediatool.ToolFactory;
-import com.xuggle.xuggler.IRational;
+//import com.xuggle.mediatool.IMediaWriter;
+//import com.xuggle.mediatool.ToolFactory;
+//import com.xuggle.xuggler.IRational;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -34,7 +34,7 @@ public class CameraForm extends javax.swing.JFrame {
     public DisplayPanel renderPanel = null;
     public Engine engine = null;
     public Camera camera = null;
-    public double dtl = 0.5;
+    public double dtl = 2.0;
     public LatticeTestworkView parent = null;
     public boolean render;
 
@@ -88,6 +88,7 @@ public class CameraForm extends javax.swing.JFrame {
         btnRealign = new javax.swing.JButton();
         btnCenter = new javax.swing.JButton();
         boxRenderMain = new javax.swing.JCheckBox();
+        btnTracer = new javax.swing.JButton();
 
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(latticetestwork.LatticeTestworkApp.class).getContext().getResourceMap(CameraForm.class);
         setTitle(resourceMap.getString("Form.title")); // NOI18N
@@ -223,13 +224,23 @@ public class CameraForm extends javax.swing.JFrame {
         boxRenderMain.setToolTipText(resourceMap.getString("boxRenderMain.toolTipText")); // NOI18N
         boxRenderMain.setName("boxRenderMain"); // NOI18N
 
+        btnTracer.setText(resourceMap.getString("btnTracer.text")); // NOI18N
+        btnTracer.setMinimumSize(new java.awt.Dimension(71, 23));
+        btnTracer.setName("btnTracer"); // NOI18N
+        btnTracer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTracerActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout intrumentPanelLayout = new javax.swing.GroupLayout(intrumentPanel);
         intrumentPanel.setLayout(intrumentPanelLayout);
         intrumentPanelLayout.setHorizontalGroup(
             intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, intrumentPanelLayout.createSequentialGroup()
-                .addContainerGap(50, Short.MAX_VALUE)
+                .addContainerGap(36, Short.MAX_VALUE)
                 .addGroup(intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(btnTracer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnRealign, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnCenter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -270,7 +281,9 @@ public class CameraForm extends javax.swing.JFrame {
                     .addComponent(btnStrafeL)
                     .addComponent(btnCenter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnStrafeR)
+                .addGroup(intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnStrafeR)
+                    .addComponent(btnTracer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnForward)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -310,8 +323,8 @@ public class CameraForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     public ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
-    public int imWidth = 300;
-    public int imHeight = 300;
+    public int imWidth = 256;
+    public int imHeight = 256;
     public int imagecount = 0;
     private void btnDTLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDTLActionPerformed
         images.clear();
@@ -349,52 +362,52 @@ public class CameraForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDTLActionPerformed
 
     private void btnEncodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEncodeActionPerformed
-        final IMediaWriter writer = ToolFactory.makeWriter("output.mp4");
-
-        // We tell it we're going to add one video stream, with id 0,
-        // at position 0, and that it will have a fixed frame rate of
-        // FRAME_RATE.
-        IRational FRAME_RATE = IRational.make(1, 20);
-        int width = imWidth;
-        int height = imHeight;
-        writer.addVideoStream(0, 0,
-                FRAME_RATE,
-                width + 1, height + 1);
-
-        // Now, we're going to loop
-        long startTime = System.nanoTime();
-        for (int i = 0; i < images.size(); i++) {
-//            try {
-//                java.io.FileOutputStream fout = new java.io.FileOutputStream("image" + i + ".jpg");
-//                com.sun.image.codec.jpeg.JPEGImageEncoder jie = com.sun.image.codec.jpeg.JPEGCodec.createJPEGEncoder(fout);
-//                com.sun.image.codec.jpeg.JPEGEncodeParam enParam = jie.getDefaultJPEGEncodeParam(images.get(i));
-//                enParam.setQuality(1.0f, true);
-//                jie.setJPEGEncodeParam(enParam);
-//                jie.encode(images.get(i));
-//                fout.close();
-//            } catch (ImageFormatException ex) {
-//                Logger.getLogger(CameraForm.class.getName()).log(Level.SEVERE, null, ex);
-//            } catch (FileNotFoundException ex) {
-//                Logger.getLogger(CameraForm.class.getName()).log(Level.SEVERE, null, ex);
-//            } catch (IOException ex) {
-//                Logger.getLogger(CameraForm.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-            writer.encodeVideo(0, images.get(i),
-                    1000 * i, TimeUnit.NANOSECONDS);
-            System.out.println("encoded image: " + i);
-
-        }
-        writer.close();
-
+//        final IMediaWriter writer = ToolFactory.makeWriter("output.mp4");
+//
+//        // We tell it we're going to add one video stream, with id 0,
+//        // at position 0, and that it will have a fixed frame rate of
+//        // FRAME_RATE.
+//        IRational FRAME_RATE = IRational.make(1, 20);
+//        int width = imWidth;
+//        int height = imHeight;
+//        writer.addVideoStream(0, 0,
+//                FRAME_RATE,
+//                width + 1, height + 1);
+//
+//        // Now, we're going to loop
+//        long startTime = System.nanoTime();
+//        for (int i = 0; i < images.size(); i++) {
+////            try {
+////                java.io.FileOutputStream fout = new java.io.FileOutputStream("image" + i + ".jpg");
+////                com.sun.image.codec.jpeg.JPEGImageEncoder jie = com.sun.image.codec.jpeg.JPEGCodec.createJPEGEncoder(fout);
+////                com.sun.image.codec.jpeg.JPEGEncodeParam enParam = jie.getDefaultJPEGEncodeParam(images.get(i));
+////                enParam.setQuality(1.0f, true);
+////                jie.setJPEGEncodeParam(enParam);
+////                jie.encode(images.get(i));
+////                fout.close();
+////            } catch (ImageFormatException ex) {
+////                Logger.getLogger(CameraForm.class.getName()).log(Level.SEVERE, null, ex);
+////            } catch (FileNotFoundException ex) {
+////                Logger.getLogger(CameraForm.class.getName()).log(Level.SEVERE, null, ex);
+////            } catch (IOException ex) {
+////                Logger.getLogger(CameraForm.class.getName()).log(Level.SEVERE, null, ex);
+////            }
+//            writer.encodeVideo(0, images.get(i),
+//                    1000 * i, TimeUnit.NANOSECONDS);
+//            System.out.println("encoded image: " + i);
+//
+//        }
+//        writer.close();
+//
     }//GEN-LAST:event_btnEncodeActionPerformed
-    public double gaitLength = 0.001;
+    public double gaitLength = 0.005;
     public double prevFloating = 0;
     public double curFloating = 0;
 
     private void btnStrafeLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStrafeLActionPerformed
         images.clear();
         //int count = 0;
-        for (int count = 0; count < 500; count++) {
+        for (int count = 0; count < 2000; count++) {
             //count++;
 
             camera.move(camera.orientation[1].multS(-gaitLength), null);
@@ -407,8 +420,10 @@ public class CameraForm extends javax.swing.JFrame {
                     if (escape) {
                         break;
                     }
+                    NVector prevPos = camera.pos.copy();
                     camera.reanchor();
                     camera.realignOrientation(camera.cell);
+                    System.err.println("Changed dist: " + camera.pos.minusB(prevPos).length());
                 } catch (Exception ex) {
                     Logger.getLogger(CameraForm.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -416,7 +431,7 @@ public class CameraForm extends javax.swing.JFrame {
 
             if (!parent.distributeComputing) {
                 int[] picDims = new int[]{imWidth, imHeight};
-                Tensor<Color> result = camera.aRender(2, picDims);
+                Tensor<Color> result = camera.aRender(dtl, picDims);
                 BufferedImage image = new BufferedImage(imWidth, imHeight, BufferedImage.TYPE_3BYTE_BGR);
                 for (int x = 0; x < imWidth; x++) {
                     for (int y = 0; y < imHeight; y++) {
@@ -435,7 +450,7 @@ public class CameraForm extends javax.swing.JFrame {
                     Logger.getLogger(CameraForm.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-                images.add(image);
+                //images.add(image);
             } else {
                 final byte[] latticeBytes = parent.engine.lattice.toByteArray();
 
@@ -445,22 +460,17 @@ public class CameraForm extends javax.swing.JFrame {
                     final int[] picDims = new int[]{imWidth, imHeight};
                     final int camNum = parent.engine.lattice.cameras.indexOf(this.camera);
 
-                    System.out.println("CamPos: " + parent.engine.lattice.cameras.get(camNum).pos);
-                    System.out.println("CamOrient:");
-                    for (int i = 0; i < parent.engine.lattice.cameras.get(camNum).orientation.length; i++) {
-                        System.out.println(parent.engine.lattice.cameras.get(camNum).orientation[i]);
-                    }
+//                    System.out.println("CamPos: " + parent.engine.lattice.cameras.get(camNum).pos);
+//                    System.out.println("CamOrient:");
+//                    for (int i = 0; i < parent.engine.lattice.cameras.get(camNum).orientation.length; i++) {
+//                        System.out.println(parent.engine.lattice.cameras.get(camNum).orientation[i]);
+//                    }
                     final int imageNum = imagecount++;
                     new Thread(new Runnable() {
+
                         public void run() {
                             try {
-                                Tensor<Color> result = worker.renderFrame(camNum, dtl, picDims);
-                                BufferedImage image = new BufferedImage(imWidth, imHeight, BufferedImage.TYPE_3BYTE_BGR);
-                                for (int x = 0; x < imWidth; x++) {
-                                    for (int y = 0; y < imHeight; y++) {
-                                        image.setRGB(x, y, result.get(x, y).getRGB());
-                                    }
-                                }
+                                BufferedImage image = worker.renderFrameToImagePaced(camNum, dtl, imWidth, imHeight, picDims);
                                 try {
                                     java.io.FileOutputStream fout = new java.io.FileOutputStream("image" + imageNum + ".jpg");
                                     javax.imageio.ImageIO.write(image, "JPG", fout);
@@ -470,11 +480,13 @@ public class CameraForm extends javax.swing.JFrame {
                                 } catch (IOException ex) {
                                     Logger.getLogger(CameraForm.class.getName()).log(Level.SEVERE, null, ex);
                                 }
-                                images.add(image);
+                                //images.add(image);
+                                parent.mobBoss.returnWorker(worker);
                             } catch (IOException ex) {
                                 Logger.getLogger(CameraForm.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (Throwable e) {
+                                parent.mobBoss.returnWorker(worker);
                             }
-                            parent.mobBoss.returnWorker(worker);
                         }
                     }).start();
 //                    Tensor<Color> result2 = camera.aRender(dtl, picDims);
@@ -648,6 +660,7 @@ public class CameraForm extends javax.swing.JFrame {
 
                 public void run() {
                     try {
+                        camera.reanchor();
                         camera.realignOrientation(camera.cell);
                     } catch (Exception ex) {
                         Logger.getLogger(CameraForm.class.getName()).log(Level.SEVERE, null, ex);
@@ -656,6 +669,7 @@ public class CameraForm extends javax.swing.JFrame {
             }).start();
         } else {
             try {
+                camera.reanchor();
                 camera.realignOrientation(camera.cell);
             } catch (Exception ex) {
                 Logger.getLogger(CameraForm.class.getName()).log(Level.SEVERE, null, ex);
@@ -688,6 +702,17 @@ public class CameraForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnCenterActionPerformed
 
+private void btnTracerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTracerActionPerformed
+    // Do tracer
+    camera.renderCameraTracer(Camera.PROJ_MERCATOR, renderPanel.getWidth(), this.getHeight(), 2);
+    if (boxRender.isSelected()) {
+        renderPanel.repaint();
+    }
+    if (boxRenderMain.isSelected()) {
+        parent.dp.repaint();
+    }
+}//GEN-LAST:event_btnTracerActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -714,6 +739,7 @@ public class CameraForm extends javax.swing.JFrame {
     private javax.swing.JButton btnRightOne;
     private javax.swing.JButton btnStrafeL;
     private javax.swing.JButton btnStrafeR;
+    private javax.swing.JButton btnTracer;
     private javax.swing.JButton btnUpOne;
     private javax.swing.JPanel intrumentPanel;
     private javax.swing.JSplitPane jSplitPane1;

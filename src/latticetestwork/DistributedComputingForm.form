@@ -28,17 +28,19 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="boxDCEnabled" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="305" max="-2" attributes="0"/>
+                      <EmptySpace pref="239" max="32767" attributes="0"/>
+                      <Component id="btnRecruit" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnLaunchLocal" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <Component id="editAddress" pref="414" max="32767" attributes="0"/>
+                              <Component id="editAddress" pref="494" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="spinPort" min="-2" pref="66" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jScrollPane1" pref="486" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" pref="566" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -58,6 +60,7 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="boxDCEnabled" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnLaunchLocal" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnRecruit" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -72,7 +75,7 @@
                       <EmptySpace min="-2" pref="252" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
-                      <Component id="jScrollPane1" pref="264" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="269" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -205,6 +208,18 @@
       </BindingProperties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLaunchLocalActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnRecruit">
+      <Properties>
+        <Property name="text" type="java.lang.String" resourceKey="btnRecruit.text"/>
+        <Property name="name" type="java.lang.String" value="btnRecruit" noResource="true"/>
+      </Properties>
+      <BindingProperties>
+        <BindingProperty name="enabled" source="boxDCEnabled" sourcePath="${selected}" target="btnRecruit" targetPath="enabled" updateStrategy="0" immediately="false"/>
+      </BindingProperties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRecruitActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

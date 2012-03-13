@@ -1,0 +1,312 @@
+<?xml version="1.1" encoding="UTF-8" ?>
+
+<Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+  <Properties>
+    <Property name="title" type="java.lang.String" resourceKey="Form.title"/>
+    <Property name="name" type="java.lang.String" value="Form" noResource="true"/>
+  </Properties>
+  <SyntheticProperties>
+    <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+  </SyntheticProperties>
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="2"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Component id="jSplitPane1" alignment="1" pref="499" max="32767" attributes="0"/>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Component id="jSplitPane1" alignment="0" max="32767" attributes="0"/>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Container class="javax.swing.JSplitPane" name="jSplitPane1">
+      <Properties>
+        <Property name="dividerLocation" type="int" value="284"/>
+        <Property name="name" type="java.lang.String" value="jSplitPane1" noResource="true"/>
+      </Properties>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout"/>
+      <SubComponents>
+        <Container class="javax.swing.JPanel" name="intrumentPanel">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="intrumentPanel" noResource="true"/>
+          </Properties>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
+              <JSplitPaneConstraints position="right"/>
+            </Constraint>
+          </Constraints>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace pref="36" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                          <Component id="btnTracer" max="32767" attributes="1"/>
+                          <Component id="btnRealign" max="32767" attributes="1"/>
+                          <Component id="btnCenter" alignment="1" max="32767" attributes="1"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="boxRender" min="-2" max="-2" attributes="1"/>
+                              <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+                              <Component id="boxRenderMain" min="-2" max="-2" attributes="1"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="btnEncode" alignment="1" max="32767" attributes="1"/>
+                                  <Component id="btnStrafeR" alignment="1" max="32767" attributes="1"/>
+                                  <Component id="btnForward" alignment="1" max="32767" attributes="1"/>
+                                  <Component id="btnDTL" alignment="1" max="32767" attributes="1"/>
+                                  <Component id="btnStrafeL" alignment="1" max="32767" attributes="1"/>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="btnLeftOne" min="-2" pref="33" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="btnRightOne" alignment="1" min="-2" pref="34" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Component id="btnBackwardOne" alignment="1" max="32767" attributes="1"/>
+                                  <Component id="btnForwardOne" alignment="1" max="32767" attributes="1"/>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="btnUpOne" min="-2" pref="33" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="btnDownOne" min="-2" pref="34" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="btnDTL" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnRealign" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="btnStrafeL" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnCenter" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="btnStrafeR" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnTracer" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnForward" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnForwardOne" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="btnRightOne" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnLeftOne" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnBackwardOne" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="btnDownOne" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnUpOne" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="5" pref="5" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="boxRenderMain" min="-2" max="-2" attributes="0"/>
+                          <Component id="boxRender" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnEncode" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JButton" name="btnDTL">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="btnDTL.text"/>
+                <Property name="name" type="java.lang.String" value="btnDTL" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDTLActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnEncode">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="btnEncode.text"/>
+                <Property name="name" type="java.lang.String" value="btnEncode" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEncodeActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnStrafeL">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="btnStrafeL.text"/>
+                <Property name="name" type="java.lang.String" value="btnStrafeL" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnStrafeLActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnStrafeR">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="btnStrafeR.text"/>
+                <Property name="name" type="java.lang.String" value="btnStrafeR" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnStrafeRActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnForward">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="btnForward.text"/>
+                <Property name="name" type="java.lang.String" value="btnForward" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnForwardActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnForwardOne">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="btnForwardOne.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="btnForwardOne.toolTipText"/>
+                <Property name="name" type="java.lang.String" value="btnForwardOne" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnForwardOneActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnRightOne">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="btnRightOne.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="btnRightOne.toolTipText"/>
+                <Property name="name" type="java.lang.String" value="btnRightOne" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRightOneActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnLeftOne">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="btnLeftOne.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="btnLeftOne.toolTipText"/>
+                <Property name="name" type="java.lang.String" value="btnLeftOne" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLeftOneActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnBackwardOne">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="btnBackwardOne.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="btnBackwardOne.toolTipText"/>
+                <Property name="name" type="java.lang.String" value="btnBackwardOne" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBackwardOneActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnUpOne">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="btnUpOne.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="btnUpOne.toolTipText"/>
+                <Property name="name" type="java.lang.String" value="btnUpOne" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnUpOneActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnDownOne">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="btnDownOne.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="btnDownOne.toolTipText"/>
+                <Property name="name" type="java.lang.String" value="btnDownOne" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDownOneActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="boxRender">
+              <Properties>
+                <Property name="selected" type="boolean" value="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="boxRender.text"/>
+                <Property name="name" type="java.lang.String" value="boxRender" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="boxRenderActionPerformed"/>
+              </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+              </AuxValues>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnRealign">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="btnRealign.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="btnRealign.toolTipText"/>
+                <Property name="name" type="java.lang.String" value="btnRealign" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRealignActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnCenter">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="btnCenter.text"/>
+                <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[71, 23]"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="btnCenter" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCenterActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="boxRenderMain">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="boxRenderMain.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="boxRenderMain.toolTipText"/>
+                <Property name="name" type="java.lang.String" value="boxRenderMain" noResource="true"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+              </AuxValues>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnTracer">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="btnTracer.text"/>
+                <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[71, 23]"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="btnTracer" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTracerActionPerformed"/>
+              </Events>
+            </Component>
+          </SubComponents>
+        </Container>
+      </SubComponents>
+    </Container>
+  </SubComponents>
+</Form>

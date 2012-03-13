@@ -25,6 +25,7 @@ public class Lattice {
     public ArrayList<NCell> cells = null;
     public ArrayList<NSurface> surfaces = null;
     public ArrayList<Camera> cameras = null;
+    public ArrayList<ArrayList<NVector>> tracers = null;
     
     public Lattice(int dims, int internalDims) {
         this.dims = dims;
@@ -35,6 +36,7 @@ public class Lattice {
         this.cells = new ArrayList<NCell>();
         this.surfaces = new ArrayList<NSurface>();
         this.cameras = new ArrayList<Camera>();
+        this.tracers = new ArrayList<ArrayList<NVector>>();
     }
     
     public void addPoint(NPoint point) {
