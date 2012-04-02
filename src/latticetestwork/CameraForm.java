@@ -48,13 +48,16 @@ public class CameraForm extends javax.swing.JFrame {
         renderPanel = new DisplayPanel(false) {
 
             public Engine engine = engine0;
+            public int renderCount = 0;
 
             @Override
             protected void paintComponent(Graphics g1) {
                 super.paintComponent(g1);
                 if (engine != null && render) {
+                    System.out.println("Start render " + renderCount);
                     Graphics2D g = (Graphics2D) g1;
                     camera.renderCamera(g, Camera.PROJ_MERCATOR, this.getWidth(), this.getHeight(), dtl);
+                    System.out.println("Finish render " + renderCount++);
                     //engine.render(g, 0, this.getWidth(), this.getHeight(), transX, transY, scaleX, scaleY);
                 }
             }
