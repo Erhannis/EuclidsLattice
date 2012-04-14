@@ -48,6 +48,20 @@ public class MainTest {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
+        NVector av = new NVector(new double[] {1, 0, 0, 0});
+        NVector bv = new NVector(new double[] {0, 1, 0, 0});
+        System.out.println(NVector.angle(av, bv));
+        System.out.println(NVector.angle(bv, av));
+        if (1==1) return;
+        long large = 0;
+        System.out.println("begin");
+        long small = 0;
+        for (large = 0; large < 1000000000L; ) {
+            large++;
+            small--;
+        }
+        System.out.println(large + " " + small);
+        if (1==1) return;
         SSHClient sc = new SSHClient();
         //This needs to disappear.
         char[] pwd = new char[8];

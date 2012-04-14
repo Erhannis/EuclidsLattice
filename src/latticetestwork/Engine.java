@@ -7,9 +7,13 @@ package latticetestwork;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Stroke;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +27,7 @@ import java.util.logging.Logger;
  * @author mewer12
  */
 public class Engine {
-
+    
     public double sqr(double a) {
         return a * a;
     }
@@ -31,18 +35,20 @@ public class Engine {
     public int dims = 0;
     public LatticeTestworkView parent = null;
     public ArrayList<NLatticeBone> skeleton = null;
-
+    
     public Engine(int dims, LatticeTestworkView parent) {
         this.dims = dims;
         this.parent = parent;
     }
     public Lattice lattice = null;
     public int mode = 0;
-
+    
     public void init(int latticeDims, int mode) {
         lattice = new Lattice(dims, latticeDims);
         this.mode = mode;
         chosens = new ArrayList<NPoint>();
+        highlighteds = new ArrayList<NPoint>();
+        highlightedCells = new ArrayList<NCell>();
         permacenter = null;
         rot = new double[dims * (dims - 1) / 2];
         rotCoords = new int[dims * (dims - 1) / 2][2];
@@ -56,7 +62,7 @@ public class Engine {
         }
         skeleton = new ArrayList<NLatticeBone>();
     }
-
+    
     public void addPoints(int numPoints) { // Point coords are from -1,1 in each dim.
         for (int i = 0; i < numPoints; i++) {
             NPoint bucket = new NPoint(dims);
@@ -75,7 +81,8 @@ public class Engine {
     public double stereoDelta = 2.5;
     public boolean hideImmune = false;
     public boolean hideComplete = false;
-
+    public boolean hideIncomplete = false;
+    
     public NVector viewRotate(NVector i, double[] rot, int[][] rotCoords) throws Exception {
 //        NVector basisA = new NVector(dims);
 //        basisA.coords[0] = 1;
@@ -132,11 +139,33 @@ public class Engine {
     }
     public static final int RMODE_MODEL = 0;
     public static final int RMODE_CAMERA = 1;
+    public boolean trueRendered = true;
+    
+    public class PointAndCell {
 
-    public void render(Graphics2D g, int renderMode, int width, int height, double transX, double transY, double scaleX, double scaleY) {
+        public NCell cell;
+        public Point.Double point;
+    }
+    public int lastWidth = 1;
+    public int lastHeight = 1;
+    public double lastTransX = 1;
+    public double lastTransY = 1;
+    public double lastScaleX = 1;
+    public double lastScaleY = 1;
+    
+    public void render(Graphics2D g, int renderMode, int width, int height, double transX, double transY, double scaleX, double scaleY, boolean clickRender) {
+        lastWidth = width;
+        lastHeight = height;
+        lastTransX = transX;
+        lastTransY = transY;
+        lastScaleX = scaleX;
+        lastScaleY = scaleY;
+        if (clickRender) {
+            //    g.getTransform().
+        }
 //        g.setColor(Color.red);
 //        g.fillRect(-50, -50, 100, 100);
-        g.setStroke(new BasicStroke(0.01f));
+        g.setStroke(new BasicStroke(0.001f));
         g.translate((width / 2.0) + transX, (height / 2.0) + transY);
         g.scale(scaleX, scaleY);
 //        java.awt.geom.Ellipse2D.Double test = new java.awt.geom.Ellipse2D.Double();
@@ -157,6 +186,7 @@ public class Engine {
                                 bucket.y = i.pos.coords[1] - 0.01;
                                 bucket.width = 0.02;
                                 bucket.height = 0.02;
+                                i.displayPoint.setLocation(bucket.x, bucket.y);
                                 g.draw(bucket);
                             }
                             for (NCell i : lattice.cells) {
@@ -224,7 +254,7 @@ public class Engine {
                                         for (int i = 0; i < dims; i++) {
                                             cA[i] /= chosens.size() - 1;
                                         }
-
+                                        
                                         double[][] crossB = new double[chosens.size() - 2][dims];
                                         for (int i = 2; i < chosens.size(); i++) {
                                             NVector bucket2 = chosens.get(i).pos.minusB(chosens.get(1).pos);
@@ -246,7 +276,7 @@ public class Engine {
                                         }
                                         double[] aNorm = Matrix.cross(crossA);
                                         double[] bNorm = Matrix.cross(crossB);
-
+                                        
                                         boolean aNotZero = false;
                                         boolean bNotZero = false;
                                         Matrix augmented = new Matrix(3, dims);
@@ -320,6 +350,7 @@ public class Engine {
                     case 3:
                     case 2:
                     case 1:
+                        //TODO HOLY GARBAGE, I'm suddenly realizing how much this could be cleaned up.
                         if (lattice != null) {
                             for (int hasStereo = 0; hasStereo <= 1; hasStereo++) {
                                 double stereoCurDelta = 0;
@@ -336,14 +367,14 @@ public class Engine {
                                     }
                                 }
                                 //TODO I should probably be able to rotate this thing.
+                                g.setColor(Color.black);
                                 for (NPoint i : lattice.points) {
                                     try {
                                         if (hideImmune && i.immune) {
                                             continue;
                                         }
-                                        g.setColor(Color.black);
                                         Ellipse2D.Double bucket = new Ellipse2D.Double();
-
+                                        
                                         NVector current = viewRotate(i.pos, rot, rotCoords);
 
 //                            first.coords[0] = (i.pos.coords[0] * Math.cos(yRot)) + (i.pos.coords[2] * Math.sin(yRot));
@@ -373,6 +404,11 @@ public class Engine {
                                         } else {
                                             bucket.width = 0.01;
                                             bucket.height = 0.01;
+                                        }
+                                        if (hasStereo == 0) {
+                                            i.displayPoint.setLocation(bucket.x, bucket.y);
+                                        } else {
+                                            i.displayPointStereo.setLocation(bucket.x, bucket.y);
                                         }
                                         g.draw(bucket);
                                     } catch (Exception e) {
@@ -412,12 +448,22 @@ public class Engine {
                                     } catch (Exception e) {
                                     }
                                 }
-                                for (NCell i : lattice.cells) {
-                                    g.setColor(Color.blue);
+                                g.setColor(Color.blue);
+                                for (int m = 0; m < lattice.cells.size(); m++) {
+                                    NCell i = lattice.cells.get(m);
+                                    //for (NCell i : lattice.cells) {
                                     for (int j = 0; j < i.faces.length; j++) {
                                         if (i.faces[j].points.length != 1) {
-                                            if (hideComplete && (!lattice.incompleteFaces.contains(i.faces[j]))) {
+                                            //THINK Would it be more efficient to call i.faces[j].complete()?
+                                            if (lattice.incompleteFaces.contains(i.faces[j])) {
                                                 continue;
+//                                                if (hideIncomplete) {
+//                                                    continue;
+//                                                }
+                                            } else {
+                                                if (hideComplete) {
+                                                    continue;
+                                                }
                                             }
                                             for (int k = 0; k < i.faces[j].points.length - 1; k++) {
                                                 if (hideImmune && i.faces[j].points[k].immune) {
@@ -499,57 +545,59 @@ public class Engine {
                                         }
                                     }
                                 }
-                                g.setColor(Color.red);
-                                for (int j = 0; j < lattice.incompleteFaces.size(); j++) {
-                                    for (int k = 0; k < lattice.incompleteFaces.get(j).points.length - 1; k++) {
-                                        if (hideImmune && lattice.incompleteFaces.get(j).points[k].immune) {
-                                            continue;
-                                        }
-                                        for (int l = k + 1; l < lattice.incompleteFaces.get(j).points.length; l++) {
-                                            try {
-                                                if (hideImmune && lattice.incompleteFaces.get(j).points[l].immune) {
-                                                    continue;
+                                if (!hideIncomplete) {
+                                    g.setColor(Color.red);
+                                    for (int j = 0; j < lattice.incompleteFaces.size(); j++) {
+                                        for (int k = 0; k < lattice.incompleteFaces.get(j).points.length - 1; k++) {
+                                            if (hideImmune && lattice.incompleteFaces.get(j).points[k].immune) {
+                                                continue;
+                                            }
+                                            for (int l = k + 1; l < lattice.incompleteFaces.get(j).points.length; l++) {
+                                                try {
+                                                    if (hideImmune && lattice.incompleteFaces.get(j).points[l].immune) {
+                                                        continue;
+                                                    }
+                                                    Line2D.Double line = new Line2D.Double();
+                                                    NVector start = lattice.incompleteFaces.get(j).points[k].pos;
+                                                    NVector second = viewRotate(start, rot, rotCoords);
+                                                    start = lattice.incompleteFaces.get(j).points[l].pos;
+                                                    NVector fourth = viewRotate(start, rot, rotCoords);
+                                                    if (second.coords.length > 0) {
+                                                        line.x1 = second.coords[0] + stereoCurDelta;
+                                                    } else {
+                                                        line.x1 = 0;
+                                                    }
+                                                    if (second.coords.length > 1) {
+                                                        line.y1 = second.coords[1];
+                                                    } else {
+                                                        line.y1 = 0;
+                                                    }
+                                                    if (fourth.coords.length > 0) {
+                                                        line.x2 = fourth.coords[0] + stereoCurDelta;
+                                                    } else {
+                                                        line.x2 = 0;
+                                                    }
+                                                    if (second.coords.length > 1) {
+                                                        line.y2 = fourth.coords[1];
+                                                    } else {
+                                                        line.y2 = 0;
+                                                    }
+                                                    //bucket.width = 0.02;
+                                                    //bucket.height = 0.02;
+                                                    g.draw(line);
+                                                } catch (Exception e) {
                                                 }
-                                                Line2D.Double line = new Line2D.Double();
-                                                NVector start = lattice.incompleteFaces.get(j).points[k].pos;
-                                                NVector second = viewRotate(start, rot, rotCoords);
-                                                start = lattice.incompleteFaces.get(j).points[l].pos;
-                                                NVector fourth = viewRotate(start, rot, rotCoords);
-                                                if (second.coords.length > 0) {
-                                                    line.x1 = second.coords[0] + stereoCurDelta;
-                                                } else {
-                                                    line.x1 = 0;
-                                                }
-                                                if (second.coords.length > 1) {
-                                                    line.y1 = second.coords[1];
-                                                } else {
-                                                    line.y1 = 0;
-                                                }
-                                                if (fourth.coords.length > 0) {
-                                                    line.x2 = fourth.coords[0] + stereoCurDelta;
-                                                } else {
-                                                    line.x2 = 0;
-                                                }
-                                                if (second.coords.length > 1) {
-                                                    line.y2 = fourth.coords[1];
-                                                } else {
-                                                    line.y2 = 0;
-                                                }
-                                                //bucket.width = 0.02;
-                                                //bucket.height = 0.02;
-                                                g.draw(line);
-                                            } catch (Exception e) {
                                             }
                                         }
                                     }
                                 }
+                                g.setColor(Color.ORANGE);
                                 for (Camera c : lattice.cameras) {
                                     try {//c.pos.length()
-                                        g.setColor(Color.ORANGE);
                                         Ellipse2D.Double bucket = new Ellipse2D.Double();
-
+                                        
                                         NVector current = viewRotate(c.pos, rot, rotCoords);
-
+                                        
                                         if (current.coords.length > 0) {
                                             bucket.x = current.coords[0] - 0.01 + stereoCurDelta;
                                         } else {
@@ -568,7 +616,7 @@ public class Engine {
                                             bucket.height = 0.01;
                                         }
                                         g.draw(bucket);
-
+                                        
                                         for (NVector v : c.orientation) {
                                             Line2D.Double line = new Line2D.Double();
                                             NVector start = c.pos;
@@ -645,6 +693,171 @@ public class Engine {
                                         }
                                     }
                                 }
+                                if (!highlighteds.isEmpty()) {
+                                    g.setColor(Color.ORANGE);
+                                    for (NPoint i : highlighteds) {
+                                        try {
+                                            if (hideImmune && i.immune) {
+                                                continue;
+                                            }
+                                            Ellipse2D.Double bucket = new Ellipse2D.Double();
+                                            
+                                            NVector current = viewRotate(i.pos, rot, rotCoords);
+                                            
+                                            if (current.coords.length > 0) {
+                                                bucket.x = current.coords[0] - 0.01 + stereoCurDelta;
+                                            } else {
+                                                bucket.x = 0;
+                                            }
+                                            if (current.coords.length > 1) {
+                                                bucket.y = current.coords[1] - 0.01;
+                                            } else {
+                                                bucket.y = 0;
+                                            }
+                                            if (current.coords.length > 2) {
+                                                bucket.width = (0.02 * (current.coords[2] + 1)) + 0.01;
+                                                bucket.height = (0.02 * (current.coords[2] + 1)) + 0.01;
+                                            } else {
+                                                bucket.width = 0.01;
+                                                bucket.height = 0.01;
+                                            }
+                                            g.draw(bucket);
+                                        } catch (Exception e) {
+                                        }
+                                    }
+                                }
+                                if (!highlightedCells.isEmpty()) {
+                                    g.setColor(Color.DARK_GRAY);
+                                    for (int m = 0; m < highlightedCells.size(); m++) {
+                                        NCell i = highlightedCells.get(m);
+                                        //for (NCell i : lattice.cells) {
+                                        for (int j = 0; j < i.faces.length; j++) {
+                                            if (i.faces[j].points.length != 1) {
+                                                //THINK Would it be more efficient to call i.faces[j].complete()?
+//                                                if (lattice.incompleteFaces.contains(i.faces[j])) {
+//                                                    continue;
+////                                                if (hideIncomplete) {
+////                                                    continue;
+////                                                }
+//                                                } else {
+//                                                    if (hideComplete) {
+//                                                        continue;
+//                                                    }
+//                                                }
+                                                for (int k = 0; k < i.faces[j].points.length - 1; k++) {
+//                                                    if (hideImmune && i.faces[j].points[k].immune) {
+//                                                        continue;
+//                                                    }
+                                                    for (int l = k + 1; l < i.faces[j].points.length; l++) {
+                                                        try {
+//                                                            if (hideImmune && i.faces[j].points[l].immune) {
+//                                                                continue;
+//                                                            }
+                                                            Line2D.Double line = new Line2D.Double();
+                                                            NVector start = i.faces[j].points[k].pos;
+                                                            NVector second = viewRotate(start, rot, rotCoords);
+                                                            start = i.faces[j].points[l].pos;
+                                                            NVector fourth = viewRotate(start, rot, rotCoords);
+                                                            if (second.coords.length > 0) {
+                                                                line.x1 = second.coords[0] + stereoCurDelta;
+                                                            } else {
+                                                                line.x1 = 0;
+                                                            }
+                                                            if (second.coords.length > 1) {
+                                                                line.y1 = second.coords[1];
+                                                            } else {
+                                                                line.y1 = 0;
+                                                            }
+                                                            if (fourth.coords.length > 0) {
+                                                                line.x2 = fourth.coords[0] + stereoCurDelta;
+                                                            } else {
+                                                                line.x2 = 0;
+                                                            }
+                                                            if (second.coords.length > 1) {
+                                                                line.y2 = fourth.coords[1];
+                                                            } else {
+                                                                line.y2 = 0;
+                                                            }
+                                                            //bucket.width = 0.02;
+                                                            //bucket.height = 0.02;
+                                                            g.draw(line);
+                                                        } catch (Exception e) {
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                try {
+//                                                    if (hideImmune && (i.faces[j].points[0].immune || i.faces[j + 1 % i.faces.length].points[0].immune)) {
+//                                                        continue;
+//                                                    }
+                                                    Line2D.Double line = new Line2D.Double();
+                                                    NVector start = i.faces[j].points[0].pos;
+                                                    NVector second = viewRotate(start, rot, rotCoords);
+                                                    start = i.faces[j + 1 % i.faces.length].points[0].pos;
+                                                    NVector fourth = viewRotate(start, rot, rotCoords);
+                                                    if (second.coords.length > 0) {
+                                                        line.x1 = second.coords[0] + stereoCurDelta;
+                                                    } else {
+                                                        line.x1 = 0;
+                                                    }
+                                                    if (second.coords.length > 1) {
+                                                        line.y1 = second.coords[1];
+                                                    } else {
+                                                        line.y1 = 0;
+                                                    }
+                                                    if (fourth.coords.length > 0) {
+                                                        line.x2 = fourth.coords[0] + stereoCurDelta;
+                                                    } else {
+                                                        line.x2 = 0;
+                                                    }
+                                                    if (second.coords.length > 1) {
+                                                        line.y2 = fourth.coords[1];
+                                                    } else {
+                                                        line.y2 = 0;
+                                                    }
+                                                    //bucket.width = 0.02;
+                                                    //bucket.height = 0.02;
+                                                    g.draw(line);
+                                                } catch (Exception e) {
+                                                    //e.printStackTrace();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if (!chosens.isEmpty()) {
+                                    g.setColor(Color.CYAN);
+                                    for (NPoint i : chosens) {
+                                        try {
+                                            if (hideImmune && i.immune) {
+                                                continue;
+                                            }
+                                            Ellipse2D.Double bucket = new Ellipse2D.Double();
+                                            
+                                            NVector current = viewRotate(i.pos, rot, rotCoords);
+                                            
+                                            if (current.coords.length > 0) {
+                                                bucket.x = current.coords[0] - 0.01 + stereoCurDelta;
+                                            } else {
+                                                bucket.x = 0;
+                                            }
+                                            if (current.coords.length > 1) {
+                                                bucket.y = current.coords[1] - 0.01;
+                                            } else {
+                                                bucket.y = 0;
+                                            }
+                                            if (current.coords.length > 2) {
+                                                bucket.width = (0.02 * (current.coords[2] + 1)) + 0.01;
+                                                bucket.height = (0.02 * (current.coords[2] + 1)) + 0.01;
+                                            } else {
+                                                bucket.width = 0.01;
+                                                bucket.height = 0.01;
+                                            }
+                                            g.draw(bucket);
+                                        } catch (Exception e) {
+                                        }
+                                    }
+                                }
                                 if (hasStereo == 1) {
                                     rot[1] += stereoDegrees;
                                 }
@@ -657,12 +870,12 @@ public class Engine {
                 break;
             default:
         }
-        g.scale(0.01, 0.01);
-        g.translate(-250, -250);
+        //g.scale(0.001, 0.001);
+        //g.translate(-250, -250);
     }
     public double repulsionCutoff = -1;
     public int repulsionMode = 0;
-
+    
     public void repel() {
 //        switch (mode) {
 //            case 0: // 2-2 Triangulation
@@ -745,32 +958,58 @@ public class Engine {
 //        }
     }
     public ArrayList<NPoint> chosens = new ArrayList<NPoint>();
-
-    public void clickPoint(int mx, int my) {
-        double x = (mx - 250) * 0.01;
-        double y = (my - 250) * 0.01;
-        switch (mode) {
-            case 0: // 2-2 Triangulation
-                if (lattice != null) {
-                    if (chosens.size() >= 3) {
-                        chosens.clear();
-                        break;
-                    }
-                    NPoint closest = null;
-                    double dist = 0;
-                    for (NPoint i : lattice.points) {
-                        double newdist = sqr(i.pos.coords[0] - x) + sqr(i.pos.coords[1] - y);
-                        if ((closest == null) || newdist < dist) {
-                            closest = i;
-                            dist = newdist;
+    public ArrayList<NPoint> highlighteds = new ArrayList<NPoint>();
+    public ArrayList<NCell> highlightedCells = new ArrayList<NCell>();
+    
+    public void clickPoint(Point mousePoint, boolean shift, boolean ctrl, boolean alt, int button) {
+        try {
+            AffineTransform t = new AffineTransform();
+            
+            t.translate((lastWidth / 2.0) + lastTransX, (lastHeight / 2.0) + lastTransY);
+            t.scale(lastScaleX, lastScaleY);
+            
+            Point2D p = t.inverseTransform(mousePoint, null);            
+            
+            switch (mode) {
+//                case 0: // 2-2 Triangulation
+                default:
+                    if (lattice != null) {
+                        if (alt) {
+                            chosens.clear();
+                            break;
+                        }
+                        if (!ctrl) {
+                            chosens.clear();
+                            //break;
+                        }
+                        NPoint closest = null;
+                        double dist = 0;
+                        for (NPoint i : lattice.points) {
+                            double newdist = 10;
+                            if (stereo) {
+                                newdist = Math.min(i.displayPoint.distance(p), i.displayPointStereo.distance(p));
+                            } else {
+                                newdist = i.displayPoint.distance(p);
+                            }
+                            //double newdist = sqr(i.pos.coords[0] - p.getX()) + sqr(i.pos.coords[1] - p.getY());
+                            if ((closest == null) || newdist < dist) {
+                                closest = i;
+                                dist = newdist;
+                            }
+                        }
+                        if (chosens.contains(closest)) {
+                            chosens.remove(closest);
+                        } else {
+                            chosens.add(closest);
                         }
                     }
-                    chosens.add(closest);
-                }
-                break;
+                    break;
+            }
+        } catch (NoninvertibleTransformException ex) {
+            Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     public void addTriangle() {
         if (chosens.size() == 3) { // This will only work for 2 in 2 dims
             NCell newCell = new NCell(dims, lattice.internalDims);
@@ -807,7 +1046,7 @@ public class Engine {
             lattice.cells.add(newCell);
         }
     }
-
+    
     public boolean seed() {
         //NFace leaf = lattice.incompleteFaces.get(faceNum);
         NPoint a = lattice.points.get(r.nextInt(lattice.points.size()));
@@ -852,7 +1091,7 @@ public class Engine {
         }
         return seedRecurse(nearest, anchors, leaf, leaf.points.length + 1, anchors.size());
     }
-
+    
     public boolean seedRecurse(ArrayList<NPoint> nearest, ArrayList<NPoint> anchors, NFace leaf, int finalDepth, int currentDepth) {
         if (currentDepth < finalDepth - 1) {
             ArrayList<NPoint> subNearest = (ArrayList<NPoint>) nearest.clone();
@@ -870,8 +1109,8 @@ public class Engine {
             for (NPoint i : nearest) {
                 anchors.add(i);
                 //TODO I really ought to change this to just pick one in withinCircle and go from there, but hang on.
-                if ((maxThinness == -1) || checkThinness(anchors, maxThinness)) {
-                    ArrayList<NPoint> withinCircle = findCircleContentsALT(anchors);
+                if (((maxThinness == -1) || checkThinness(anchors, maxThinness)) && ((minAngle == -1) || checkMinAngle(anchors, minAngle)) && ((minVolume == -1) || checkMinVolume(anchors, minVolume))) {
+                    ArrayList<NPoint> withinCircle = findCircleContentsALT(anchors, true, false);
                     if (withinCircle.isEmpty()) {
                         NCell newCell = new NCell(dims, lattice.internalDims);
                         for (int j = 0; j < newCell.points.length; j++) {
@@ -913,6 +1152,7 @@ public class Engine {
                                 lattice.faces.add(newFace);
                             }
                         }
+                        lastCell = newCell;
                         lattice.cells.add(newCell);
                         lattice.incompleteFaces.add(leaf);
                         lattice.faces.add(leaf);
@@ -926,7 +1166,8 @@ public class Engine {
     }
     public double permaradius = 0;
     public NPoint permacenter = null;
-
+    public NCell lastCell = null;
+    
     public ArrayList<NPoint> findCircleContents(ArrayList<NPoint> anchors) {
         try {
             //TODO I need to figure out how to do this in arbitrary dimensions.
@@ -950,7 +1191,7 @@ public class Engine {
             for (int i = 0; i < dims; i++) {
                 cA[i] /= anchors.size() - 1;
             }
-
+            
             double[][] crossB = new double[anchors.size() - 2][dims];
             for (int i = 2; i < anchors.size(); i++) {
                 NVector bucket = anchors.get(i).pos.minusB(anchors.get(1).pos);
@@ -1000,7 +1241,7 @@ public class Engine {
             }
             double[] aNorm = Matrix.cross(crossA);
             double[] bNorm = Matrix.cross(crossB);
-
+            
             boolean aNotZero = false;
             boolean bNotZero = false;
             Matrix augmented = new Matrix(3, dims);
@@ -1097,8 +1338,10 @@ public class Engine {
             return scratch;
         }
     }
+    
+    public ArrayList<NPoint> findCircleContentsALT(ArrayList<NPoint> anchors, boolean stopAtOne, boolean alwaysSetPermashapes) {
 
-    public ArrayList<NPoint> findCircleContentsALT(ArrayList<NPoint> anchors) {
+        //TODO IMPORTANT: There's something wrong here, note 6x3 salt structure failure.
         try {
             // Summary:
             // (Ok, so this has kinda changed.  The idea's more or less the same.)
@@ -1130,19 +1373,19 @@ public class Engine {
                 bases = new ArrayList<NVector>();
                 ArrayList<NVector> points = new ArrayList<NVector>();
                 NVector blank = new NVector(dims);
-                for (int i = 0; i < dims; i++) {
-                    blank.coords[i] = 0;
-                }
+//                for (int i = 0; i < dims; i++) {
+//                    blank.coords[i] = 0;
+//                }
                 points.add(blank);
                 for (int i = 1; i < anchors.size(); i++) {
-                    NVector bucket = new NVector(dims);
-                    NVector bucket2 = new NVector(dims);
-                    for (int j = 0; j < dims; j++) {
-                        bucket.coords[j] = anchors.get(i).pos.coords[j] - anchors.get(0).pos.coords[j];
-                        bucket2.coords[j] = anchors.get(i).pos.coords[j] - anchors.get(0).pos.coords[j];
-                    }
-                    bases.add(bucket);
-                    points.add(bucket2);
+//                    NVector bucket = new NVector(dims);
+//                    NVector bucket2 = new NVector(dims);
+//                    for (int j = 0; j < dims; j++) {
+//                        bucket.coords[j] = anchors.get(i).pos.coords[j] - anchors.get(0).pos.coords[j];
+//                        bucket2.coords[j] = anchors.get(i).pos.coords[j] - anchors.get(0).pos.coords[j];
+//                    }
+                    bases.add(anchors.get(i).pos.minusB(anchors.get(0).pos));
+                    points.add(anchors.get(i).pos.minusB(anchors.get(0).pos));
                 }
                 basis = new Matrix(bases.size(), dims);
                 // Gram-Schmidt orthogonalization
@@ -1153,8 +1396,8 @@ public class Engine {
                     bases.get(i).ipNormalize();
                     for (int j = 0; j < dims; j++) {
                         basis.val[i][j] = bases.get(i).coords[j];
-                    }
-                }
+                    }//System.out.println(basis);//System.out.println(points);
+                }//NVector.angle(bases.get(0), bases.get(1))
                 // Get the coordinates of the vectors 
                 NVector[] result = Matrix.ipTransformCoords(bases, points);
                 for (int i = 0; i < result.length; i++) {
@@ -1191,6 +1434,7 @@ public class Engine {
 //            if (0 == 1) {
             Matrix test = new Matrix(newAnchors.get(0).dims, newAnchors.size());
             for (int row = 0; row < newAnchors.size(); row++) {
+                //THINK Er...maybe use arraycopy?
                 for (int col = 0; col < newAnchors.get(0).dims; col++) {
                     test.val[col][row] = newAnchors.get(row).coords[col];
                 }
@@ -1210,22 +1454,23 @@ public class Engine {
             NVector centerV = new NVector(newAnchors.get(0).dims);
             for (int col = 0; col < newAnchors.get(0).dims; col++) {
                 Matrix temp = cramer.copy();
-                for (int row = 0; row < temp.rows; row++) {
-                    temp.val[col][row] = b.coords[row];
-                }//System.out.println(temp);
+                System.arraycopy(b.coords, 0, temp.val[col], 0, temp.rows);
+//                for (int row = 0; row < temp.rows; row++) {
+//                    temp.val[col][row] = b.coords[row];
+//                }//System.out.println(temp);
                 centerV.coords[col] = temp.det() / denom;
 //                System.out.println(temp.det());
             }
 //            System.out.println(centerV);
 
             double radius = 0;
-            for (int j = 0; j < newAnchors.size(); j++) {
-                radius = 0;
-                for (int i = 0; i < centerV.dims; i++) {
-                    radius += sqr(centerV.coords[i] - newAnchors.get(j).coords[i]);
-                }//System.out.println(Math.sqrt(radius));
+//            for (int j = 0; j < newAnchors.size(); j++) {
+//                radius = 0;
+            for (int i = 0; i < centerV.dims; i++) {
+                radius += sqr(centerV.coords[i] - newAnchors.get(0).coords[i]);
+            }//System.out.println(Math.sqrt(radius));
 //                System.out.println("flatrad" + j + "=" +Math.sqrt(radius));
-            }
+//            }
 
             // If coordinate transformed:
             NPoint center = new NPoint(dims);
@@ -1252,25 +1497,52 @@ public class Engine {
             // Congrats!  You now have the center of whatever n-sphere is appropriate for the number of points you have!
 
             radius = 0;
-            for (int j = 0; j < anchors.size(); j++) {
-                radius = 0;
-                for (int i = 0; i < dims; i++) {
-                    radius += sqr(center.pos.coords[i] - anchors.get(j).pos.coords[i]);
-                }//System.out.println(Math.sqrt(radius));
+//            for (int j = 0; j < anchors.size(); j++) {
+//                radius = 0;
+            for (int i = 0; i < dims; i++) {
+                radius += sqr(center.pos.coords[i] - anchors.get(0).pos.coords[i]);
+            }//System.out.println(Math.sqrt(radius));
 //                System.out.println("rad" + j + "=" +Math.sqrt(radius));
-            }
+//            }
             ArrayList<NPoint> result = new ArrayList<NPoint>();
             for (int i = 0; i < center.pos.coords.length; i++) {
                 if (Double.isNaN(center.pos.coords[i]) || Double.isInfinite(center.pos.coords[i])) {
                     throw new Exception("Straight line sphere");
                 }
             }
-            for (NPoint i : lattice.points) { //TODO This seems to be the slowest point ever.
-                if ((center.distSqr(i) <= radius) && (!anchors.contains(i)) && (!i.immune)) {
-                    result.add(i);
+            if (containmentFudgeValue > 0) {
+                double newRadius = sqr(Math.sqrt(radius) - containmentFudgeValue);
+                if (stopAtOne) {
+                    for (NPoint i : lattice.points) { //TODO This seems to be the slowest point ever.
+                        if ((center.distSqr(i) < newRadius) && (!anchors.contains(i)) && (!i.immune)) {
+                            result.add(i);
+                            break;
+                        }
+                    }
+                } else {
+                    for (NPoint i : lattice.points) { //TODO This seems to be the slowest point ever.
+                        if ((center.distSqr(i) < newRadius) && (!anchors.contains(i)) && (!i.immune)) {
+                            result.add(i);
+                        }
+                    }
+                }
+            } else {
+                if (stopAtOne) {
+                    for (NPoint i : lattice.points) { //TODO This seems to be the slowest point ever.
+                        if ((center.distSqr(i) <= radius) && (!anchors.contains(i)) && (!i.immune)) {
+                            result.add(i);
+                            break;
+                        }
+                    }
+                } else {
+                    for (NPoint i : lattice.points) { //TODO This seems to be the slowest point ever.
+                        if ((center.distSqr(i) <= radius) && (!anchors.contains(i)) && (!i.immune)) {
+                            result.add(i);
+                        }
+                    }
                 }
             }
-            if (result.size() == 0) {
+            if (result.isEmpty() || alwaysSetPermashapes) {
                 permacenter = center;
                 permaradius = Math.sqrt(radius);
             }
@@ -1286,17 +1558,24 @@ public class Engine {
     public double radiusSize = 3;
     public boolean allowSkipHardFaces = true;
     public double maxThinness = -1;
-
+    public double containmentFudgeValue = 0;
+    public double minAngle = -1;
+    public double minVolume = -1;
+    public int faceBottom = 0;
+    public NCell taggedCell = null;
+    
     public boolean crystallize() {
-        if (lattice != null) {
-            if (!lattice.incompleteFaces.isEmpty()) {
+        if (lattice != null) {//refreshCompletePoints();
+            if (!lattice.incompleteFaces.isEmpty()) {//parent.dp.paintImmediately(parent.dp.getBounds());
                 int top = 0;
                 if (!allowSkipHardFaces) {
+                    faceBottom = 0;
                     top = 0;
                 } else {
                     top = lattice.incompleteFaces.size() - 1;
                 }
-                for (int faceNum = 0; faceNum <= top; faceNum++) {
+                for (int faceNumBase = 0; faceNumBase <= top; faceNumBase++) {
+                    int faceNum = (faceNumBase + faceBottom) % (top + 1);
                     NFace leaf = lattice.incompleteFaces.get(faceNum);
                     double radius;
                     if (leaf.points.length > 1) {
@@ -1332,11 +1611,16 @@ public class Engine {
                     }
                     for (NPoint i : nearest) {
                         anchors.add(i);
+                        if (taggedCell != null && (taggedCell.equivalent(anchors))) {
+                            System.out.println("Tagged cell processed.");
+                        }//calcThinness2(taggedCell.points);//calcThinness2(anchors.toArray(new NPoint[0]));
                         //TODO I really ought to change this to just pick one in withinCircle and go from there, but hang on.
-                        if ((maxThinness == -1) || checkThinness(anchors, maxThinness)) {
-                            ArrayList<NPoint> withinCircle = findCircleContentsALT(anchors);
+                        if (((maxThinness == -1) || checkThinness(anchors, maxThinness)) && ((minAngle == -1) || checkMinAngle(anchors, minAngle)) && ((minVolume == -1) || checkMinVolume(anchors, minVolume))) {
+                            ArrayList<NPoint> withinCircle = findCircleContentsALT(anchors, true, false);
                             if (withinCircle.isEmpty()) {
+//                                ArrayList
                                 NCell newCell = new NCell(dims, lattice.internalDims);
+                                lastCell = newCell;
                                 for (int j = 0; j < newCell.points.length; j++) {
                                     newCell.points[j] = anchors.get(j);
                                 }
@@ -1379,21 +1663,300 @@ public class Engine {
                                 }
                                 lattice.cells.add(newCell);
                                 lattice.incompleteFaces.remove(leaf);
+                                
+                                faceBottom = faceNum;
+                                System.out.println("Found face at " + faceNum);
                                 return true;
                             }//faceNum
                         }
                         anchors.remove(i);
                     }
+                    System.out.println("Passed face " + faceNum);
                 }
             }
         }
+        faceBottom = 0;
         return false;
     }
-
-    public static boolean checkThinness(ArrayList<NPoint> frame, double thinness) {
-        // This could actually be done in series with the second part.
+    
+    public static double calcThinness1(ArrayList<NPoint> frame) {
         double min = -1;
         double max = -1;
+        for (int i = 0; i < frame.size() - 1; i++) {
+            for (int j = i + 1; j < frame.size(); j++) {
+                double bucket = frame.get(i).dist(frame.get(j));
+//                System.out.println(i + "-" + j + ": " + bucket);
+                if (min == -1) {
+                    min = bucket;
+                    max = min;
+                } else if (bucket < min) {
+                    min = bucket;
+                } else if (bucket > max) {
+                    max = bucket;
+                }
+            }
+        }
+        return max / min;
+    }
+    
+    public static double calcThinness2(ArrayList<NPoint> frame) {
+        double min = -1;
+        double max = -1;
+        for (int i = 0; i < frame.size() - 1; i++) {
+            for (int j = i + 1; j < frame.size(); j++) {
+                double bucket = frame.get(i).dist(frame.get(j));
+//                System.out.println(i + "-" + j + ": " + bucket);
+                if (min == -1) {
+                    min = bucket;
+                    max = min;
+                } else if (bucket < min) {
+                    min = bucket;
+                } else if (bucket > max) {
+                    max = bucket;
+                }
+            }
+        }
+        
+        NBasis[] basises = new NBasis[frame.size()];
+        {
+            basises[0] = new NBasis(frame.get(0).dims, frame.size() - 2);
+            int index = 0;
+            for (int j = 2; j < frame.size(); j++) {
+                basises[0].bases[index++] = frame.get(j).pos.minusB(frame.get(1).pos);
+            }
+            basises[0].orthogonalize();
+            try {
+                basises[0].calcProjection();// System.out.println(basises[i - 1].projection);
+                double bucket = Matrix.lrvMult(basises[0].projection, frame.get(0).pos.minusB(frame.get(1).pos)).dist(frame.get(0).pos.minusB(frame.get(1).pos));
+//                System.out.println("0: " + bucket);
+                if (min == -1) {
+                    min = bucket;
+                    max = min;
+                } else if (bucket < min) {
+                    min = bucket;
+                } else if (bucket > max) {
+                    max = bucket;
+                }
+            } catch (Exception ex) {
+                //Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
+                return Double.NaN;
+            }
+        }
+        for (int i = 1; i < basises.length; i++) {
+            basises[i] = new NBasis(frame.get(0).dims, frame.size() - 2);
+            int index = 0;
+            for (int j = 1; j < frame.size(); j++) {
+                if (i != j) {
+                    basises[i].bases[index++] = frame.get(j).pos.minusB(frame.get(0).pos);
+                }
+            }
+            basises[i].orthogonalize();
+            try {
+                basises[i].calcProjection();// System.out.println(basises[i - 1].projection);
+                double bucket = Matrix.lrvMult(basises[i].projection, frame.get(i).pos.minusB(frame.get(0).pos)).dist(frame.get(i).pos.minusB(frame.get(0).pos));
+//                System.out.println(i + ": " + bucket);
+                if (min == -1) {
+                    min = bucket;
+                    max = min;
+                } else if (bucket < min) {
+                    min = bucket;
+                } else if (bucket > max) {
+                    max = bucket;
+                }
+            } catch (Exception ex) {
+                //Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
+                return Double.NaN;
+            }
+        }
+        
+        return max / min;
+    }
+    
+    public static double calcThinness1(NPoint[] frame) {
+        double min = -1;
+        double max = -1;
+        for (int i = 0; i < frame.length - 1; i++) {
+            for (int j = i + 1; j < frame.length; j++) {
+                double bucket = frame[i].dist(frame[j]);
+//                System.out.println(i + "-" + j + ": " + bucket);
+                if (min == -1) {
+                    min = bucket;
+                    max = min;
+                } else if (bucket < min) {
+                    min = bucket;
+                } else if (bucket > max) {
+                    max = bucket;
+                }
+            }
+        }
+        return max / min;
+    }
+    
+    public static double calcThinness2(NPoint[] frame) {
+        double min = -1;
+        double max = -1;
+        for (int i = 0; i < frame.length - 1; i++) {
+            for (int j = i + 1; j < frame.length; j++) {
+                double bucket = frame[i].dist(frame[j]);
+//                System.out.println(i + "-" + j + ": " + bucket);
+                if (min == -1) {
+                    min = bucket;
+                    max = min;
+                } else if (bucket < min) {
+                    min = bucket;
+                } else if (bucket > max) {
+                    max = bucket;
+                }
+            }
+        }
+
+        NBasis[] basises = new NBasis[frame.length];
+        {
+            basises[0] = new NBasis(frame[0].dims, frame.length - 2);
+            int index = 0;
+            for (int j = 2; j < frame.length; j++) {
+                basises[0].bases[index++] = frame[j].pos.minusB(frame[1].pos);
+            }
+            basises[0].orthogonalize();
+            try {
+                basises[0].calcProjection();// System.out.println(basises[i - 1].projection);
+                double bucket = Matrix.lrvMult(basises[0].projection, frame[0].pos.minusB(frame[1].pos)).dist(frame[0].pos.minusB(frame[1].pos));
+//                System.out.println("0: " + bucket);
+                if (min == -1) {
+                    min = bucket;
+                    max = min;
+                } else if (bucket < min) {
+                    min = bucket;
+                } else if (bucket > max) {
+                    max = bucket;
+                }
+            } catch (Exception ex) {
+                //Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
+                return Double.NaN;
+            }
+        }
+        for (int i = 1; i < basises.length; i++) {
+            basises[i] = new NBasis(frame[0].dims, frame.length - 2);
+            int index = 0;
+            for (int j = 1; j < frame.length; j++) {
+                if (i != j) {
+                    basises[i].bases[index++] = frame[j].pos.minusB(frame[0].pos);
+                }
+            }
+            basises[i].orthogonalize();
+            try {
+                basises[i].calcProjection();// System.out.println(basises[i - 1].projection);
+                double bucket = Matrix.lrvMult(basises[i].projection, frame[i].pos.minusB(frame[0].pos)).dist(frame[i].pos.minusB(frame[0].pos));
+//                System.out.println(i + ": " + bucket);
+                if (min == -1) {
+                    min = bucket;
+                    max = min;
+                } else if (bucket < min) {
+                    min = bucket;
+                } else if (bucket > max) {
+                    max = bucket;
+                }
+            } catch (Exception ex) {
+                //Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
+                return Double.NaN;
+            }
+        }
+        
+//        ArrayList<NPoint> scumbucket = new ArrayList<NPoint>();
+//        for (int i = 0; i < frame.length; i++) {
+//            scumbucket.add(frame[i]);
+//        }
+//        checkThinness(scumbucket, 5);
+        
+        return max / min;
+    }
+    
+    public static double calcMinAngle(NPoint[] frame) {
+        double min = -1;
+        //double max = -1;
+        for (int i = 0; i < frame.length; i++) {
+            for (int j = 0; j < frame.length; j++) {
+                for (int k = 0; k < frame.length; k++) {
+                    if (i != j && i != k && j != k) {
+                        double bucket = NVector.angle(frame[j].pos.minusB(frame[i].pos), frame[k].pos.minusB(frame[i].pos));
+                        if (min == -1 || bucket < min) {
+                            min = bucket;
+                        }
+                    }
+                }
+            }
+        }
+        return min;
+    }
+    
+    public static boolean checkMinAngle(ArrayList<NPoint> frame, double thinness) {
+        double min = -1;
+        //double max = -1;
+        for (int i = 0; i < frame.size(); i++) {
+            for (int j = 0; j < frame.size(); j++) {
+                for (int k = 0; k < frame.size(); k++) {
+                    if (i != j && i != k && j != k) {
+                        double bucket = NVector.angle(frame.get(j).pos.minusB(frame.get(i).pos), frame.get(k).pos.minusB(frame.get(i).pos));
+                        if (min == -1 || bucket < min) {
+                            min = bucket;
+                        }
+                    }
+                }
+            }
+        }
+        if ((min < thinness) || Double.isInfinite(min) || Double.isNaN(min)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static boolean checkMinVolume(ArrayList<NPoint> frame, double minVolume) {
+        if (frame.size() <= 0)
+            return false; // Eh, maybe I should throw an error or something.
+        int dims = frame.get(0).dims;
+        int simplexDims = frame.size() - 1;
+        NBasis volBasis = new NBasis(dims, simplexDims);
+        ArrayList<NPoint> ptList = new ArrayList<NPoint>();
+        volBasis.bases[0] = NVector.zero(dims);
+        for (int i = 0; i < volBasis.bases.length; i++) {
+            volBasis.bases[i] = frame.get(i + 1).pos.minusB(frame.get(0).pos);
+        }
+        volBasis.orthogonalize();
+        try {
+            volBasis.calcProjection();
+        } catch (Exception ex) {
+            Logger.getLogger(NCell.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        NVector[] ptVectors = new NVector[frame.size()];
+        for (int i = 0; i < frame.size(); i++) {
+            ptVectors[i] = frame.get(i).pos;
+        }
+        NVector[] result = Matrix.ipTransformCoords(volBasis.bases, ptVectors);
+        Matrix m = new Matrix(simplexDims, simplexDims);
+        for (int i = 1; i < result.length; i++) {
+            NVector diff = result[i].minusB(result[0]);
+            for (int j = 0; j < result[i].dims; j++) {
+                m.val[i - 1][j] = diff.coords[j];
+            }
+        }
+        try {
+            double volume = ((1.0 / MeMath.factorial(simplexDims)) * Math.abs(m.det()));
+            if ((volume < minVolume) || Double.isInfinite(volume) || Double.isNaN(volume)) {
+                return false;
+            } else {
+                return true;
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(NCell.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    public static boolean checkThinness(ArrayList<NPoint> frame, double thinness) {
+        // This could actually be done in series with the second part.
+        double min = -1;//calcThinness1(frame);
+        double max = -1;//calcThinness2(frame);
         for (int i = 0; i < frame.size() - 1; i++) {
             for (int j = i + 1; j < frame.size(); j++) {
                 double bucket = frame.get(i).dist(frame.get(j));
@@ -1467,7 +2030,7 @@ public class Engine {
                 return false;
             }
         }
-
+        
         result = max / min;
 //        System.out.println("max " + max + "; min " + min + "; result " + result);
         if ((result > thinness) || Double.isInfinite(result) || Double.isNaN(result)) {
@@ -1475,7 +2038,7 @@ public class Engine {
         }
         return true;
     }
-
+    
     public void bind() {
         switch (mode) {
             case 3: // 3-3 Bind to a -1,1 box
@@ -1514,7 +2077,7 @@ public class Engine {
                         i.pos.coords[j] /= length;
                         i.pos.coords[j] *= 2;
                     }
-
+                    
                     if (i.pos.coords[0] > 1) {
                         i.pos.coords[0] = 1;
                     } else if (i.pos.coords[0] < -1) {
@@ -1536,7 +2099,7 @@ public class Engine {
                 break;
         }
     }
-
+    
     public void bindSphere() {
         for (NPoint i : lattice.points) {
             double length = 0;
@@ -1560,7 +2123,7 @@ public class Engine {
         }
     }
     public boolean triangulateNCube = false;
-
+    
     public void placeNCube() {
         NPoint[] corners = new NPoint[1 << dims];
         placeNCubeRecurse(new NVector(dims), 0, corners);
@@ -1615,7 +2178,7 @@ public class Engine {
             }
         }
     }
-
+    
     private void placeNCubeRecurse(NVector point, int i, NPoint[] corners) {
         if (i < dims) {
             point.coords[i] = 1;
@@ -1638,16 +2201,16 @@ public class Engine {
             corners[index] = p;
         }
     }
-
+    
     public void calcProperties() {
         if (lattice != null) {
         }
     }
-
+    
     public void placeCamera() {
         placeCamera(true);
     }
-
+    
     public void placeCamera(boolean orient) {
         if (lattice != null) {
             if (orient) {
@@ -1694,13 +2257,17 @@ public class Engine {
         }
     }
     public double donutCircumfrence = 30;
-
+    
     public void placeNDonut() {
         if (lattice != null) {
             if ((dims / 2) >= lattice.internalDims) {
                 NVector cursor = new NVector(lattice.internalDims);
                 for (int i = 0; i < cursor.dims; i++) {
                     cursor.coords[i] = 0;
+                }
+                NVector shiftCursor = new NVector(lattice.internalDims);
+                for (int i = 0; i < shiftCursor.dims; i++) {
+                    shiftCursor.coords[i] = 0;
                 }
                 NVector intCursor = new NVector(lattice.internalDims);
                 for (int i = 0; i < intCursor.dims; i++) {
@@ -1711,7 +2278,7 @@ public class Engine {
                 int circ = (int) donutCircumfrence;
                 double inc = (Math.PI * 2) / donutCircumfrence;
                 NPoint[] donutMesh = new NPoint[(int) Math.pow(circ, intCursor.dims)];
-                placeNDonutRecurse(cursor, 0, inc, intCursor, donutMesh, circ);
+                placeNDonutRecurse(cursor, shiftCursor, 0, inc, intCursor, donutMesh, circ);
                 // Going to try to triangulate this sucker right here.  Won't be deLaunay, but that's ok.
 
             } else {
@@ -1719,24 +2286,106 @@ public class Engine {
             }
         }
     }
-
-    public void placeNDonutRecurse(NVector cursor, int dim, double inc, NVector intCursor, NPoint[] donutMesh, int circ) {
+    
+    public void placeNDonutRecurse(NVector cursor, NVector shiftCursor, int dim, double inc, NVector intCursor, NPoint[] donutMesh, int circ) {
         if (dim < cursor.dims) {
-            int i = 0;
-            for (double d = 0; d < Math.PI * 2; d += inc) {
-                cursor.coords[dim] = d;
-                intCursor.coords[dim] = i++;
-                placeNDonutRecurse(cursor, dim + 1, inc, intCursor, donutMesh, circ);
+            double d = 0;
+            //for (double d = 0; d < Math.PI * 2 * 0.25; d += inc) {
+            for (int i = 0; i < circ; i++) {
+                if (dim < cursor.dims - 1) {
+                    for (int j = dim + 1; j < cursor.dims; j++) {
+//                        if (shiftCursor.coords[j] > 0) {
+//                            shiftCursor.coords[j] = 0;
+//                        } else {
+                        shiftCursor.coords[j] += 0.5 * inc;
+//                        }
+                    }
+                }
+                cursor.coords[dim] = d + shiftCursor.coords[dim];
+                intCursor.coords[dim] = i;
+                placeNDonutRecurse(cursor, shiftCursor, dim + 1, inc, intCursor, donutMesh, circ);
+                d += inc;
             }
         } else {
             NPoint bucket = new NPoint(dims);
             for (int i = 0; i < cursor.dims; i++) {
 //                bucket.pos.coords[i * 2] = Math.sin(cursor.coords[i] + (inc * 0.25 * (r.nextDouble() - 0.5)));
                 bucket.pos.coords[i * 2] = Math.sin(cursor.coords[i]);
+                //bucket.pos.coords[i * 2] = cursor.coords[i];
             }
             for (int i = 0; i < cursor.dims; i++) {
 //                bucket.pos.coords[(i * 2) + 1] = Math.cos(cursor.coords[i] + (inc * 0.25 * (r.nextDouble() - 0.5)));
                 bucket.pos.coords[(i * 2) + 1] = Math.cos(cursor.coords[i]);
+                //bucket.pos.coords[(i * 2) + 1] = 0;
+            }
+            lattice.addPoint(bucket);
+            donutMesh[calcLinearNArrayIndex(intCursor, circ)] = bucket;
+        }
+    }
+    
+    public void placeNSaltLattice() {
+        if (lattice != null) {
+            if ((dims / 2) >= lattice.internalDims) {
+                NVector cursor = new NVector(lattice.internalDims);
+                for (int i = 0; i < cursor.dims; i++) {
+                    cursor.coords[i] = 0;
+                }
+                NVector shiftCursor = new NVector(lattice.internalDims);
+                for (int i = 0; i < shiftCursor.dims; i++) {
+                    shiftCursor.coords[i] = 0;
+                }
+                NVector intCursor = new NVector(lattice.internalDims);
+                for (int i = 0; i < intCursor.dims; i++) {
+                    intCursor.coords[i] = 0;
+                }
+//                double inc = Math.PI / 20;
+//                int circ = (int) (Math.PI * 2 / inc);
+                int circ = (int) donutCircumfrence;
+                double inc = (Math.PI * 2) / donutCircumfrence;
+                NPoint[] donutMesh = new NPoint[(int) Math.pow(circ, intCursor.dims)];
+                placeNSaltLatticeRecurse(cursor, shiftCursor, 0, inc, intCursor, donutMesh, circ);
+                // Going to try to triangulate this sucker right here.  Won't be deLaunay, but that's ok.
+
+            } else {
+                // Well, can't really make one of those non-curved donuts, so...go fish.
+            }
+        }
+    }
+    
+    public void placeNSaltLatticeRecurse(NVector cursor, NVector shiftCursor, int dim, double inc, NVector intCursor, NPoint[] donutMesh, int circ) {
+        if (dim < cursor.dims) {
+            int i = 0;
+            for (double d = 0; d < Math.PI * 0.4; d += inc) {
+                if (dim < cursor.dims - 1) {
+                    //TODO Fix this; add to all previous (upcoming?) coords
+//                    if (shiftCursor.coords[dim + 1] > 0) {
+//                        shiftCursor.coords[dim + 1] = 0;
+//                    } else {
+//                        shiftCursor.coords[dim + 1] += 0.5 * inc;
+//                    }
+                    for (int j = dim + 1; j < cursor.dims; j++) {
+                        if (shiftCursor.coords[j] > 0) {
+                            shiftCursor.coords[j] = 0;
+                        } else {
+                            shiftCursor.coords[j] += 0.5 * inc;
+                        }
+                    }
+                }
+                cursor.coords[dim] = d + shiftCursor.coords[dim];
+                intCursor.coords[dim] = i++;
+                placeNSaltLatticeRecurse(cursor, shiftCursor, dim + 1, inc, intCursor, donutMesh, circ);
+            }
+        } else {
+            NPoint bucket = new NPoint(dims);
+            for (int i = 0; i < cursor.dims; i++) {
+//                bucket.pos.coords[i * 2] = Math.sin(cursor.coords[i] + (inc * 0.25 * (r.nextDouble() - 0.5)));
+                //bucket.pos.coords[i * 2] = Math.sin(cursor.coords[i]);
+                bucket.pos.coords[i * 2] = cursor.coords[i];
+            }
+            for (int i = 0; i < cursor.dims; i++) {
+//                bucket.pos.coords[(i * 2) + 1] = Math.cos(cursor.coords[i] + (inc * 0.25 * (r.nextDouble() - 0.5)));
+                //bucket.pos.coords[(i * 2) + 1] = Math.cos(cursor.coords[i]);
+                bucket.pos.coords[(i * 2) + 1] = 0;
             }
             lattice.addPoint(bucket);
             donutMesh[calcLinearNArrayIndex(intCursor, circ)] = bucket;
@@ -1766,7 +2415,7 @@ public class Engine {
             //donutMesh[calcLinearNArrayIndex(intCursor, circ)];
         }
     }
-
+    
     public int calcLinearNArrayIndex(NVector address, int base) {
         int index = 0;
         for (int i = 0; i < address.dims; i++) {
@@ -1774,7 +2423,7 @@ public class Engine {
         }
         return index;
     }
-
+    
     public void shear1() {
         if (lattice != null) {
             Matrix shear = Matrix.identity(dims);
@@ -1790,7 +2439,7 @@ public class Engine {
             }
         }
     }
-
+    
     public void shearN() {
         if (lattice != null) {
             Matrix shear = Matrix.identity(dims);
@@ -1806,7 +2455,7 @@ public class Engine {
             }
         }
     }
-
+    
     public void swapHands() {
         if (lattice != null) {
             for (NPoint i : lattice.points) {
@@ -1814,7 +2463,7 @@ public class Engine {
             }
         }
     }
-
+    
     public void popCopyHands() {
         if (lattice != null) {
             for (NPoint i : lattice.points) {
@@ -1822,7 +2471,7 @@ public class Engine {
             }
         }
     }
-
+    
     public void pushCopyHands() {
         if (lattice != null) {
             for (NPoint i : lattice.points) {
@@ -1832,7 +2481,7 @@ public class Engine {
     }
     //TODO Allow this to be controlled.
     public double joggleScale = 0.1;
-
+    
     public void joggle() {
         if (lattice != null) {
             for (NPoint i : lattice.points) {
@@ -1842,7 +2491,7 @@ public class Engine {
             }
         }
     }
-
+    
     public int polarity(double x) {
         if (x < 0) {
             return -1;
@@ -1884,7 +2533,7 @@ public class Engine {
             }
         }
     }
-
+    
     public int refreshCompletePoints() {
         int pointsComplete = 0;
         if (lattice != null) {
@@ -1897,7 +2546,7 @@ public class Engine {
         System.out.println(pointsComplete);
         return pointsComplete;
     }
-
+    
     public int fetchPointsComplete() {
         int pointsComplete = 0;
         if (lattice != null) {
@@ -1962,7 +2611,7 @@ public class Engine {
                         i.immune = true;
                     }
                 }
-
+                
                 for (int i = 0; i < connections.length; i++) {
                     // This loop is being temporarily subverted.
                     connections[i].immune = false;
@@ -2028,7 +2677,7 @@ public class Engine {
                     }
                 }
             }
-
+            
             figure.collectPointsFromConnections();
             try {
                 ArrayList<NCell> result = truncateRecurse(figure);
@@ -2038,10 +2687,10 @@ public class Engine {
         }
     }
     public int counter = 0;
-
+    
     public class RockBottom extends Exception {
     }
-
+    
     public ArrayList<NCell> truncateRecurse(NGon figure) throws RockBottom {
         counter++;
         if (counter > 20) {
@@ -2137,7 +2786,7 @@ public class Engine {
         counter--;
         return result;
     }
-
+    
     public NFace fetchFace(ArrayList<NPoint> points, NCell cell) {
         NFace bucket = new NFace(dims, points.size());
         for (int i = 0; i < bucket.points.length; i++) {
@@ -2160,7 +2809,7 @@ public class Engine {
         lattice.faces.add(bucket);
         return bucket;
     }
-
+    
     public NFace fetchFace(NFace tryFace, NCell cell) {
         for (NFace i : lattice.faces) {
             if (i.equivalent(tryFace)) {
@@ -2179,7 +2828,7 @@ public class Engine {
         lattice.faces.add(tryFace);
         return tryFace;
     }
-
+    
     public NFace fetchFace(ArrayList<NPoint> points, NCell cell, HashSet<NFace> faces) {
         NFace bucket = new NFace(dims, points.size());
         for (int i = 0; i < bucket.points.length; i++) {
@@ -2202,12 +2851,12 @@ public class Engine {
         lattice.faces.add(bucket);
         return bucket;
     }
-
+    
     public void newNCubeWithTruncate() {
         if (lattice != null) {
             NPoint[] corners = new NPoint[1 << dims];
             placeNCubeRecurse(new NVector(dims), 0, corners);
-
+            
             for (int i = 0; i < lattice.points.size(); i++) {
                 System.out.print(lattice.points.get(i));
             }
@@ -2263,8 +2912,8 @@ public class Engine {
                     }
                 }
             }
-
-
+            
+            
             NGon nCube = new NGon(dims, dims + 1);
 
 //            // Connect all the corners, in the proper fashion.
@@ -2333,7 +2982,7 @@ public class Engine {
             }
         }
     }
-
+    
     public void checkIncomplete() {
         if (lattice != null) {
             HashSet<NFace> remove = new HashSet<NFace>();
@@ -2345,7 +2994,7 @@ public class Engine {
             lattice.incompleteFaces.removeAll(remove);
         }
     }
-
+    
     public void checkDuplicates() {
         if (lattice != null) {
             HashSet<NFace> remove = new HashSet<NFace>();
@@ -2369,7 +3018,7 @@ public class Engine {
         if (lattice != null) {
             NPoint[] corners = new NPoint[1 << dims];
             placeNCubeRecurse(new NVector(dims), 0, corners);
-
+            
             NSolid start = new NSolid(dims, dims);
             start.points = lattice.points;
             ArrayList<NSolid> bits = new ArrayList<NSolid>();
@@ -2395,7 +3044,7 @@ public class Engine {
                 }
                 bits = smallerBits;
             }
-
+            
             for (int i = 0; i < finalBits.size(); i++) {
                 NCell bucket = new NCell(dims, dims);
                 for (int j = 0; j < bucket.points.length; j++) {
@@ -2409,7 +3058,7 @@ public class Engine {
             }
         }
     }
-
+    
     public double cellVolumes() {
         double sum = 0;
         if (lattice != null) {
@@ -2419,7 +3068,7 @@ public class Engine {
         }
         return sum;
     }
-
+    
     public void bindToSkeletonHard() {
         if (lattice != null) {
             for (NPoint p : lattice.points) {
@@ -2454,7 +3103,7 @@ public class Engine {
             }
         }
     }
-
+    
     public void bindToSkeletonElastic() {
         if (lattice != null) {
             //TODO Need to actually write this bit.
@@ -2489,5 +3138,91 @@ public class Engine {
 //                }
 //            }
         }
+    }
+
+    /**
+     * Checks a cell against its permaradius.  Maybe I'll explain more
+     * when I actually do this function.
+     * @return 
+     */
+    public boolean checkCellRadius() {
+        //TODO Do this.
+        return false;
+    }
+
+    public static double getSimplexNVolume(NVector[] points) {
+        if (points.length <= 0)
+            return 1000; // Eh, maybe I should throw an error or something.
+        int dims = points[0].dims;
+        int simplexDims = points.length - 1;
+        NBasis volBasis = new NBasis(dims, simplexDims);
+        ArrayList<NPoint> ptList = new ArrayList<NPoint>();
+        volBasis.bases[0] = NVector.zero(dims);
+        for (int i = 0; i < volBasis.bases.length; i++) {
+            volBasis.bases[i] = points[i + 1].minusB(points[0]);
+        }
+        volBasis.orthogonalize();
+        try {
+            volBasis.calcProjection();
+        } catch (Exception ex) {
+            Logger.getLogger(NCell.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        NVector[] ptVectors = new NVector[points.length];
+        for (int i = 0; i < points.length; i++) {
+            ptVectors[i] = points[i];
+        }
+        NVector[] result = Matrix.ipTransformCoords(volBasis.bases, ptVectors);
+        Matrix m = new Matrix(simplexDims, simplexDims);
+        for (int i = 1; i < result.length; i++) {
+            NVector diff = result[i].minusB(result[0]);
+            for (int j = 0; j < result[i].dims; j++) {
+                m.val[i - 1][j] = diff.coords[j];
+            }
+        }
+        try {
+            return ((1.0 / MeMath.factorial(simplexDims)) * Math.abs(m.det()));
+        } catch (Exception ex) {
+            Logger.getLogger(NCell.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 1000; // Yeah, yeah, yeah.
+    }
+    
+    public static double getSimplexNVolume(NPoint[] points) {
+        if (points.length <= 0)
+            return 1000; // Eh, maybe I should throw an error or something.
+        int dims = points[0].dims;
+        int simplexDims = points.length - 1;
+        NBasis volBasis = new NBasis(dims, simplexDims);
+        ArrayList<NPoint> ptList = new ArrayList<NPoint>();
+        volBasis.bases[0] = NVector.zero(dims);
+        for (int i = 0; i < volBasis.bases.length; i++) {
+            volBasis.bases[i] = points[i + 1].pos.minusB(points[0].pos);
+        }
+        volBasis.orthogonalize();
+        try {
+            volBasis.calcProjection();
+        } catch (Exception ex) {
+            Logger.getLogger(NCell.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        NVector[] ptVectors = new NVector[points.length];
+        ptVectors[0] = new NVector(dims);
+        for (int i = 1; i < points.length; i++) {
+            ptVectors[i] = points[i].pos.minusB(points[0].pos);
+            //ptVectors[i] = points[i].pos;
+        }
+        NVector[] result = Matrix.ipTransformCoords(volBasis.bases, ptVectors);
+        Matrix m = new Matrix(simplexDims, simplexDims);
+        for (int i = 1; i < result.length; i++) {
+            NVector diff = result[i].minusB(result[0]);
+            for (int j = 0; j < result[i].dims; j++) {
+                m.val[i - 1][j] = diff.coords[j];
+            }
+        }
+        try {
+            return ((1.0 / MeMath.factorial(simplexDims)) * Math.abs(m.det()));
+        } catch (Exception ex) {
+            Logger.getLogger(NCell.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 1000; // Yeah, yeah, yeah.
     }
 }

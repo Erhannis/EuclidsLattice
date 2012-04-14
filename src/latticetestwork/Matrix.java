@@ -165,7 +165,7 @@ public class Matrix implements Streamable {
             }
             
             for (int x = 0; x < cols; x++) {
-                result.append(val[x][y] + "\t");
+                result.append(String.format("%7.4f", val[x][y]) + "\t");
             }
             if (y == 0) {
                 result.append("\\\n");
@@ -543,12 +543,14 @@ if (debug) {
             if (row + skipped >= m.cols - 1) {
                 // Probably don't do anything for now.
             } else {
-                if (m.val[row + skipped][row] == 0) {
+                //if (m.val[row + skipped][row] == 0) {
+                if (MeMath.prettyZero(m.val[row + skipped][row], 17)) {
                     // Add another row to this one to get not 0.
                     boolean found = false;
-                    for (int y = row + 1; y < m.rows; y++) {
-                        if (m.val[row + skipped][y] != 0) {
-                            for (int x = 0; x < m.cols; x++) {
+                    for (int y = row + 1; y < bases.size(); y++) {
+                        //if (m.val[row + skipped][y] != 0) {//m.val[2][y-1]
+                        if (!MeMath.prettyZero(m.val[row + skipped][y], 17)) {
+                            for (int x = row + skipped; x < m.cols; x++) {
                                 m.val[x][row] += m.val[x][y];
                             }
                             found = true;
@@ -567,6 +569,7 @@ if (debug) {
 //                        System.err.println();
                     }
                 }
+                // Div row by leading value
                 for (int col = row + skipped + 1; col < m.cols; col++) {
                     m.val[col][row] /= m.val[row + skipped][row];
                 }
@@ -642,11 +645,13 @@ if (debug) {
             if (row + skipped >= m.cols - 1) {
                 // Probably don't do anything for now.
             } else {
-                if (m.val[row + skipped][row] == 0) {
+                //if (m.val[row + skipped][row] == 0) {
+                if (MeMath.prettyZero(m.val[row + skipped][row], 17)) {
                     // Add another row to this one to get not 0.
                     boolean found = false;
                     for (int y = row + 1; y < m.rows; y++) {
-                        if (m.val[row + skipped][y] != 0) {
+                        //if (m.val[row + skipped][y] != 0) {
+                        if (!MeMath.prettyZero(m.val[row + skipped][y], 17)) {
                             for (int x = 0; x < m.cols; x++) {
                                 m.val[x][row] += m.val[x][y];
                             }
@@ -773,9 +778,10 @@ if (debug) {
     public Matrix copy() {
         Matrix result = new Matrix(cols, rows);
         for (int x = 0; x < cols; x++) {
-            for (int y = 0; y < rows; y++) {
-                result.val[x][y] = this.val[x][y];
-            }
+            System.arraycopy(this.val[x], 0, result.val[x], 0, rows);
+//            for (int y = 0; y < rows; y++) {
+//                result.val[x][y] = this.val[x][y];
+//            }
         }
         return result;
     }

@@ -368,9 +368,9 @@ public class Camera {
             }
             SimplePhoton photon = new SimplePhoton(dims, pos, dir, Color.BLACK, cell, dtl);            
             //result.put(Color.blue, coord);
-            ArrayList<NVector> tracer = new ArrayList<NVector>();
-            lattice.tracers.add(tracer);
             if (this.latticeDims > 2 || coord[1] == 0) {
+                ArrayList<NVector> tracer = new ArrayList<NVector>();
+                lattice.tracers.add(tracer);
                 result.put(photon.proceedTracer(tracer), coord);
             }
         }
