@@ -943,6 +943,7 @@ public class LatticeTestworkView extends FrameView {
             engine.donutCircumfrence = Double.valueOf(editDonutCircumfrence.getText());
             engine.hideComplete = rotationForm.boxHideComplete.isSelected();
             engine.hideIncomplete = rotationForm.boxHideIncomplete.isSelected();
+            engine.hidePoints = rotationForm.boxHidePoints.isSelected();
             if (repulsionForm != null) {
                 engine.repulsionCutoff = Integer.valueOf(repulsionForm.editRepulsionCutoff.getText());
                 if (repulsionForm.groupRepulsionMode.isSelected(repulsionForm.radioRepelCurrent.getModel())) {
@@ -1299,7 +1300,9 @@ private void btnFullActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                         synchronized (repaint) {
                             repaint.wait();
                         }
+                        dp.engine.parallelRendering = true;
                         dp.paintImmediately(dp.getBounds());
+                        dp.engine.parallelRendering = false;
                     }
                 } catch (InterruptedException ex) {
                     //Logger.getLogger(LatticeTestworkView.class.getName()).log(Level.SEVERE, null, ex);
@@ -1340,6 +1343,7 @@ private void btnFullActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
         }
         done.value = true;
         t.interrupt();
+        dp.engine.parallelRendering = false;
 //        synchronized (repaint) {
 //            repaint.notify();
 //        }

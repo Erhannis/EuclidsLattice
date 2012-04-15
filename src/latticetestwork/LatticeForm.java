@@ -561,6 +561,7 @@ private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             dos.writeInt(faceIDs.keySet().size() - 1);
             for (NFace f : faceIDs.keySet()) {
                 if (f != null) {
+                    f.calcBasis();
                     f.toBytes(dos);
                 }
             }

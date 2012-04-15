@@ -27,7 +27,7 @@ import java.util.logging.Logger;
  * @author mewer12
  */
 public class Engine {
-    
+
     public double sqr(double a) {
         return a * a;
     }
@@ -35,14 +35,14 @@ public class Engine {
     public int dims = 0;
     public LatticeTestworkView parent = null;
     public ArrayList<NLatticeBone> skeleton = null;
-    
+
     public Engine(int dims, LatticeTestworkView parent) {
         this.dims = dims;
         this.parent = parent;
     }
     public Lattice lattice = null;
     public int mode = 0;
-    
+
     public void init(int latticeDims, int mode) {
         lattice = new Lattice(dims, latticeDims);
         this.mode = mode;
@@ -62,7 +62,7 @@ public class Engine {
         }
         skeleton = new ArrayList<NLatticeBone>();
     }
-    
+
     public void addPoints(int numPoints) { // Point coords are from -1,1 in each dim.
         for (int i = 0; i < numPoints; i++) {
             NPoint bucket = new NPoint(dims);
@@ -82,7 +82,8 @@ public class Engine {
     public boolean hideImmune = false;
     public boolean hideComplete = false;
     public boolean hideIncomplete = false;
-    
+    public boolean hidePoints = false;
+
     public NVector viewRotate(NVector i, double[] rot, int[][] rotCoords) throws Exception {
 //        NVector basisA = new NVector(dims);
 //        basisA.coords[0] = 1;
@@ -140,7 +141,7 @@ public class Engine {
     public static final int RMODE_MODEL = 0;
     public static final int RMODE_CAMERA = 1;
     public boolean trueRendered = true;
-    
+
     public class PointAndCell {
 
         public NCell cell;
@@ -152,7 +153,39 @@ public class Engine {
     public double lastTransY = 1;
     public double lastScaleX = 1;
     public double lastScaleY = 1;
-    
+    public boolean sticksChanged = false;
+    public boolean parallelRendering = false;
+
+    public class Stick {
+
+        public NPoint pointA;
+        public NPoint pointB;
+
+        public Stick() {
+        }
+
+        public Stick(NPoint pointA, NPoint pointB) {
+            this.pointA = pointA;
+            this.pointB = pointB;
+        }
+
+        public boolean equivalent(Stick s) {
+            if (((this.pointA == s.pointA) || (this.pointA == s.pointB)) && ((this.pointB == s.pointA) || (this.pointB == s.pointB))) {
+                return true;
+            }
+            return false;
+        }
+
+        public boolean equivalent(NPoint pointA, NPoint pointB) {
+            if (((this.pointA == pointA) || (this.pointA == pointB)) && ((this.pointB == pointA) || (this.pointB == pointB))) {
+                return true;
+            }
+            return false;
+        }
+    }
+    public ArrayList<Stick> completeSticks = new ArrayList<Stick>();
+    public ArrayList<Stick> incompleteSticks = new ArrayList<Stick>();
+
     public void render(Graphics2D g, int renderMode, int width, int height, double transX, double transY, double scaleX, double scaleY, boolean clickRender) {
         lastWidth = width;
         lastHeight = height;
@@ -254,7 +287,7 @@ public class Engine {
                                         for (int i = 0; i < dims; i++) {
                                             cA[i] /= chosens.size() - 1;
                                         }
-                                        
+
                                         double[][] crossB = new double[chosens.size() - 2][dims];
                                         for (int i = 2; i < chosens.size(); i++) {
                                             NVector bucket2 = chosens.get(i).pos.minusB(chosens.get(1).pos);
@@ -276,7 +309,7 @@ public class Engine {
                                         }
                                         double[] aNorm = Matrix.cross(crossA);
                                         double[] bNorm = Matrix.cross(crossB);
-                                        
+
                                         boolean aNotZero = false;
                                         boolean bNotZero = false;
                                         Matrix augmented = new Matrix(3, dims);
@@ -350,6 +383,13 @@ public class Engine {
                     case 3:
                     case 2:
                     case 1:
+                        if (sticksChanged) {
+                            if (!parallelRendering) {
+                                updateSticks();
+                            } else {
+                                updateSticksParallel();
+                            }
+                        }
                         //TODO HOLY GARBAGE, I'm suddenly realizing how much this could be cleaned up.
                         if (lattice != null) {
                             for (int hasStereo = 0; hasStereo <= 1; hasStereo++) {
@@ -368,14 +408,15 @@ public class Engine {
                                 }
                                 //TODO I should probably be able to rotate this thing.
                                 g.setColor(Color.black);
-                                for (NPoint i : lattice.points) {
-                                    try {
-                                        if (hideImmune && i.immune) {
-                                            continue;
-                                        }
-                                        Ellipse2D.Double bucket = new Ellipse2D.Double();
-                                        
-                                        NVector current = viewRotate(i.pos, rot, rotCoords);
+                                if (!hidePoints) {
+                                    for (NPoint i : lattice.points) {
+                                        try {
+                                            if (hideImmune && i.immune) {
+                                                continue;
+                                            }
+                                            Ellipse2D.Double bucket = new Ellipse2D.Double();
+
+                                            NVector current = viewRotate(i.pos, rot, rotCoords);
 
 //                            first.coords[0] = (i.pos.coords[0] * Math.cos(yRot)) + (i.pos.coords[2] * Math.sin(yRot));
 //                            first.coords[1] = i.pos.coords[1];
@@ -388,30 +429,31 @@ public class Engine {
 //                            bucket.y = second.coords[1] - 0.01;
 //                            bucket.width = (0.02 * (second.coords[2] + 1)) + 0.01;
 //                            bucket.height = (0.02 * (second.coords[2] + 1)) + 0.01;
-                                        if (current.coords.length > 0) {
-                                            bucket.x = current.coords[0] - 0.01 + stereoCurDelta;
-                                        } else {
-                                            bucket.x = 0;
+                                            if (current.coords.length > 0) {
+                                                bucket.x = current.coords[0] - 0.01 + stereoCurDelta;
+                                            } else {
+                                                bucket.x = 0;
+                                            }
+                                            if (current.coords.length > 1) {
+                                                bucket.y = current.coords[1] - 0.01;
+                                            } else {
+                                                bucket.y = 0;
+                                            }
+                                            if (current.coords.length > 2) {
+                                                bucket.width = (0.02 * (current.coords[2] + 1)) + 0.01;
+                                                bucket.height = (0.02 * (current.coords[2] + 1)) + 0.01;
+                                            } else {
+                                                bucket.width = 0.01;
+                                                bucket.height = 0.01;
+                                            }
+                                            if (hasStereo == 0) {
+                                                i.displayPoint.setLocation(bucket.x, bucket.y);
+                                            } else {
+                                                i.displayPointStereo.setLocation(bucket.x, bucket.y);
+                                            }
+                                            g.draw(bucket);
+                                        } catch (Exception e) {
                                         }
-                                        if (current.coords.length > 1) {
-                                            bucket.y = current.coords[1] - 0.01;
-                                        } else {
-                                            bucket.y = 0;
-                                        }
-                                        if (current.coords.length > 2) {
-                                            bucket.width = (0.02 * (current.coords[2] + 1)) + 0.01;
-                                            bucket.height = (0.02 * (current.coords[2] + 1)) + 0.01;
-                                        } else {
-                                            bucket.width = 0.01;
-                                            bucket.height = 0.01;
-                                        }
-                                        if (hasStereo == 0) {
-                                            i.displayPoint.setLocation(bucket.x, bucket.y);
-                                        } else {
-                                            i.displayPointStereo.setLocation(bucket.x, bucket.y);
-                                        }
-                                        g.draw(bucket);
-                                    } catch (Exception e) {
                                     }
                                 }
                                 if (permacenter != null) {
@@ -448,156 +490,233 @@ public class Engine {
                                     } catch (Exception e) {
                                     }
                                 }
-                                g.setColor(Color.blue);
-                                for (int m = 0; m < lattice.cells.size(); m++) {
-                                    NCell i = lattice.cells.get(m);
-                                    //for (NCell i : lattice.cells) {
-                                    for (int j = 0; j < i.faces.length; j++) {
-                                        if (i.faces[j].points.length != 1) {
-                                            //THINK Would it be more efficient to call i.faces[j].complete()?
-                                            if (lattice.incompleteFaces.contains(i.faces[j])) {
-                                                continue;
-//                                                if (hideIncomplete) {
-//                                                    continue;
-//                                                }
+                                if (!hideComplete) {
+                                    g.setColor(Color.blue);
+                                    for (Stick s : completeSticks) {
+                                        if (hideImmune && (s.pointA.immune || s.pointB.immune)) {
+                                            continue;
+                                        }
+                                        try {
+                                            Line2D.Double line = new Line2D.Double();
+                                            NVector start = s.pointA.pos;
+                                            NVector second = viewRotate(start, rot, rotCoords);
+                                            start = s.pointB.pos;
+                                            NVector fourth = viewRotate(start, rot, rotCoords);
+                                            if (second.coords.length > 0) {
+                                                line.x1 = second.coords[0] + stereoCurDelta;
                                             } else {
-                                                if (hideComplete) {
-                                                    continue;
-                                                }
+                                                line.x1 = 0;
                                             }
-                                            for (int k = 0; k < i.faces[j].points.length - 1; k++) {
-                                                if (hideImmune && i.faces[j].points[k].immune) {
-                                                    continue;
-                                                }
-                                                for (int l = k + 1; l < i.faces[j].points.length; l++) {
-                                                    try {
-                                                        if (hideImmune && i.faces[j].points[l].immune) {
-                                                            continue;
-                                                        }
-                                                        Line2D.Double line = new Line2D.Double();
-                                                        NVector start = i.faces[j].points[k].pos;
-                                                        NVector second = viewRotate(start, rot, rotCoords);
-                                                        start = i.faces[j].points[l].pos;
-                                                        NVector fourth = viewRotate(start, rot, rotCoords);
-                                                        if (second.coords.length > 0) {
-                                                            line.x1 = second.coords[0] + stereoCurDelta;
-                                                        } else {
-                                                            line.x1 = 0;
-                                                        }
-                                                        if (second.coords.length > 1) {
-                                                            line.y1 = second.coords[1];
-                                                        } else {
-                                                            line.y1 = 0;
-                                                        }
-                                                        if (fourth.coords.length > 0) {
-                                                            line.x2 = fourth.coords[0] + stereoCurDelta;
-                                                        } else {
-                                                            line.x2 = 0;
-                                                        }
-                                                        if (second.coords.length > 1) {
-                                                            line.y2 = fourth.coords[1];
-                                                        } else {
-                                                            line.y2 = 0;
-                                                        }
-                                                        //bucket.width = 0.02;
-                                                        //bucket.height = 0.02;
-                                                        g.draw(line);
-                                                    } catch (Exception e) {
-                                                    }
-                                                }
+                                            if (second.coords.length > 1) {
+                                                line.y1 = second.coords[1];
+                                            } else {
+                                                line.y1 = 0;
                                             }
-                                        } else {
-                                            try {
-                                                if (hideImmune && (i.faces[j].points[0].immune || i.faces[j + 1 % i.faces.length].points[0].immune)) {
-                                                    continue;
-                                                }
-                                                Line2D.Double line = new Line2D.Double();
-                                                NVector start = i.faces[j].points[0].pos;
-                                                NVector second = viewRotate(start, rot, rotCoords);
-                                                start = i.faces[j + 1 % i.faces.length].points[0].pos;
-                                                NVector fourth = viewRotate(start, rot, rotCoords);
-                                                if (second.coords.length > 0) {
-                                                    line.x1 = second.coords[0] + stereoCurDelta;
-                                                } else {
-                                                    line.x1 = 0;
-                                                }
-                                                if (second.coords.length > 1) {
-                                                    line.y1 = second.coords[1];
-                                                } else {
-                                                    line.y1 = 0;
-                                                }
-                                                if (fourth.coords.length > 0) {
-                                                    line.x2 = fourth.coords[0] + stereoCurDelta;
-                                                } else {
-                                                    line.x2 = 0;
-                                                }
-                                                if (second.coords.length > 1) {
-                                                    line.y2 = fourth.coords[1];
-                                                } else {
-                                                    line.y2 = 0;
-                                                }
-                                                //bucket.width = 0.02;
-                                                //bucket.height = 0.02;
-                                                g.draw(line);
-                                            } catch (Exception e) {
-                                                //e.printStackTrace();
+                                            if (fourth.coords.length > 0) {
+                                                line.x2 = fourth.coords[0] + stereoCurDelta;
+                                            } else {
+                                                line.x2 = 0;
                                             }
+                                            if (second.coords.length > 1) {
+                                                line.y2 = fourth.coords[1];
+                                            } else {
+                                                line.y2 = 0;
+                                            }
+                                            //bucket.width = 0.02;
+                                            //bucket.height = 0.02;
+                                            g.draw(line);
+                                        } catch (Exception e) {
                                         }
                                     }
                                 }
                                 if (!hideIncomplete) {
                                     g.setColor(Color.red);
-                                    for (int j = 0; j < lattice.incompleteFaces.size(); j++) {
-                                        for (int k = 0; k < lattice.incompleteFaces.get(j).points.length - 1; k++) {
-                                            if (hideImmune && lattice.incompleteFaces.get(j).points[k].immune) {
-                                                continue;
+                                    for (Stick s : incompleteSticks) {
+                                        if (hideImmune && (s.pointA.immune || s.pointB.immune)) {
+                                            continue;
+                                        }
+                                        try {
+                                            Line2D.Double line = new Line2D.Double();
+                                            NVector start = s.pointA.pos;
+                                            NVector second = viewRotate(start, rot, rotCoords);
+                                            start = s.pointB.pos;
+                                            NVector fourth = viewRotate(start, rot, rotCoords);
+                                            if (second.coords.length > 0) {
+                                                line.x1 = second.coords[0] + stereoCurDelta;
+                                            } else {
+                                                line.x1 = 0;
                                             }
-                                            for (int l = k + 1; l < lattice.incompleteFaces.get(j).points.length; l++) {
-                                                try {
-                                                    if (hideImmune && lattice.incompleteFaces.get(j).points[l].immune) {
-                                                        continue;
-                                                    }
-                                                    Line2D.Double line = new Line2D.Double();
-                                                    NVector start = lattice.incompleteFaces.get(j).points[k].pos;
-                                                    NVector second = viewRotate(start, rot, rotCoords);
-                                                    start = lattice.incompleteFaces.get(j).points[l].pos;
-                                                    NVector fourth = viewRotate(start, rot, rotCoords);
-                                                    if (second.coords.length > 0) {
-                                                        line.x1 = second.coords[0] + stereoCurDelta;
-                                                    } else {
-                                                        line.x1 = 0;
-                                                    }
-                                                    if (second.coords.length > 1) {
-                                                        line.y1 = second.coords[1];
-                                                    } else {
-                                                        line.y1 = 0;
-                                                    }
-                                                    if (fourth.coords.length > 0) {
-                                                        line.x2 = fourth.coords[0] + stereoCurDelta;
-                                                    } else {
-                                                        line.x2 = 0;
-                                                    }
-                                                    if (second.coords.length > 1) {
-                                                        line.y2 = fourth.coords[1];
-                                                    } else {
-                                                        line.y2 = 0;
-                                                    }
-                                                    //bucket.width = 0.02;
-                                                    //bucket.height = 0.02;
-                                                    g.draw(line);
-                                                } catch (Exception e) {
-                                                }
+                                            if (second.coords.length > 1) {
+                                                line.y1 = second.coords[1];
+                                            } else {
+                                                line.y1 = 0;
                                             }
+                                            if (fourth.coords.length > 0) {
+                                                line.x2 = fourth.coords[0] + stereoCurDelta;
+                                            } else {
+                                                line.x2 = 0;
+                                            }
+                                            if (second.coords.length > 1) {
+                                                line.y2 = fourth.coords[1];
+                                            } else {
+                                                line.y2 = 0;
+                                            }
+                                            //bucket.width = 0.02;
+                                            //bucket.height = 0.02;
+                                            g.draw(line);
+                                        } catch (Exception e) {
                                         }
                                     }
                                 }
+//                                for (int m = 0; m < lattice.cells.size(); m++) {
+//                                    NCell i = lattice.cells.get(m);
+//                                    //for (NCell i : lattice.cells) {
+//                                    for (int j = 0; j < i.faces.length; j++) {
+//                                        if (i.faces[j].points.length != 1) {
+//                                            //THINK Would it be more efficient to call i.faces[j].complete()?
+//                                            if (lattice.incompleteFaces.contains(i.faces[j])) {
+//                                                continue;
+////                                                if (hideIncomplete) {
+////                                                    continue;
+////                                                }
+//                                            } else {
+//                                                if (hideComplete) {
+//                                                    continue;
+//                                                }
+//                                            }
+//                                            for (int k = 0; k < i.faces[j].points.length - 1; k++) {
+//                                                if (hideImmune && i.faces[j].points[k].immune) {
+//                                                    continue;
+//                                                }
+//                                                for (int l = k + 1; l < i.faces[j].points.length; l++) {
+//                                                    try {
+//                                                        if (hideImmune && i.faces[j].points[l].immune) {
+//                                                            continue;
+//                                                        }
+//                                                        Line2D.Double line = new Line2D.Double();
+//                                                        NVector start = i.faces[j].points[k].pos;
+//                                                        NVector second = viewRotate(start, rot, rotCoords);
+//                                                        start = i.faces[j].points[l].pos;
+//                                                        NVector fourth = viewRotate(start, rot, rotCoords);
+//                                                        if (second.coords.length > 0) {
+//                                                            line.x1 = second.coords[0] + stereoCurDelta;
+//                                                        } else {
+//                                                            line.x1 = 0;
+//                                                        }
+//                                                        if (second.coords.length > 1) {
+//                                                            line.y1 = second.coords[1];
+//                                                        } else {
+//                                                            line.y1 = 0;
+//                                                        }
+//                                                        if (fourth.coords.length > 0) {
+//                                                            line.x2 = fourth.coords[0] + stereoCurDelta;
+//                                                        } else {
+//                                                            line.x2 = 0;
+//                                                        }
+//                                                        if (second.coords.length > 1) {
+//                                                            line.y2 = fourth.coords[1];
+//                                                        } else {
+//                                                            line.y2 = 0;
+//                                                        }
+//                                                        //bucket.width = 0.02;
+//                                                        //bucket.height = 0.02;
+//                                                        g.draw(line);
+//                                                    } catch (Exception e) {
+//                                                    }
+//                                                }
+//                                            }
+//                                        } else {
+//                                            try {
+//                                                if (hideImmune && (i.faces[j].points[0].immune || i.faces[j + 1 % i.faces.length].points[0].immune)) {
+//                                                    continue;
+//                                                }
+//                                                Line2D.Double line = new Line2D.Double();
+//                                                NVector start = i.faces[j].points[0].pos;
+//                                                NVector second = viewRotate(start, rot, rotCoords);
+//                                                start = i.faces[j + 1 % i.faces.length].points[0].pos;
+//                                                NVector fourth = viewRotate(start, rot, rotCoords);
+//                                                if (second.coords.length > 0) {
+//                                                    line.x1 = second.coords[0] + stereoCurDelta;
+//                                                } else {
+//                                                    line.x1 = 0;
+//                                                }
+//                                                if (second.coords.length > 1) {
+//                                                    line.y1 = second.coords[1];
+//                                                } else {
+//                                                    line.y1 = 0;
+//                                                }
+//                                                if (fourth.coords.length > 0) {
+//                                                    line.x2 = fourth.coords[0] + stereoCurDelta;
+//                                                } else {
+//                                                    line.x2 = 0;
+//                                                }
+//                                                if (second.coords.length > 1) {
+//                                                    line.y2 = fourth.coords[1];
+//                                                } else {
+//                                                    line.y2 = 0;
+//                                                }
+//                                                //bucket.width = 0.02;
+//                                                //bucket.height = 0.02;
+//                                                g.draw(line);
+//                                            } catch (Exception e) {
+//                                                //e.printStackTrace();
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                                if (!hideIncomplete) {
+//                                    g.setColor(Color.red);
+//                                    for (int j = 0; j < lattice.incompleteFaces.size(); j++) {
+//                                        for (int k = 0; k < lattice.incompleteFaces.get(j).points.length - 1; k++) {
+//                                            if (hideImmune && lattice.incompleteFaces.get(j).points[k].immune) {
+//                                                continue;
+//                                            }
+//                                            for (int l = k + 1; l < lattice.incompleteFaces.get(j).points.length; l++) {
+//                                                try {
+//                                                    if (hideImmune && lattice.incompleteFaces.get(j).points[l].immune) {
+//                                                        continue;
+//                                                    }
+//                                                    Line2D.Double line = new Line2D.Double();
+//                                                    NVector start = lattice.incompleteFaces.get(j).points[k].pos;
+//                                                    NVector second = viewRotate(start, rot, rotCoords);
+//                                                    start = lattice.incompleteFaces.get(j).points[l].pos;
+//                                                    NVector fourth = viewRotate(start, rot, rotCoords);
+//                                                    if (second.coords.length > 0) {
+//                                                        line.x1 = second.coords[0] + stereoCurDelta;
+//                                                    } else {
+//                                                        line.x1 = 0;
+//                                                    }
+//                                                    if (second.coords.length > 1) {
+//                                                        line.y1 = second.coords[1];
+//                                                    } else {
+//                                                        line.y1 = 0;
+//                                                    }
+//                                                    if (fourth.coords.length > 0) {
+//                                                        line.x2 = fourth.coords[0] + stereoCurDelta;
+//                                                    } else {
+//                                                        line.x2 = 0;
+//                                                    }
+//                                                    if (second.coords.length > 1) {
+//                                                        line.y2 = fourth.coords[1];
+//                                                    } else {
+//                                                        line.y2 = 0;
+//                                                    }
+//                                                    //bucket.width = 0.02;
+//                                                    //bucket.height = 0.02;
+//                                                    g.draw(line);
+//                                                } catch (Exception e) {
+//                                                }
+//                                            }
+//                                        }
+//                                    }
+//                                }
                                 g.setColor(Color.ORANGE);
                                 for (Camera c : lattice.cameras) {
                                     try {//c.pos.length()
                                         Ellipse2D.Double bucket = new Ellipse2D.Double();
-                                        
+
                                         NVector current = viewRotate(c.pos, rot, rotCoords);
-                                        
+
                                         if (current.coords.length > 0) {
                                             bucket.x = current.coords[0] - 0.01 + stereoCurDelta;
                                         } else {
@@ -616,7 +735,7 @@ public class Engine {
                                             bucket.height = 0.01;
                                         }
                                         g.draw(bucket);
-                                        
+
                                         for (NVector v : c.orientation) {
                                             Line2D.Double line = new Line2D.Double();
                                             NVector start = c.pos;
@@ -651,7 +770,7 @@ public class Engine {
                                     }
                                 }
                                 int clrInt = 0x000000;
-                                
+
                                 for (ArrayList<NVector> t : lattice.tracers) {
                                     Color clr = new Color(clrInt);
                                     clrInt += 0x04;
@@ -701,9 +820,9 @@ public class Engine {
                                                 continue;
                                             }
                                             Ellipse2D.Double bucket = new Ellipse2D.Double();
-                                            
+
                                             NVector current = viewRotate(i.pos, rot, rotCoords);
-                                            
+
                                             if (current.coords.length > 0) {
                                                 bucket.x = current.coords[0] - 0.01 + stereoCurDelta;
                                             } else {
@@ -833,9 +952,9 @@ public class Engine {
                                                 continue;
                                             }
                                             Ellipse2D.Double bucket = new Ellipse2D.Double();
-                                            
+
                                             NVector current = viewRotate(i.pos, rot, rotCoords);
-                                            
+
                                             if (current.coords.length > 0) {
                                                 bucket.x = current.coords[0] - 0.01 + stereoCurDelta;
                                             } else {
@@ -875,7 +994,7 @@ public class Engine {
     }
     public double repulsionCutoff = -1;
     public int repulsionMode = 0;
-    
+
     public void repel() {
 //        switch (mode) {
 //            case 0: // 2-2 Triangulation
@@ -960,16 +1079,16 @@ public class Engine {
     public ArrayList<NPoint> chosens = new ArrayList<NPoint>();
     public ArrayList<NPoint> highlighteds = new ArrayList<NPoint>();
     public ArrayList<NCell> highlightedCells = new ArrayList<NCell>();
-    
+
     public void clickPoint(Point mousePoint, boolean shift, boolean ctrl, boolean alt, int button) {
         try {
             AffineTransform t = new AffineTransform();
-            
+
             t.translate((lastWidth / 2.0) + lastTransX, (lastHeight / 2.0) + lastTransY);
             t.scale(lastScaleX, lastScaleY);
-            
-            Point2D p = t.inverseTransform(mousePoint, null);            
-            
+
+            Point2D p = t.inverseTransform(mousePoint, null);
+
             switch (mode) {
 //                case 0: // 2-2 Triangulation
                 default:
@@ -1009,7 +1128,7 @@ public class Engine {
             Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void addTriangle() {
         if (chosens.size() == 3) { // This will only work for 2 in 2 dims
             NCell newCell = new NCell(dims, lattice.internalDims);
@@ -1046,7 +1165,7 @@ public class Engine {
             lattice.cells.add(newCell);
         }
     }
-    
+
     public boolean seed() {
         //NFace leaf = lattice.incompleteFaces.get(faceNum);
         NPoint a = lattice.points.get(r.nextInt(lattice.points.size()));
@@ -1091,7 +1210,7 @@ public class Engine {
         }
         return seedRecurse(nearest, anchors, leaf, leaf.points.length + 1, anchors.size());
     }
-    
+
     public boolean seedRecurse(ArrayList<NPoint> nearest, ArrayList<NPoint> anchors, NFace leaf, int finalDepth, int currentDepth) {
         if (currentDepth < finalDepth - 1) {
             ArrayList<NPoint> subNearest = (ArrayList<NPoint>) nearest.clone();
@@ -1156,6 +1275,7 @@ public class Engine {
                         lattice.cells.add(newCell);
                         lattice.incompleteFaces.add(leaf);
                         lattice.faces.add(leaf);
+                        sticksChanged = true;
                         return true;
                     }
                 }
@@ -1167,7 +1287,7 @@ public class Engine {
     public double permaradius = 0;
     public NPoint permacenter = null;
     public NCell lastCell = null;
-    
+
     public ArrayList<NPoint> findCircleContents(ArrayList<NPoint> anchors) {
         try {
             //TODO I need to figure out how to do this in arbitrary dimensions.
@@ -1191,7 +1311,7 @@ public class Engine {
             for (int i = 0; i < dims; i++) {
                 cA[i] /= anchors.size() - 1;
             }
-            
+
             double[][] crossB = new double[anchors.size() - 2][dims];
             for (int i = 2; i < anchors.size(); i++) {
                 NVector bucket = anchors.get(i).pos.minusB(anchors.get(1).pos);
@@ -1241,7 +1361,7 @@ public class Engine {
             }
             double[] aNorm = Matrix.cross(crossA);
             double[] bNorm = Matrix.cross(crossB);
-            
+
             boolean aNotZero = false;
             boolean bNotZero = false;
             Matrix augmented = new Matrix(3, dims);
@@ -1338,7 +1458,7 @@ public class Engine {
             return scratch;
         }
     }
-    
+
     public ArrayList<NPoint> findCircleContentsALT(ArrayList<NPoint> anchors, boolean stopAtOne, boolean alwaysSetPermashapes) {
 
         //TODO IMPORTANT: There's something wrong here, note 6x3 salt structure failure.
@@ -1563,7 +1683,7 @@ public class Engine {
     public double minVolume = -1;
     public int faceBottom = 0;
     public NCell taggedCell = null;
-    
+
     public boolean crystallize() {
         if (lattice != null) {//refreshCompletePoints();
             if (!lattice.incompleteFaces.isEmpty()) {//parent.dp.paintImmediately(parent.dp.getBounds());
@@ -1663,9 +1783,10 @@ public class Engine {
                                 }
                                 lattice.cells.add(newCell);
                                 lattice.incompleteFaces.remove(leaf);
-                                
+
                                 faceBottom = faceNum;
                                 System.out.println("Found face at " + faceNum);
+                                sticksChanged = true;
                                 return true;
                             }//faceNum
                         }
@@ -1678,7 +1799,7 @@ public class Engine {
         faceBottom = 0;
         return false;
     }
-    
+
     public static double calcThinness1(ArrayList<NPoint> frame) {
         double min = -1;
         double max = -1;
@@ -1698,7 +1819,7 @@ public class Engine {
         }
         return max / min;
     }
-    
+
     public static double calcThinness2(ArrayList<NPoint> frame) {
         double min = -1;
         double max = -1;
@@ -1716,7 +1837,7 @@ public class Engine {
                 }
             }
         }
-        
+
         NBasis[] basises = new NBasis[frame.size()];
         {
             basises[0] = new NBasis(frame.get(0).dims, frame.size() - 2);
@@ -1768,10 +1889,10 @@ public class Engine {
                 return Double.NaN;
             }
         }
-        
+
         return max / min;
     }
-    
+
     public static double calcThinness1(NPoint[] frame) {
         double min = -1;
         double max = -1;
@@ -1791,7 +1912,7 @@ public class Engine {
         }
         return max / min;
     }
-    
+
     public static double calcThinness2(NPoint[] frame) {
         double min = -1;
         double max = -1;
@@ -1861,16 +1982,16 @@ public class Engine {
                 return Double.NaN;
             }
         }
-        
+
 //        ArrayList<NPoint> scumbucket = new ArrayList<NPoint>();
 //        for (int i = 0; i < frame.length; i++) {
 //            scumbucket.add(frame[i]);
 //        }
 //        checkThinness(scumbucket, 5);
-        
+
         return max / min;
     }
-    
+
     public static double calcMinAngle(NPoint[] frame) {
         double min = -1;
         //double max = -1;
@@ -1888,7 +2009,7 @@ public class Engine {
         }
         return min;
     }
-    
+
     public static boolean checkMinAngle(ArrayList<NPoint> frame, double thinness) {
         double min = -1;
         //double max = -1;
@@ -1912,8 +2033,9 @@ public class Engine {
     }
 
     public static boolean checkMinVolume(ArrayList<NPoint> frame, double minVolume) {
-        if (frame.size() <= 0)
+        if (frame.size() <= 0) {
             return false; // Eh, maybe I should throw an error or something.
+        }
         int dims = frame.get(0).dims;
         int simplexDims = frame.size() - 1;
         NBasis volBasis = new NBasis(dims, simplexDims);
@@ -1952,7 +2074,7 @@ public class Engine {
         }
         return false;
     }
-    
+
     public static boolean checkThinness(ArrayList<NPoint> frame, double thinness) {
         // This could actually be done in series with the second part.
         double min = -1;//calcThinness1(frame);
@@ -2030,7 +2152,7 @@ public class Engine {
                 return false;
             }
         }
-        
+
         result = max / min;
 //        System.out.println("max " + max + "; min " + min + "; result " + result);
         if ((result > thinness) || Double.isInfinite(result) || Double.isNaN(result)) {
@@ -2038,7 +2160,7 @@ public class Engine {
         }
         return true;
     }
-    
+
     public void bind() {
         switch (mode) {
             case 3: // 3-3 Bind to a -1,1 box
@@ -2077,7 +2199,7 @@ public class Engine {
                         i.pos.coords[j] /= length;
                         i.pos.coords[j] *= 2;
                     }
-                    
+
                     if (i.pos.coords[0] > 1) {
                         i.pos.coords[0] = 1;
                     } else if (i.pos.coords[0] < -1) {
@@ -2099,7 +2221,7 @@ public class Engine {
                 break;
         }
     }
-    
+
     public void bindSphere() {
         for (NPoint i : lattice.points) {
             double length = 0;
@@ -2123,7 +2245,7 @@ public class Engine {
         }
     }
     public boolean triangulateNCube = false;
-    
+
     public void placeNCube() {
         NPoint[] corners = new NPoint[1 << dims];
         placeNCubeRecurse(new NVector(dims), 0, corners);
@@ -2178,7 +2300,7 @@ public class Engine {
             }
         }
     }
-    
+
     private void placeNCubeRecurse(NVector point, int i, NPoint[] corners) {
         if (i < dims) {
             point.coords[i] = 1;
@@ -2201,16 +2323,16 @@ public class Engine {
             corners[index] = p;
         }
     }
-    
+
     public void calcProperties() {
         if (lattice != null) {
         }
     }
-    
+
     public void placeCamera() {
         placeCamera(true);
     }
-    
+
     public void placeCamera(boolean orient) {
         if (lattice != null) {
             if (orient) {
@@ -2257,7 +2379,7 @@ public class Engine {
         }
     }
     public double donutCircumfrence = 30;
-    
+
     public void placeNDonut() {
         if (lattice != null) {
             if ((dims / 2) >= lattice.internalDims) {
@@ -2286,7 +2408,7 @@ public class Engine {
             }
         }
     }
-    
+
     public void placeNDonutRecurse(NVector cursor, NVector shiftCursor, int dim, double inc, NVector intCursor, NPoint[] donutMesh, int circ) {
         if (dim < cursor.dims) {
             double d = 0;
@@ -2322,7 +2444,7 @@ public class Engine {
             donutMesh[calcLinearNArrayIndex(intCursor, circ)] = bucket;
         }
     }
-    
+
     public void placeNSaltLattice() {
         if (lattice != null) {
             if ((dims / 2) >= lattice.internalDims) {
@@ -2351,7 +2473,7 @@ public class Engine {
             }
         }
     }
-    
+
     public void placeNSaltLatticeRecurse(NVector cursor, NVector shiftCursor, int dim, double inc, NVector intCursor, NPoint[] donutMesh, int circ) {
         if (dim < cursor.dims) {
             int i = 0;
@@ -2415,7 +2537,7 @@ public class Engine {
             //donutMesh[calcLinearNArrayIndex(intCursor, circ)];
         }
     }
-    
+
     public int calcLinearNArrayIndex(NVector address, int base) {
         int index = 0;
         for (int i = 0; i < address.dims; i++) {
@@ -2423,7 +2545,7 @@ public class Engine {
         }
         return index;
     }
-    
+
     public void shear1() {
         if (lattice != null) {
             Matrix shear = Matrix.identity(dims);
@@ -2439,7 +2561,7 @@ public class Engine {
             }
         }
     }
-    
+
     public void shearN() {
         if (lattice != null) {
             Matrix shear = Matrix.identity(dims);
@@ -2455,7 +2577,7 @@ public class Engine {
             }
         }
     }
-    
+
     public void swapHands() {
         if (lattice != null) {
             for (NPoint i : lattice.points) {
@@ -2463,7 +2585,7 @@ public class Engine {
             }
         }
     }
-    
+
     public void popCopyHands() {
         if (lattice != null) {
             for (NPoint i : lattice.points) {
@@ -2471,7 +2593,7 @@ public class Engine {
             }
         }
     }
-    
+
     public void pushCopyHands() {
         if (lattice != null) {
             for (NPoint i : lattice.points) {
@@ -2481,7 +2603,7 @@ public class Engine {
     }
     //TODO Allow this to be controlled.
     public double joggleScale = 0.1;
-    
+
     public void joggle() {
         if (lattice != null) {
             for (NPoint i : lattice.points) {
@@ -2491,7 +2613,7 @@ public class Engine {
             }
         }
     }
-    
+
     public int polarity(double x) {
         if (x < 0) {
             return -1;
@@ -2533,7 +2655,7 @@ public class Engine {
             }
         }
     }
-    
+
     public int refreshCompletePoints() {
         int pointsComplete = 0;
         if (lattice != null) {
@@ -2542,11 +2664,11 @@ public class Engine {
                     pointsComplete++;
                 }
             }
+            System.out.println(pointsComplete + "/" + lattice.points.size() + " : " + (pointsComplete / ((double)lattice.points.size())) + "%");
         }
-        System.out.println(pointsComplete);
         return pointsComplete;
     }
-    
+
     public int fetchPointsComplete() {
         int pointsComplete = 0;
         if (lattice != null) {
@@ -2611,7 +2733,7 @@ public class Engine {
                         i.immune = true;
                     }
                 }
-                
+
                 for (int i = 0; i < connections.length; i++) {
                     // This loop is being temporarily subverted.
                     connections[i].immune = false;
@@ -2677,7 +2799,7 @@ public class Engine {
                     }
                 }
             }
-            
+
             figure.collectPointsFromConnections();
             try {
                 ArrayList<NCell> result = truncateRecurse(figure);
@@ -2687,10 +2809,10 @@ public class Engine {
         }
     }
     public int counter = 0;
-    
+
     public class RockBottom extends Exception {
     }
-    
+
     public ArrayList<NCell> truncateRecurse(NGon figure) throws RockBottom {
         counter++;
         if (counter > 20) {
@@ -2786,7 +2908,7 @@ public class Engine {
         counter--;
         return result;
     }
-    
+
     public NFace fetchFace(ArrayList<NPoint> points, NCell cell) {
         NFace bucket = new NFace(dims, points.size());
         for (int i = 0; i < bucket.points.length; i++) {
@@ -2809,7 +2931,7 @@ public class Engine {
         lattice.faces.add(bucket);
         return bucket;
     }
-    
+
     public NFace fetchFace(NFace tryFace, NCell cell) {
         for (NFace i : lattice.faces) {
             if (i.equivalent(tryFace)) {
@@ -2828,7 +2950,7 @@ public class Engine {
         lattice.faces.add(tryFace);
         return tryFace;
     }
-    
+
     public NFace fetchFace(ArrayList<NPoint> points, NCell cell, HashSet<NFace> faces) {
         NFace bucket = new NFace(dims, points.size());
         for (int i = 0; i < bucket.points.length; i++) {
@@ -2851,12 +2973,12 @@ public class Engine {
         lattice.faces.add(bucket);
         return bucket;
     }
-    
+
     public void newNCubeWithTruncate() {
         if (lattice != null) {
             NPoint[] corners = new NPoint[1 << dims];
             placeNCubeRecurse(new NVector(dims), 0, corners);
-            
+
             for (int i = 0; i < lattice.points.size(); i++) {
                 System.out.print(lattice.points.get(i));
             }
@@ -2912,8 +3034,8 @@ public class Engine {
                     }
                 }
             }
-            
-            
+
+
             NGon nCube = new NGon(dims, dims + 1);
 
 //            // Connect all the corners, in the proper fashion.
@@ -2982,7 +3104,7 @@ public class Engine {
             }
         }
     }
-    
+
     public void checkIncomplete() {
         if (lattice != null) {
             HashSet<NFace> remove = new HashSet<NFace>();
@@ -2994,7 +3116,7 @@ public class Engine {
             lattice.incompleteFaces.removeAll(remove);
         }
     }
-    
+
     public void checkDuplicates() {
         if (lattice != null) {
             HashSet<NFace> remove = new HashSet<NFace>();
@@ -3018,7 +3140,7 @@ public class Engine {
         if (lattice != null) {
             NPoint[] corners = new NPoint[1 << dims];
             placeNCubeRecurse(new NVector(dims), 0, corners);
-            
+
             NSolid start = new NSolid(dims, dims);
             start.points = lattice.points;
             ArrayList<NSolid> bits = new ArrayList<NSolid>();
@@ -3044,7 +3166,7 @@ public class Engine {
                 }
                 bits = smallerBits;
             }
-            
+
             for (int i = 0; i < finalBits.size(); i++) {
                 NCell bucket = new NCell(dims, dims);
                 for (int j = 0; j < bucket.points.length; j++) {
@@ -3058,7 +3180,7 @@ public class Engine {
             }
         }
     }
-    
+
     public double cellVolumes() {
         double sum = 0;
         if (lattice != null) {
@@ -3068,7 +3190,7 @@ public class Engine {
         }
         return sum;
     }
-    
+
     public void bindToSkeletonHard() {
         if (lattice != null) {
             for (NPoint p : lattice.points) {
@@ -3103,7 +3225,7 @@ public class Engine {
             }
         }
     }
-    
+
     public void bindToSkeletonElastic() {
         if (lattice != null) {
             //TODO Need to actually write this bit.
@@ -3151,8 +3273,9 @@ public class Engine {
     }
 
     public static double getSimplexNVolume(NVector[] points) {
-        if (points.length <= 0)
+        if (points.length <= 0) {
             return 1000; // Eh, maybe I should throw an error or something.
+        }
         int dims = points[0].dims;
         int simplexDims = points.length - 1;
         NBasis volBasis = new NBasis(dims, simplexDims);
@@ -3186,10 +3309,11 @@ public class Engine {
         }
         return 1000; // Yeah, yeah, yeah.
     }
-    
+
     public static double getSimplexNVolume(NPoint[] points) {
-        if (points.length <= 0)
+        if (points.length <= 0) {
             return 1000; // Eh, maybe I should throw an error or something.
+        }
         int dims = points[0].dims;
         int simplexDims = points.length - 1;
         NBasis volBasis = new NBasis(dims, simplexDims);
@@ -3224,5 +3348,125 @@ public class Engine {
             Logger.getLogger(NCell.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 1000; // Yeah, yeah, yeah.
+    }
+
+    public void updateSticks() {
+        completeSticks.clear();
+        incompleteSticks.clear();
+        if (lattice.internalDims > 1) {
+            for (NFace f : lattice.faces) {
+                if (f.complete()) {
+                    for (int i = 0; i < f.points.length; i++) {
+                        for (int j = i + 1; j < f.points.length; j++) {
+                            boolean add = true;
+                            for (Stick s : completeSticks) {
+                                if (s.equivalent(f.points[i], f.points[j])) {
+                                    add = false;
+                                    break;
+                                }
+                            }
+                            if (add) {
+                                completeSticks.add(new Stick(f.points[i], f.points[j]));
+                            }
+                        }
+                    }
+                } else {
+                    for (int i = 0; i < f.points.length; i++) {
+                        for (int j = i + 1; j < f.points.length; j++) {
+                            boolean add = true;
+                            for (Stick s : incompleteSticks) {
+                                if (s.equivalent(f.points[i], f.points[j])) {
+                                    add = false;
+                                    break;
+                                }
+                            }
+                            if (add) {
+                                incompleteSticks.add(new Stick(f.points[i], f.points[j]));
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (lattice.internalDims == 1) {
+            //THINK This might not be quite right, at the edges.
+            for (NCell c : lattice.cells) {
+                for (int i = 0; i < c.points.length; i++) {
+                    for (int j = i + 1; j < c.points.length; j++) {
+                        boolean add = true;
+                        for (Stick s : completeSticks) {
+                            if (s.equivalent(c.points[i], c.points[j])) {
+                                add = false;
+                                break;
+                            }
+                        }
+                        if (add) {
+                            completeSticks.add(new Stick(c.points[i], c.points[j]));
+                        }
+                    }
+                }
+            }
+        }
+        sticksChanged = false;
+    }
+
+    public void updateSticksParallel() {
+        completeSticks.clear();
+        incompleteSticks.clear();
+        if (lattice.internalDims > 1) {
+            for (int k = 0; k < lattice.faces.size(); k++) {
+                NFace f = lattice.faces.get(k);
+                if (f.complete()) {
+                    for (int i = 0; i < f.points.length; i++) {
+                        for (int j = i + 1; j < f.points.length; j++) {
+                            boolean add = true;
+                            for (Stick s : completeSticks) {
+                                if (s.equivalent(f.points[i], f.points[j])) {
+                                    add = false;
+                                    break;
+                                }
+                            }
+                            if (add) {
+                                completeSticks.add(new Stick(f.points[i], f.points[j]));
+                            }
+                        }
+                    }
+                } else {
+                    for (int i = 0; i < f.points.length; i++) {
+                        for (int j = i + 1; j < f.points.length; j++) {
+                            boolean add = true;
+                            for (Stick s : incompleteSticks) {
+                                if (s.equivalent(f.points[i], f.points[j])) {
+                                    add = false;
+                                    break;
+                                }
+                            }
+                            if (add) {
+                                incompleteSticks.add(new Stick(f.points[i], f.points[j]));
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (lattice.internalDims == 1) {
+            //THINK This might not be quite right, at the edges.
+            for (int k = 0; k < lattice.cells.size(); k++) {
+                NCell c = lattice.cells.get(k);
+                for (int i = 0; i < c.points.length; i++) {
+                    for (int j = i + 1; j < c.points.length; j++) {
+                        boolean add = true;
+                        for (Stick s : completeSticks) {
+                            if (s.equivalent(c.points[i], c.points[j])) {
+                                add = false;
+                                break;
+                            }
+                        }
+                        if (add) {
+                            completeSticks.add(new Stick(c.points[i], c.points[j]));
+                        }
+                    }
+                }
+            }
+        }
+        sticksChanged = false;
     }
 }

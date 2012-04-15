@@ -101,6 +101,7 @@ public class RotationForm extends javax.swing.JFrame {
         barTransY = new javax.swing.JScrollBar();
         barTransX = new javax.swing.JScrollBar();
         boxHideIncomplete = new javax.swing.JCheckBox();
+        boxHidePoints = new javax.swing.JCheckBox();
 
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(latticetestwork.LatticeTestworkApp.class).getContext().getResourceMap(RotationForm.class);
         setTitle(resourceMap.getString("Form.title")); // NOI18N
@@ -118,7 +119,7 @@ public class RotationForm extends javax.swing.JFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 319, Short.MAX_VALUE)
+            .addGap(0, 311, Short.MAX_VALUE)
         );
 
         jSplitPane1.setLeftComponent(jPanel1);
@@ -189,6 +190,14 @@ public class RotationForm extends javax.swing.JFrame {
             }
         });
 
+        boxHidePoints.setText(resourceMap.getString("boxHidePoints.text")); // NOI18N
+        boxHidePoints.setName("boxHidePoints"); // NOI18N
+        boxHidePoints.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                boxHidePointsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -199,15 +208,16 @@ public class RotationForm extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(boxHideImmune)
                         .addGap(185, 185, 185)
-                        .addComponent(btnRender, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE))
+                        .addComponent(btnRender, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(btnZoomIn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnZoomOut, javax.swing.GroupLayout.Alignment.TRAILING))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(boxHideComplete)
-                            .addComponent(boxHideIncomplete))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 220, Short.MAX_VALUE)
+                            .addComponent(boxHideIncomplete)
+                            .addComponent(boxHidePoints))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 204, Short.MAX_VALUE)
                         .addComponent(barTransX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(barTransY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -223,13 +233,15 @@ public class RotationForm extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(boxHideComplete)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(boxHideIncomplete))
+                        .addComponent(boxHideIncomplete)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(boxHidePoints))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(btnRender)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(barTransX, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
-                            .addComponent(barTransY, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE))))
+                            .addComponent(barTransX, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
+                            .addComponent(barTransY, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnZoomIn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -243,11 +255,11 @@ public class RotationForm extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
         );
 
         setBounds(50, 50, 463, 348);
@@ -299,6 +311,11 @@ private void boxHideIncompleteActionPerformed(java.awt.event.ActionEvent evt) {/
     parent.dp.repaint();
 }//GEN-LAST:event_boxHideIncompleteActionPerformed
 
+private void boxHidePointsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boxHidePointsActionPerformed
+    parent.updateOptions();
+    parent.dp.repaint();
+}//GEN-LAST:event_boxHidePointsActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -340,6 +357,7 @@ private void boxHideIncompleteActionPerformed(java.awt.event.ActionEvent evt) {/
     public javax.swing.JCheckBox boxHideComplete;
     public javax.swing.JCheckBox boxHideImmune;
     public javax.swing.JCheckBox boxHideIncomplete;
+    public javax.swing.JCheckBox boxHidePoints;
     private javax.swing.JButton btnRender;
     private javax.swing.JButton btnZoomIn;
     private javax.swing.JButton btnZoomOut;
