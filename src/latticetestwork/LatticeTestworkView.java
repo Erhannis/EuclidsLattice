@@ -1150,7 +1150,11 @@ private void btnPlaceNDonutActionPerformed(java.awt.event.ActionEvent evt) {//GE
         updateOptions();
         if ((evt.getModifiers() & ActionEvent.CTRL_MASK) != 0) {
             engine.placeNSaltLattice();
+        } else if ((evt.getModifiers() & ActionEvent.SHIFT_MASK) != 0) {
+            engine.randomRange = Double.valueOf(editJoggleScale.getText());
+            engine.placeNDonut();
         } else {
+            engine.randomRange = -1;
             engine.placeNDonut();
         }
         dp.repaint();
@@ -1209,7 +1213,8 @@ private void btnFinishPrepActionPerformed(java.awt.event.ActionEvent evt) {//GEN
             int j = engine.r.nextInt(engine.lattice.cells.size());
             Color color = engine.lattice.cells.get(j).color;
             engine.lattice.cells.get(j).color = new Color(color.getRed(), color.getGreen(), color.getBlue(), 0xFF);
-            engine.lattice.cells.get(j).surfaces.add(new NSurface(engine.dims, engine.lattice.internalDims));
+            //engine.lattice.cells.get(j).surfaces.add(new NSurface(engine.dims, engine.lattice.internalDims));
+            engine.lattice.cells.get(j).surfaces.add(null);
         }
         for (NFace f : engine.lattice.faces) {
             f.calcAll();

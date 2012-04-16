@@ -164,7 +164,7 @@ public class NCell implements Streamable {
     public ArrayList<Integer> faceIDs = null;
     public ArrayList<Integer> pointIDs = null;
     public ArrayList<Integer> surfaceIDs = null;
-    public int basisId = 0;
+    public int basisId = -1;
     
     public static Object fromBytes(DataInputStream dis) throws IOException {
         int dims = dis.readInt();
@@ -194,14 +194,21 @@ public class NCell implements Streamable {
         result.color = new Color(r,g,b,a);
         return result;
     }
-        
+    
     public void makeBasis() {
+        try {
         ArrayList<NPoint> bucket = new ArrayList<NPoint>(points.length);
         for (int i = 0; i < points.length; i++) {
             bucket.add(points[i]);
-        }
+        }//System.out.println(bucket);
         basis = NBasis.pointsToBases(bucket);
         basis.makeStandardized();
+        } catch (NullPointerException e) {
+            boolean manualRetry = false;
+            if (manualRetry) {
+                makeBasis();
+            }
+        }
     }
     
     public boolean equivalent(NCell c) {

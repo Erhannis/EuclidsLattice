@@ -46,7 +46,80 @@ public class SimplePhoton {
             if (cell.surfaces.size() > 0) {
                 //TODO DO SOMETHING
                 // Ok, for now, I'm gonna just straight up say "HEY THRS SUMTHIN HERE!"
-                return new Color((int)(cell.color.getRed() * percentOfIncidence), (int)(cell.color.getGreen() * percentOfIncidence), (int)(cell.color.getBlue() * percentOfIncidence));
+                if (cell.surfaces.get(0) == null) {
+                    return new Color((int) (cell.color.getRed() * percentOfIncidence), (int) (cell.color.getGreen() * percentOfIncidence), (int) (cell.color.getBlue() * percentOfIncidence));
+                } else {
+                    //TODO Actually deal with the surfaces.
+                    // Check which side you hit
+                    NSurface hitSurface = null;
+                    NVector hit = null;
+                    for (NSurface s : cell.surfaces) {
+                        //TODO Maybe replace this with f.containsPoint?  May be slightly less efficient, though.
+//                        if (f == crossedFace) {
+//                            continue;
+//                        }
+                        if (s == null) {
+                            continue;
+                        }
+                        hitSurface = s;
+                        hit = Matrix.lineNPlaneIntersect(pos, dir, s.basis.origin, s.basis.bases);
+                        if (!NVector.sameQuadrant(dir, hit.minusB(pos))) {
+                            continue;
+                        }
+                        NVector[] ptVectors = new NVector[s.points.length + 1];
+                        ptVectors[0] = hit;
+                        for (int i = 0; i < s.points.length; i++) {
+                            ptVectors[i + 1] = s.points[i].pos;
+                        }
+                        NVector[] flatVectors = Matrix.ipTransformCoords(s.basis.bases, ptVectors);
+                        Matrix baryM = new Matrix(flatVectors.length, (flatVectors.length > 0 ? flatVectors[0].coords.length : 0));
+                        for (int x = 0; x < baryM.cols - 1; x++) {
+                            for (int y = 0; y < baryM.rows; y++) {
+                                baryM.val[x][y] = flatVectors[x + 1].coords[y] - flatVectors[flatVectors.length - 1].coords[y];
+                            }
+                        }
+                        int x = baryM.cols - 1;
+                        for (int y = 0; y < baryM.rows; y++) {
+                            baryM.val[x][y] = flatVectors[0].coords[y] - flatVectors[flatVectors.length - 1].coords[y];
+                        }
+                        baryM.ipRRowForm();
+                        x = baryM.cols - 1;
+                        double[] baryCoords = new double[baryM.rows + 1];
+                        baryCoords[baryM.rows] = 1;
+                        boolean outside = false;
+                        for (int y = 0; y < baryM.rows; y++) {
+                            baryCoords[y] = baryM.val[x][y];
+                            if (baryCoords[y] < 0 || baryCoords[y] > 1) {
+                                outside = true;
+                                break;
+                            }
+                            baryCoords[baryM.rows] -= baryCoords[y];
+                        }
+                        if (baryCoords[baryM.rows] < 0 || baryCoords[baryM.rows] > 1) {
+                            outside = true;
+                        }
+                        if (!outside) {
+                            break;
+                        }
+                    }
+                    // Theoretically, now hitFace has what face we hit, and hit has where we ended up.
+                    // Go there, and subtract from dtl.
+                    //dtl -= hit.minusB(pos).length();
+                    try {
+                        percentOfIncidence = 2 * NVector.angle(Matrix.lrvMult(hitSurface.basis.projection, pos.minusB(hit)), pos.minusB(hit)) / (Math.PI);
+                    } catch (Exception ex) {
+                        Logger.getLogger(SimplePhoton.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    pos = hit;
+//                    dir = hitSurface.crossCornerVector(cell, dir);
+//                    if (hitSurface.crossCornerCell(cell) != null) {
+//                        cell = hitFace.crossCornerCell(cell);
+//                    } else {
+//                        return cell.color;
+//                    }
+//                    crossedFace = hitFace;
+                    return new Color((int) (hitSurface.color.getRed() * percentOfIncidence), (int) (hitSurface.color.getGreen() * percentOfIncidence), (int) (hitSurface.color.getBlue() * percentOfIncidence));
+                }
 //                return cell.color;
                 //return cell.surfaces.get(0).render.renderPix(null, null, null);
             } else {
@@ -109,7 +182,11 @@ public class SimplePhoton {
                 }
                 pos = hit;
                 dir = hitFace.crossCornerVector(cell, dir);
-                cell = hitFace.crossCornerCell(cell);
+                if (hitFace.crossCornerCell(cell) != null) {
+                    cell = hitFace.crossCornerCell(cell);
+                } else {
+                    return cell.color;
+                }
                 crossedFace = hitFace;
             }
         }
@@ -128,7 +205,12 @@ public class SimplePhoton {
             if (cell.surfaces.size() > 0) {
                 //TODO DO SOMETHING
                 // Ok, for now, I'm gonna just straight up say "HEY THRS SUMTHIN HERE!"
-                return cell.color;
+                if (cell.surfaces.get(0) == null) {
+                    return new Color((int) (cell.color.getRed() * percentOfIncidence), (int) (cell.color.getGreen() * percentOfIncidence), (int) (cell.color.getBlue() * percentOfIncidence));
+                } else {
+                    //TODO Actually deal with the surfaces.
+                    return new Color((int) (cell.color.getRed() * percentOfIncidence), (int) (cell.color.getGreen() * percentOfIncidence), (int) (cell.color.getBlue() * percentOfIncidence));
+                }
                 //return cell.surfaces.get(0).render.renderPix(null, null, null);
             } else {
                 // Check which side you hit
@@ -190,11 +272,15 @@ public class SimplePhoton {
                 }
                 pos = hit;
                 dir = hitFace.crossCornerVector(cell, dir);
-                cell = hitFace.crossCornerCell(cell);
+                if (hitFace.crossCornerCell(cell) != null) {
+                    cell = hitFace.crossCornerCell(cell);
+                } else {
+                    return cell.color;
+                }
                 crossedFace = hitFace;
             }
         }
         tracer.add(pos);
-        return new Color((int)(cell.color.getRed() * percentOfIncidence), (int)(cell.color.getGreen() * percentOfIncidence), (int)(cell.color.getBlue() * percentOfIncidence));
+        return new Color((int) (cell.color.getRed() * percentOfIncidence), (int) (cell.color.getGreen() * percentOfIncidence), (int) (cell.color.getBlue() * percentOfIncidence));
     }
 }

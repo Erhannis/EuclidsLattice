@@ -281,4 +281,23 @@ public class NFace implements Streamable {
         }
         return true;
     }
+    
+    public boolean isConnected(NFace f) {
+        int matched = points.length - 1;
+        for (NPoint a : this.points) {
+            for (NPoint b : this.points) {
+                if (a == b) {
+                    matched--;
+                    break;
+                }
+            }
+            if (matched <= 0) {
+                break;
+            }
+        }
+        if (matched <= 0) {
+            return true;
+        }
+        return false;
+    }
 }

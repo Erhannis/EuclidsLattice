@@ -2409,6 +2409,8 @@ public class Engine {
         }
     }
 
+    public double randomRange = -1;
+    
     public void placeNDonutRecurse(NVector cursor, NVector shiftCursor, int dim, double inc, NVector intCursor, NPoint[] donutMesh, int circ) {
         if (dim < cursor.dims) {
             double d = 0;
@@ -2419,7 +2421,11 @@ public class Engine {
 //                        if (shiftCursor.coords[j] > 0) {
 //                            shiftCursor.coords[j] = 0;
 //                        } else {
-                        shiftCursor.coords[j] += 0.5 * inc;
+                        if (randomRange > 0) {
+                            shiftCursor.coords[j] += 0.5 * inc + (((r.nextDouble() * 2) - 1) * randomRange);
+                        } else {
+                            shiftCursor.coords[j] += 0.5 * inc;
+                        }
 //                        }
                     }
                 }
@@ -2664,7 +2670,7 @@ public class Engine {
                     pointsComplete++;
                 }
             }
-            System.out.println(pointsComplete + "/" + lattice.points.size() + " : " + (pointsComplete / ((double)lattice.points.size())) + "%");
+            System.out.println(pointsComplete + "/" + lattice.points.size() + " : " + ((100 * pointsComplete) / ((double)lattice.points.size())) + "%");
         }
         return pointsComplete;
     }
@@ -3105,7 +3111,7 @@ public class Engine {
         }
     }
 
-    public void checkIncomplete() {
+    public int checkIncomplete() {
         if (lattice != null) {
             HashSet<NFace> remove = new HashSet<NFace>();
             for (NFace i : lattice.incompleteFaces) {
@@ -3114,7 +3120,9 @@ public class Engine {
                 }
             }
             lattice.incompleteFaces.removeAll(remove);
+            return remove.size();
         }
+        return 0;
     }
 
     public void checkDuplicates() {
@@ -3354,38 +3362,44 @@ public class Engine {
         completeSticks.clear();
         incompleteSticks.clear();
         if (lattice.internalDims > 1) {
+            int facesDone = 0;
             for (NFace f : lattice.faces) {
                 if (f.complete()) {
-                    for (int i = 0; i < f.points.length; i++) {
-                        for (int j = i + 1; j < f.points.length; j++) {
-                            boolean add = true;
-                            for (Stick s : completeSticks) {
-                                if (s.equivalent(f.points[i], f.points[j])) {
-                                    add = false;
-                                    break;
+                    if (!hideComplete) {
+                        for (int i = 0; i < f.points.length; i++) {
+                            for (int j = i + 1; j < f.points.length; j++) {
+                                boolean add = true;
+                                for (Stick s : completeSticks) {
+                                    if (s.equivalent(f.points[i], f.points[j])) {
+                                        add = false;
+                                        break;
+                                    }
                                 }
-                            }
-                            if (add) {
-                                completeSticks.add(new Stick(f.points[i], f.points[j]));
+                                if (add) {
+                                    completeSticks.add(new Stick(f.points[i], f.points[j]));
+                                }
                             }
                         }
                     }
                 } else {
-                    for (int i = 0; i < f.points.length; i++) {
-                        for (int j = i + 1; j < f.points.length; j++) {
-                            boolean add = true;
-                            for (Stick s : incompleteSticks) {
-                                if (s.equivalent(f.points[i], f.points[j])) {
-                                    add = false;
-                                    break;
+                    if (!hideIncomplete) {
+                        for (int i = 0; i < f.points.length; i++) {
+                            for (int j = i + 1; j < f.points.length; j++) {
+                                boolean add = true;
+                                for (Stick s : incompleteSticks) {
+                                    if (s.equivalent(f.points[i], f.points[j])) {
+                                        add = false;
+                                        break;
+                                    }
                                 }
-                            }
-                            if (add) {
-                                incompleteSticks.add(new Stick(f.points[i], f.points[j]));
+                                if (add) {
+                                    incompleteSticks.add(new Stick(f.points[i], f.points[j]));
+                                }
                             }
                         }
                     }
                 }
+                facesDone++;
             }
         } else if (lattice.internalDims == 1) {
             //THINK This might not be quite right, at the edges.
@@ -3468,5 +3482,111 @@ public class Engine {
             }
         }
         sticksChanged = false;
+    }
+    
+    /**
+     * Looks for cells formed of incomplete faces, yet are not counted as
+     * actual cells, presumably due to violation of one or more restrictions.
+     * Might as well make them actual cells, though.
+     * Returns the number of cells formed in this way.
+     * @return 
+     */
+    public int joinPreCells() {
+        ArrayList<NCell> converted = new ArrayList<NCell>();
+        HashSet<NFace> convertedFaces = new HashSet<NFace>();
+        for (NFace f : lattice.incompleteFaces) {
+            // Brutish method:
+            // List all connected faces.
+            //// List all faces connected to points of face.
+            //// Check them for connection to this face.
+            // Discount the ones that are part of the complete cell connected to this face.
+            // If some subset of lDim+1 (including target face) are connected, they form a cell.
+            
+            // Hey, so this is based on the assumption that any given incomplete face
+            //     has a cell for cellA and null for cellB.
+            if (convertedFaces.contains(f)) {
+                continue;
+            }
+            HashSet<NFace> pointConnected = new HashSet<NFace>();
+            pointConnected.add(f);
+            for (NPoint p : f.points) {
+                for (NFace g : p.faces) {
+                    if (f.isConnected(g) && (f.cellA != g.cellA) && (g.cellB == null)) {
+                        pointConnected.add(g);
+                    }
+                }
+            }
+            ArrayList<NFace> connected = new ArrayList<NFace>(pointConnected);
+            int[] indices = new int[lattice.internalDims + 1];
+            ArrayList<NFace> result = formCellRecurse(connected, indices, 0, lattice.internalDims, 0);
+            if (result != null) {
+                NCell newCell = new NCell(lattice.dims, lattice.internalDims);
+                for (int i = 0; i < newCell.faces.length; i++) {
+                    newCell.faces[i] = result.get(i);
+                }
+                HashSet<NPoint> points = new HashSet<NPoint>();
+                for (NFace g : newCell.faces) {
+                    for (NPoint p : g.points) {
+                        points.add(p);
+                        if (points.size() == newCell.points.length) {
+                            break;
+                        }
+                    }
+                    if (points.size() == newCell.points.length) {
+                        break;
+                    }
+                }
+                // Assuming we have enough points.
+                int i = 0;
+                for (NPoint p : points) {
+                    newCell.points[i++] = p;
+                }
+                converted.add(newCell);
+                convertedFaces.addAll(result);
+            }
+        }
+        for (NCell c : converted) {
+            for (NFace f : c.faces) {
+                f.cellB = c;
+                lattice.incompleteFaces.remove(f);
+            }
+            lattice.cells.add(c);
+            sticksChanged = true;
+        }
+        return converted.size();
+    }
+    
+    public ArrayList<NFace> formCellRecurse(ArrayList<NFace> connected, int[] indices, int curLevel, int maxLevel, int curIndex) {
+        if (curLevel <= maxLevel) {
+            for (int i = curIndex; i < connected.size() - maxLevel + curLevel; i++) {
+                indices[curLevel] = i;
+                ArrayList<NFace> result = formCellRecurse(connected, indices, curLevel + 1, maxLevel, i + 1);
+                if (result != null) {
+                    return result;
+                }
+            }
+            return null;
+        } else {
+            boolean allConnected = true;
+            for (int i = 0; i < indices.length - 1; i++) {
+                for (int j = i + 1; j < indices.length; j++) {
+                    if (!connected.get(indices[i]).isConnected(connected.get(indices[j]))) {
+                        allConnected = false;
+                        break;
+                    }
+                }
+                if (!allConnected) {
+                    break;
+                }
+            }
+            if (allConnected) {
+                ArrayList<NFace> result = new ArrayList<NFace>();
+                for (int i = 0; i < indices.length; i++) {
+                    result.add(connected.get(indices[i]));
+                }
+                return result;
+            }
+            return null;
+        }
     }
 }

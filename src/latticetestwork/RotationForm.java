@@ -102,6 +102,7 @@ public class RotationForm extends javax.swing.JFrame {
         barTransX = new javax.swing.JScrollBar();
         boxHideIncomplete = new javax.swing.JCheckBox();
         boxHidePoints = new javax.swing.JCheckBox();
+        btnRecalcSticks = new javax.swing.JButton();
 
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(latticetestwork.LatticeTestworkApp.class).getContext().getResourceMap(RotationForm.class);
         setTitle(resourceMap.getString("Form.title")); // NOI18N
@@ -119,7 +120,7 @@ public class RotationForm extends javax.swing.JFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 311, Short.MAX_VALUE)
+            .addGap(0, 319, Short.MAX_VALUE)
         );
 
         jSplitPane1.setLeftComponent(jPanel1);
@@ -198,6 +199,14 @@ public class RotationForm extends javax.swing.JFrame {
             }
         });
 
+        btnRecalcSticks.setText(resourceMap.getString("btnRecalcSticks.text")); // NOI18N
+        btnRecalcSticks.setName("btnRecalcSticks"); // NOI18N
+        btnRecalcSticks.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRecalcSticksActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -207,8 +216,10 @@ public class RotationForm extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(boxHideImmune)
-                        .addGap(185, 185, 185)
-                        .addComponent(btnRender, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
+                        .addGap(107, 107, 107)
+                        .addComponent(btnRecalcSticks)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRender, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(btnZoomIn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnZoomOut, javax.swing.GroupLayout.Alignment.TRAILING))
@@ -217,7 +228,7 @@ public class RotationForm extends javax.swing.JFrame {
                             .addComponent(boxHideComplete)
                             .addComponent(boxHideIncomplete)
                             .addComponent(boxHidePoints))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 204, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 225, Short.MAX_VALUE)
                         .addComponent(barTransX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(barTransY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -237,11 +248,13 @@ public class RotationForm extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(boxHidePoints))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(btnRender)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnRender)
+                            .addComponent(btnRecalcSticks))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(barTransX, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
-                            .addComponent(barTransY, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE))))
+                            .addComponent(barTransX, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
+                            .addComponent(barTransY, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnZoomIn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -255,11 +268,11 @@ public class RotationForm extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
         );
 
         setBounds(50, 50, 463, 348);
@@ -276,6 +289,9 @@ private void btnRenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 }//GEN-LAST:event_btnRenderActionPerformed
 
 private void boxHideCompleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boxHideCompleteActionPerformed
+    if (parent.engine != null) {
+        parent.engine.sticksChanged = true;
+    }
     parent.updateOptions();
     parent.dp.repaint();
 }//GEN-LAST:event_boxHideCompleteActionPerformed
@@ -307,6 +323,9 @@ private void btnZoomOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 }//GEN-LAST:event_btnZoomOutActionPerformed
 
 private void boxHideIncompleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boxHideIncompleteActionPerformed
+    if (parent.engine != null) {
+        parent.engine.sticksChanged = true;
+    }
     parent.updateOptions();
     parent.dp.repaint();
 }//GEN-LAST:event_boxHideIncompleteActionPerformed
@@ -315,6 +334,12 @@ private void boxHidePointsActionPerformed(java.awt.event.ActionEvent evt) {//GEN
     parent.updateOptions();
     parent.dp.repaint();
 }//GEN-LAST:event_boxHidePointsActionPerformed
+
+private void btnRecalcSticksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecalcSticksActionPerformed
+    if (parent.engine != null) {
+        parent.engine.updateSticks();
+    }
+}//GEN-LAST:event_btnRecalcSticksActionPerformed
 
     /**
      * @param args the command line arguments
@@ -358,6 +383,7 @@ private void boxHidePointsActionPerformed(java.awt.event.ActionEvent evt) {//GEN
     public javax.swing.JCheckBox boxHideImmune;
     public javax.swing.JCheckBox boxHideIncomplete;
     public javax.swing.JCheckBox boxHidePoints;
+    private javax.swing.JButton btnRecalcSticks;
     private javax.swing.JButton btnRender;
     private javax.swing.JButton btnZoomIn;
     private javax.swing.JButton btnZoomOut;

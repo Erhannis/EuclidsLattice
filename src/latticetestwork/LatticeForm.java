@@ -421,19 +421,21 @@ private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
                 Logger.getLogger(LatticeForm.class.getName()).log(Level.SEVERE, null, ex);
             }
             if (result == null) {
+                JOptionPane.showMessageDialog(null, "Load failed - reason unknown.");
                 return;
             }
             if ((result.dims != parent.engine.lattice.dims) || (result.internalDims != parent.engine.lattice.internalDims)) {
                 JOptionPane.showMessageDialog(null, "Dims do not match current engine settings!");
                 return;
             }
+            parent.engine.sticksChanged = true;
             parent.engine.lattice = result;
             //TODO Fix the minor leftover traces of the previous lattice.
             parent.dp.repaint();
         }
     }
 }//GEN-LAST:event_jMenuItem2ActionPerformed
-    public static int VERSION = 2;
+    public static int VERSION = 3;
 
     public static void saveLattice(OutputStream os, Lattice lattice) {
         try {
@@ -450,7 +452,7 @@ private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             HashMap<Matrix, Integer> matrixIDs = new HashMap<Matrix, Integer>();
             HashMap<NSurface, Integer> surfaceIDs = new HashMap<NSurface, Integer>();
             HashMap<Camera, Integer> cameraIDs = new HashMap<Camera, Integer>();
-            
+
             faceIDs.put(null, -1);
             pointIDs.put(null, -1);
             cellIDs.put(null, -1);
@@ -458,7 +460,7 @@ private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             matrixIDs.put(null, -1);
             surfaceIDs.put(null, -1);
             cameraIDs.put(null, -1);
-            
+
             int faceId = 0;
             int pointId = 0;
             int cellId = 0;
@@ -537,6 +539,24 @@ private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
                     if (s != null) {
                         s.id = surfaceId++;
                         surfaceIDs.put(s, s.id);
+                        for (NPoint p : s.points) {
+                            if (p != null) {
+                                p.id = pointId++;
+                                pointIDs.put(p, p.id);
+                            }
+                        }
+                        if (s.basis != null) {
+                            s.basis.id = basisId++;
+                            basisIDs.put(s.basis, s.basis.id);
+                            if (s.basis.basis != null) {
+                                s.basis.basis.id = matrixId++;
+                                matrixIDs.put(s.basis.basis, s.basis.basis.id);
+                            }
+                            if (s.basis.projection != null) {
+                                s.basis.projection.id = matrixId++;
+                                matrixIDs.put(s.basis.projection, s.basis.projection.id);
+                            }
+                        }
                     }
                 }
             }
@@ -544,11 +564,29 @@ private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
                 if (s != null) {
                     s.id = surfaceId++;
                     surfaceIDs.put(s, s.id);
+                    for (NPoint p : s.points) {
+                        if (p != null) {
+                            p.id = pointId++;
+                            pointIDs.put(p, p.id);
+                        }
+                    }
+                    if (s.basis != null) {
+                        s.basis.id = basisId++;
+                        basisIDs.put(s.basis, s.basis.id);
+                        if (s.basis.basis != null) {
+                            s.basis.basis.id = matrixId++;
+                            matrixIDs.put(s.basis.basis, s.basis.basis.id);
+                        }
+                        if (s.basis.projection != null) {
+                            s.basis.projection.id = matrixId++;
+                            matrixIDs.put(s.basis.projection, s.basis.projection.id);
+                        }
+                    }
                 }
             }
             for (Camera c : lattice.cameras) {
                 if (c != null) {
-                    c.id = surfaceId++;
+                    c.id = cameraId++;
                     cameraIDs.put(c, c.id);
                     if (c.cell != null) {
                         c.cell.id = cellId++;
@@ -845,6 +883,145 @@ private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 //                            // Nothing to see, nothing to see.
 //                        }
 //                    }
+                    for (Camera c : cameraIDs.values()) {
+                        if (c != null) {
+                            c.cell = cellIDs.get(c.cellId);
+                        }
+                    }
+
+                    cellCount = dis.readInt();
+                    for (int i = 0; i < cellCount; i++) {
+                        lattice.cells.add(cellIDs.get(dis.readInt()));
+                    }
+                    facesCount = dis.readInt();
+                    for (int i = 0; i < facesCount; i++) {
+                        lattice.faces.add(faceIDs.get(dis.readInt()));
+                    }
+                    int incompleteFacesCount = dis.readInt();
+                    for (int i = 0; i < incompleteFacesCount; i++) {
+                        lattice.incompleteFaces.add(faceIDs.get(dis.readInt()));
+                    }
+                    pointCount = dis.readInt();
+                    for (int i = 0; i < pointCount; i++) {
+                        lattice.points.add(pointIDs.get(dis.readInt()));
+                    }
+                    surfaceCount = dis.readInt();
+                    for (int i = 0; i < surfaceCount; i++) {
+                        lattice.surfaces.add(surfaceIDs.get(dis.readInt()));
+                    }
+                    cameraCount = dis.readInt();
+                    for (int i = 0; i < cameraCount; i++) {
+                        lattice.cameras.add(cameraIDs.get(dis.readInt()));
+                    }
+
+                }
+                break;
+                case 3: {
+                    int dims = dis.readInt();
+                    int internalDims = dis.readInt();
+                    lattice = new Lattice(dims, internalDims);
+                    HashMap<Integer, NFace> faceIDs = new HashMap<Integer, NFace>();
+                    HashMap<Integer, NPoint> pointIDs = new HashMap<Integer, NPoint>();
+                    HashMap<Integer, NCell> cellIDs = new HashMap<Integer, NCell>();
+                    HashMap<Integer, NBasis> basisIDs = new HashMap<Integer, NBasis>();
+                    HashMap<Integer, Matrix> matrixIDs = new HashMap<Integer, Matrix>();
+                    HashMap<Integer, NSurface> surfaceIDs = new HashMap<Integer, NSurface>();
+                    HashMap<Integer, Camera> cameraIDs = new HashMap<Integer, Camera>();
+
+                    faceIDs.put(-1, null);
+                    pointIDs.put(-1, null);
+                    cellIDs.put(-1, null);
+                    basisIDs.put(-1, null);
+                    matrixIDs.put(-1, null);
+                    surfaceIDs.put(-1, null);
+                    cameraIDs.put(-1, null);
+
+                    int facesCount = dis.readInt();
+                    for (int i = 0; i < facesCount; i++) {
+                        NFace f = (NFace) NFace.fromBytes(dis);
+                        faceIDs.put(f.id, f);
+                    }
+                    int pointCount = dis.readInt();
+                    for (int i = 0; i < pointCount; i++) {
+                        NPoint p = (NPoint) NPoint.fromBytes(dis);
+                        pointIDs.put(p.id, p);
+                    }
+                    int cellCount = dis.readInt();
+                    for (int i = 0; i < cellCount; i++) {
+                        NCell c = (NCell) NCell.fromBytes(dis);
+                        cellIDs.put(c.id, c);
+                    }
+                    int basisCount = dis.readInt();
+                    for (int i = 0; i < basisCount; i++) {
+                        NBasis b = (NBasis) NBasis.fromBytes(dis);
+                        basisIDs.put(b.id, b);
+                    }
+                    int matrixCount = dis.readInt();
+                    for (int i = 0; i < matrixCount; i++) {
+                        Matrix m = (Matrix) Matrix.fromBytes(dis);
+                        matrixIDs.put(m.id, m);
+                    }
+                    int surfaceCount = dis.readInt();
+                    for (int i = 0; i < surfaceCount; i++) {
+                        NSurface s = (NSurface) NSurface.fromBytes(dis);
+                        surfaceIDs.put(s.id, s);
+                    }
+                    int cameraCount = dis.readInt();
+                    for (int i = 0; i < cameraCount; i++) {
+                        Camera c = (Camera) Camera.fromBytes(dis, lattice);
+                        cameraIDs.put(c.id, c);
+                    }
+
+                    for (NFace f : faceIDs.values()) {
+                        if (f != null) {
+                            f.cellA = cellIDs.get(f.cellAid);
+                            f.cellB = cellIDs.get(f.cellBid);
+                            for (int i = 0; i < f.pointIDs.size(); i++) {
+                                f.points[i] = pointIDs.get(f.pointIDs.get(i));
+                            }
+                            f.basis = basisIDs.get(f.basisId);
+                        }
+                    }
+                    for (NPoint p : pointIDs.values()) {
+                        if (p != null) {
+                            for (int i = 0; i < p.faceIDs.size(); i++) {
+                                p.faces.add(faceIDs.get(p.faceIDs.get(i)));
+                            }
+                        }
+                    }
+                    for (NCell c : cellIDs.values()) {
+                        if (c != null) {
+                            c.basis = basisIDs.get(c.basisId);
+                            for (int i = 0; i < c.faceIDs.size(); i++) {
+                                c.faces[i] = faceIDs.get(c.faceIDs.get(i));
+                            }
+                            for (int i = 0; i < c.pointIDs.size(); i++) {
+                                c.points[i] = pointIDs.get(c.pointIDs.get(i));
+                            }
+                            for (int i = 0; i < c.surfaceIDs.size(); i++) {
+                                c.surfaces.add(surfaceIDs.get(c.surfaceIDs.get(i)));
+                            }
+                        }
+                    }
+                    for (NBasis b : basisIDs.values()) {
+                        if (b != null) {
+                            b.basis = matrixIDs.get(b.basisId);
+                            b.projection = matrixIDs.get(b.projectionId);
+                        }
+                    }
+//                    for (Matrix m : matrixIDs.values()) {
+//                        if (m != null) {
+//                            // Nothing to see, nothing to see.
+//                        }
+//                    }
+                    for (NSurface s : surfaceIDs.values()) {
+                        if (s != null) {
+                            s.basis = basisIDs.get(s.basisId);
+                            for (int i = 0; i < s.pointIDs.size(); i++) {
+                                s.points[i] = pointIDs.get(s.pointIDs.get(i));
+                            }
+                        }
+                    }
                     for (Camera c : cameraIDs.values()) {
                         if (c != null) {
                             c.cell = cellIDs.get(c.cellId);

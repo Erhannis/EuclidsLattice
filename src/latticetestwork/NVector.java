@@ -80,6 +80,10 @@ public class NVector {
         for (int i = 0; i < dims; i++) {
             length += coords[i] * coords[i];
         }
+        if (length == 0) {
+            //THINK This might be important to note, when it happens.
+            return this;
+        }
         length = Math.sqrt(length);
         for (int i = 0; i < dims; i++) {
             coords[i] /= length;
