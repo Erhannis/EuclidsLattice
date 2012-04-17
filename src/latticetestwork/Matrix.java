@@ -44,6 +44,7 @@ public class Matrix implements Streamable {
      * @throws Exception 
      */
     public IntersectionResult ipSolveIntersect() throws Exception {
+        //THINK I replaced == 1 with prettyEqual.  It might not be necessary, however.
         double[] qValues = {0, 0};
         boolean done = false;
         boolean qt1 = false;
@@ -56,10 +57,10 @@ public class Matrix implements Streamable {
         int r2 = 0;
         while (!done) {
             for (int y = 0; y < rows; y++) {
-                if (val[0][y] == 0) {
-                    if (val[1][y] == 0) {
+                if (MeMath.prettyZero(val[0][y], 17)) {
+                    if (MeMath.prettyZero(val[1][y], 17)) {
                         // Hmm.  Pity.
-                    } else if (!qt2 && val[1][y] == 1) {
+                    } else if (!qt2 && MeMath.prettyEqual(val[1][y], 1, 17)) {
                         qt2 = true;
                         t2 = y;
                         qValues[1] = val[2][y];
@@ -67,8 +68,8 @@ public class Matrix implements Streamable {
                         val[2][y] /= val[1][y];
                         val[1][y] = 1;//
                     }
-                } else if (val[0][y] == 1) {
-                    if (val[1][y] == 0) {
+                } else if (MeMath.prettyEqual(val[0][y], 1, 17)) {
+                    if (MeMath.prettyZero(val[1][y], 17)) {
                         if (!qt1) {
                             if (!qr1) {
                                 qr1 = true;
@@ -116,29 +117,29 @@ public class Matrix implements Streamable {
             
             // Check done.
             for (int y = 0; y < rows; y++) {
-                if (!qt1 && val[0][y] == 1 && val[1][y] == 0) {
+                if (!qt1 && MeMath.prettyEqual(val[0][y], 1, 17) && MeMath.prettyZero(val[1][y], 17)) {
                     qt1 = true;
                     t1 = y;
                     qValues[0] = val[2][y];
-                } else if (!qt2 && val[0][y] == 0 && val[1][y] == 1) {
+                } else if (!qt2 && MeMath.prettyZero(val[0][y], 17) && MeMath.prettyEqual(val[1][y], 1, 17)) {
                     qt2 = true;
                     t2 = y;
                     qValues[1] = val[2][y];
                 }
             }
-            if ((qt1 && (qValues[0] != 0)) || (qt2 && (qValues[1] != 0))) {
+            if ((qt1 && (!MeMath.prettyZero(qValues[0], 17))) || (qt2 && (!MeMath.prettyZero(qValues[1], 17)))) {
                 done = true;
             }
             if (debug) {
                 System.out.println(this);
             }
-            if (qt1 && qValues[0] == 0 && qt2 && qValues[1] == 0) {
+            if (qt1 && MeMath.prettyZero(qValues[0], 17) && qt2 && MeMath.prettyZero(qValues[1], 17)) {
                 throw new Exception("Dead end!");
             }
         }
-        if (qt1 && (qValues[0] != 0)) {
+        if (qt1 && (!MeMath.prettyZero(qValues[0], 17))) {
             return new IntersectionResult(1,qValues[0]);
-        } else if (qt2 && (qValues[1] != 0)) {
+        } else if (qt2 && (!MeMath.prettyZero(qValues[1], 17))) {
             return new IntersectionResult(2,qValues[1]);
         } else {
             return new IntersectionResult(0,0);
@@ -246,11 +247,11 @@ if (debug) {
             if (row >= cols) {
                 // Probably don't do anything for now.
             } else {
-                if (val[row][row] == 0) {
+                if (MeMath.prettyZero(val[row][row], 17)) {
                     // Add another row to this one to get not 0.
                     boolean found = false;
                     for (int y = row + 1; y < rows; y++) {
-                        if (val[row][y] != 0) {
+                        if (!MeMath.prettyZero(val[row][y], 17)) {
                             for (int x = 0; x < cols; x++) {
                                 val[x][row] += val[x][y];
                             }
@@ -326,11 +327,11 @@ if (debug) {
             if (row >= cols) {
                 // Probably don't do anything for now.
             } else {
-                if (val[row][row] == 0) {
+                if (MeMath.prettyZero(val[row][row], 17)) {////
                     // Add another row to this one to get not 0.
                     boolean found = false;
                     for (int y = row + 1; y < rows; y++) {
-                        if (val[row][y] != 0) {
+                        if (!MeMath.prettyZero(val[row][y], 17)) {
                             for (int x = 0; x < cols; x++) {
                                 val[x][row] += val[x][y];
                             }
@@ -649,10 +650,10 @@ if (debug) {
                 if (MeMath.prettyZero(m.val[row + skipped][row], 17)) {
                     // Add another row to this one to get not 0.
                     boolean found = false;
-                    for (int y = row + 1; y < m.rows; y++) {
+                    for (int y = row + 1; y < bases.length; y++) {
                         //if (m.val[row + skipped][y] != 0) {
                         if (!MeMath.prettyZero(m.val[row + skipped][y], 17)) {
-                            for (int x = 0; x < m.cols; x++) {
+                            for (int x = row + skipped; x < m.cols; x++) {
                                 m.val[x][row] += m.val[x][y];
                             }
                             found = true;
@@ -804,11 +805,11 @@ if (debug) {
             if (row >= cols) {
                 // Probably don't do anything for now.
             } else {
-                if (val[row][row] == 0) {
+                if (MeMath.prettyZero(val[row][row], 17)) {
                     // Add another row to this one to get not 0.
                     boolean found = false;
                     for (int y = row + 1; y < rows; y++) {
-                        if (val[row][y] != 0) {
+                        if (!MeMath.prettyZero(val[row][y], 17)) {
                             for (int x = 0; x < cols; x++) {
                                 val[x][row] += val[x][y];
                             }
@@ -902,7 +903,7 @@ if (debug) {
             }
         }
         int x = solver.cols - 1;
-        for (int y = 0; y < solver.rows; y++) {
+        for (int y = 0; y < solver.rows; y++) {//System.out.println(lPos.minusB(origin.plusB(bases[0])).length())
             solver.val[x][y] = origin.coords[y] - lPos.coords[y];
         }//System.out.println(solver);
         //TODO It might be a good idea to make this "closest points" for near-intersection.

@@ -8,8 +8,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Random;
 
 /**
  *
@@ -417,5 +416,18 @@ public class NVector {
             result.coords[i] = dis.readDouble();
         }
         return result;
+    }
+    
+    public static Random r = new Random();
+    
+    public static NVector random(int dims, double range, boolean normalize) {
+        NVector bucket = new NVector(dims);
+        for (int i = 0; i < dims; i++) {
+            bucket.coords[i] = ((r.nextDouble() * 2) - 1) * range;
+        }
+        if (normalize) {
+            bucket.ipNormalize();
+        }
+        return bucket;
     }
 }

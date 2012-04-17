@@ -122,8 +122,24 @@ public class Camera {
         // Then, to correct errors, reorthogonalize the vectors...I think.  I'm wondering if that'll work right, or mess up the angles.
         for (int i = 0; i < cell.cellDims; i++) {//source.length()//System.out.println(cell.basis.projection);
             //TODO Maybe check for perpendicular to cell...shouldn't happen, but JIC.
-            NVector source = orientation[i];//lattice.cells.contains(cell)
+            NVector source = orientation[i];//lattice.cells.contains(cell)//System.out.println(cell.basis.projection);
             NVector target = Matrix.lrvMult(cell.basis.projection, source);//target.length()
+            if (MeMath.prettyZero(target.lengthSqr(), 17)) {
+                // The current orientation axis is perpendicular to the cell...problem.
+                // Let's see...we want, now, an arbitrary direction to rotate the orientation
+                //   structure, but one that is perpendicular to the already rotated axes.
+                // AAAUGH, to heck with it!  Just scramble the thing and try again!
+                //TODO Maybe at some point, we can see what the Matrix.cross product will give us with insufficient vectors.
+                source = NVector.random(dims, 1, true);
+                target = NVector.random(dims, 1, true);
+                for (int j = 0; j < latticeDims; j++) {//NVector.angle(orientation[0], orientation[1]);
+                    //orientation[j] = NVector.rotate(pos, source, target, orientation[j], NVector.angle(source, target));
+                    orientation[j] = NVector.rotate(zero, source, target, orientation[j], NVector.angle(source, target));
+                }
+                //THINK This has the potential to stack overflow with weird parameters.
+                realignOrientation(cell);
+                return;
+            }
 //            orientation[i] = target;
             //source = source.minusB(pos);
             //target = target.minusB(pos);
@@ -215,7 +231,7 @@ public class Camera {
         // Check which side you hit
         NFace hitFace = null;
         NVector hit = null;
-        for (NFace f : cell.faces) {
+         for (NFace f : cell.faces) {
             //TODO Maybe replace this with f.containsPoint?  May be slightly less efficient, though.
             if (f == crossed) {
                 continue;
@@ -265,16 +281,18 @@ public class Camera {
             // Didn't hit a face.
             pos = pos.plusB(dir);
         } else {
-            moveLength -= hit.minusB(pos).length(); //THINK Maybe the move length could be changed a little more efficiently or accurately.
-            pos = hit;
-            dir = hitFace.crossCornerVector(cell, dir).ipNormalize().multS(moveLength);
-            velocity = hitFace.crossCornerVector(cell, velocity);
-            for (int i = 0; i < latticeDims; i++) {
-                orientation[i] = hitFace.crossCornerVector(cell, orientation[i]);
+            if (hitFace.crossCornerCell(cell) != null) {
+                moveLength -= hit.minusB(pos).length(); //THINK Maybe the move length could be changed a little more efficiently or accurately.
+                pos = hit;
+                dir = hitFace.crossCornerVector(cell, dir).ipNormalize().multS(moveLength);
+                velocity = hitFace.crossCornerVector(cell, velocity);
+                for (int i = 0; i < latticeDims; i++) {
+                    orientation[i] = hitFace.crossCornerVector(cell, orientation[i]);
+                }
+                cell = hitFace.crossCornerCell(cell);
+                move(dir, hitFace);//TODO Something went wrong here; stack overflow.  Fix it.
+                //THINK Maybe straighten up vectors and stuff
             }
-            cell = hitFace.crossCornerCell(cell);
-            move(dir, hitFace);//TODO Something went wrong here; stack overflow.  Fix it.
-            //THINK Maybe straighten up vectors and stuff
         }
     }
     

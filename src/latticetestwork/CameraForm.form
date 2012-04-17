@@ -45,6 +45,9 @@
           <Properties>
             <Property name="name" type="java.lang.String" value="intrumentPanel" noResource="true"/>
           </Properties>
+          <Events>
+            <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="intrumentPanelKeyTyped"/>
+          </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
               <JSplitPaneConstraints position="right"/>
@@ -57,6 +60,7 @@
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace pref="36" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                          <Component id="btnControl" max="32767" attributes="1"/>
                           <Component id="btnTracer" max="32767" attributes="1"/>
                           <Component id="btnRealign" max="32767" attributes="1"/>
                           <Component id="btnCenter" alignment="1" max="32767" attributes="1"/>
@@ -135,7 +139,10 @@
                           <Component id="boxRender" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="btnEncode" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="btnEncode" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnControl" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -302,6 +309,16 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTracerActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnControl">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="btnControl.text"/>
+                <Property name="name" type="java.lang.String" value="btnControl" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="btnControlKeyPressed"/>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="btnControlKeyTyped"/>
               </Events>
             </Component>
           </SubComponents>

@@ -17,6 +17,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -92,6 +93,7 @@ public class CameraForm extends javax.swing.JFrame {
         btnCenter = new javax.swing.JButton();
         boxRenderMain = new javax.swing.JCheckBox();
         btnTracer = new javax.swing.JButton();
+        btnControl = new javax.swing.JButton();
 
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(latticetestwork.LatticeTestworkApp.class).getContext().getResourceMap(CameraForm.class);
         setTitle(resourceMap.getString("Form.title")); // NOI18N
@@ -101,6 +103,11 @@ public class CameraForm extends javax.swing.JFrame {
         jSplitPane1.setName("jSplitPane1"); // NOI18N
 
         intrumentPanel.setName("intrumentPanel"); // NOI18N
+        intrumentPanel.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                intrumentPanelKeyTyped(evt);
+            }
+        });
 
         btnDTL.setText(resourceMap.getString("btnDTL.text")); // NOI18N
         btnDTL.setName("btnDTL"); // NOI18N
@@ -236,6 +243,17 @@ public class CameraForm extends javax.swing.JFrame {
             }
         });
 
+        btnControl.setText(resourceMap.getString("btnControl.text")); // NOI18N
+        btnControl.setName("btnControl"); // NOI18N
+        btnControl.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                btnControlKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                btnControlKeyTyped(evt);
+            }
+        });
+
         javax.swing.GroupLayout intrumentPanelLayout = new javax.swing.GroupLayout(intrumentPanel);
         intrumentPanel.setLayout(intrumentPanelLayout);
         intrumentPanelLayout.setHorizontalGroup(
@@ -243,6 +261,7 @@ public class CameraForm extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, intrumentPanelLayout.createSequentialGroup()
                 .addContainerGap(36, Short.MAX_VALUE)
                 .addGroup(intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(btnControl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnTracer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnRealign, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnCenter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -306,7 +325,9 @@ public class CameraForm extends javax.swing.JFrame {
                     .addComponent(boxRenderMain)
                     .addComponent(boxRender))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnEncode)
+                .addGroup(intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnEncode)
+                    .addComponent(btnControl))
                 .addContainerGap())
         );
 
@@ -716,6 +737,43 @@ private void btnTracerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     }
 }//GEN-LAST:event_btnTracerActionPerformed
 
+private void intrumentPanelKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_intrumentPanelKeyTyped
+}//GEN-LAST:event_intrumentPanelKeyTyped
+
+private void btnControlKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnControlKeyTyped
+    switch (evt.getKeyCode()) {
+        case KeyEvent.VK_LEFT:
+            btnLeftOneActionPerformed(null);
+            break;
+        case KeyEvent.VK_RIGHT:
+            btnRightOneActionPerformed(null);
+            break;
+        case KeyEvent.VK_UP:
+            btnForwardOneActionPerformed(null);
+            break;
+        case KeyEvent.VK_DOWN:
+            btnBackwardOneActionPerformed(null);
+            break;
+    }
+}//GEN-LAST:event_btnControlKeyTyped
+
+private void btnControlKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnControlKeyPressed
+    switch (evt.getKeyCode()) {
+        case KeyEvent.VK_LEFT:
+            btnLeftOneActionPerformed(null);
+            break;
+        case KeyEvent.VK_RIGHT:
+            btnRightOneActionPerformed(null);
+            break;
+        case KeyEvent.VK_UP:
+            btnForwardOneActionPerformed(null);
+            break;
+        case KeyEvent.VK_DOWN:
+            btnBackwardOneActionPerformed(null);
+            break;
+    }
+}//GEN-LAST:event_btnControlKeyPressed
+
     /**
      * @param args the command line arguments
      */
@@ -732,6 +790,7 @@ private void btnTracerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     public javax.swing.JCheckBox boxRenderMain;
     private javax.swing.JButton btnBackwardOne;
     private javax.swing.JButton btnCenter;
+    private javax.swing.JButton btnControl;
     private javax.swing.JButton btnDTL;
     private javax.swing.JButton btnDownOne;
     private javax.swing.JButton btnEncode;

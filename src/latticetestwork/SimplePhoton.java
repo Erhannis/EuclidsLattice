@@ -181,8 +181,8 @@ public class SimplePhoton {
                     Logger.getLogger(SimplePhoton.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 pos = hit;
-                dir = hitFace.crossCornerVector(cell, dir);
                 if (hitFace.crossCornerCell(cell) != null) {
+                    dir = hitFace.crossCornerVector(cell, dir);
                     cell = hitFace.crossCornerCell(cell);
                 } else {
                     return cell.color;
@@ -271,8 +271,8 @@ public class SimplePhoton {
                     Logger.getLogger(SimplePhoton.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 pos = hit;
-                dir = hitFace.crossCornerVector(cell, dir);
                 if (hitFace.crossCornerCell(cell) != null) {
+                    dir = hitFace.crossCornerVector(cell, dir);
                     cell = hitFace.crossCornerCell(cell);
                 } else {
                     return cell.color;

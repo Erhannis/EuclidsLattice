@@ -196,16 +196,23 @@ public class NFace implements Streamable {
             }
         }
         NVector vB = null;
-        for (NPoint b : cellB.points) {
-            if (!isaPoint(b)) {
-                vB = b.pos.minusB(points[0].pos);
-                break;
+        if (cellB != null) {
+            for (NPoint b : cellB.points) {
+                if (!isaPoint(b)) {
+                    vB = b.pos.minusB(points[0].pos);
+                    break;
+                }
             }
         }
         try {//System.out.println(basis.projection);
             aDir = Matrix.lrvMult(basis.projection, vA).minusB(vA);
-            bDir = vB.minusB(Matrix.lrvMult(basis.projection, vB));
-            angle = NVector.angle(aDir, bDir);
+            if (vB != null) {
+                bDir = vB.minusB(Matrix.lrvMult(basis.projection, vB));
+                angle = NVector.angle(aDir, bDir);
+            } else {
+                bDir = null;
+                angle = Math.PI;
+            }
         } catch (Exception ex) {
             Logger.getLogger(NFace.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -213,6 +220,10 @@ public class NFace implements Streamable {
 
     public NVector crossCornerVector(NCell from, NVector dir) {
         if (from == cellA) {
+            if (cellB == null) {
+                // This'll reflect, if it really wants a direction to go.
+                return dir.multS(-1);
+            }
             try {
                 return NVector.rotate(aDir, bDir, dir, angle);
             } catch (Exception ex) {
