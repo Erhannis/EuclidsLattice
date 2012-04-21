@@ -36,8 +36,10 @@ public class CameraForm extends javax.swing.JFrame {
     public Engine engine = null;
     public Camera camera = null;
     public double dtl = 2.0;
+    public int graininess = 1;
     public LatticeTestworkView parent = null;
     public boolean render;
+    public double fov = 1.0;
 
     /** Creates new form CameraForm */
     public CameraForm(final Engine engine0, Camera cam, LatticeTestworkView parent) {
@@ -57,7 +59,7 @@ public class CameraForm extends javax.swing.JFrame {
                 if (engine != null && render) {
                     System.out.println("Start render " + renderCount);
                     Graphics2D g = (Graphics2D) g1;
-                    camera.renderCamera(g, Camera.PROJ_MERCATOR, this.getWidth(), this.getHeight(), dtl);
+                    camera.renderCamera(g, Camera.PROJ_MERCATOR, this.getWidth(), this.getHeight(), dtl, fov, graininess);
                     System.out.println("Finish render " + renderCount++);
                     //engine.render(g, 0, this.getWidth(), this.getHeight(), transX, transY, scaleX, scaleY);
                 }
@@ -94,6 +96,13 @@ public class CameraForm extends javax.swing.JFrame {
         boxRenderMain = new javax.swing.JCheckBox();
         btnTracer = new javax.swing.JButton();
         btnControl = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        editGrainy = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        editDTL = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        editGaitLength = new javax.swing.JTextField();
+        editAngle = new javax.swing.JTextField();
 
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(latticetestwork.LatticeTestworkApp.class).getContext().getResourceMap(CameraForm.class);
         setTitle(resourceMap.getString("Form.title")); // NOI18N
@@ -245,6 +254,11 @@ public class CameraForm extends javax.swing.JFrame {
 
         btnControl.setText(resourceMap.getString("btnControl.text")); // NOI18N
         btnControl.setName("btnControl"); // NOI18N
+        btnControl.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnControlActionPerformed(evt);
+            }
+        });
         btnControl.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 btnControlKeyPressed(evt);
@@ -254,17 +268,51 @@ public class CameraForm extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
+        jLabel1.setName("jLabel1"); // NOI18N
+
+        editGrainy.setText(resourceMap.getString("editGrainy.text")); // NOI18N
+        editGrainy.setToolTipText(resourceMap.getString("editGrainy.toolTipText")); // NOI18N
+        editGrainy.setName("editGrainy"); // NOI18N
+
+        jLabel2.setText(resourceMap.getString("jLabel2.text")); // NOI18N
+        jLabel2.setName("jLabel2"); // NOI18N
+
+        editDTL.setText(resourceMap.getString("editDTL.text")); // NOI18N
+        editDTL.setToolTipText(resourceMap.getString("editDTL.toolTipText")); // NOI18N
+        editDTL.setName("editDTL"); // NOI18N
+
+        jLabel3.setText(resourceMap.getString("jLabel3.text")); // NOI18N
+        jLabel3.setName("jLabel3"); // NOI18N
+
+        editGaitLength.setText(resourceMap.getString("editGaitLength.text")); // NOI18N
+        editGaitLength.setToolTipText(resourceMap.getString("editGaitLength.toolTipText")); // NOI18N
+        editGaitLength.setName("editGaitLength"); // NOI18N
+
+        editAngle.setText(resourceMap.getString("editAngle.text")); // NOI18N
+        editAngle.setToolTipText(resourceMap.getString("editAngle.toolTipText")); // NOI18N
+        editAngle.setName("editAngle"); // NOI18N
+
         javax.swing.GroupLayout intrumentPanelLayout = new javax.swing.GroupLayout(intrumentPanel);
         intrumentPanel.setLayout(intrumentPanelLayout);
         intrumentPanelLayout.setHorizontalGroup(
             intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, intrumentPanelLayout.createSequentialGroup()
-                .addContainerGap(36, Short.MAX_VALUE)
-                .addGroup(intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(btnControl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnTracer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnRealign, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnCenter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(36, 36, 36)
+                .addGroup(intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnControl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
+                    .addComponent(btnTracer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
+                    .addComponent(btnRealign, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
+                    .addComponent(btnCenter, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
+                    .addComponent(jLabel1)
+                    .addComponent(editGrainy, 0, 0, Short.MAX_VALUE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3)
+                    .addComponent(editDTL, 0, 0, Short.MAX_VALUE)
+                    .addGroup(intrumentPanelLayout.createSequentialGroup()
+                        .addComponent(editGaitLength, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(editAngle, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(intrumentPanelLayout.createSequentialGroup()
@@ -307,23 +355,39 @@ public class CameraForm extends javax.swing.JFrame {
                     .addComponent(btnStrafeR)
                     .addComponent(btnTracer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnForward)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnForwardOne)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnRightOne)
-                    .addComponent(btnLeftOne))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnBackwardOne)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnDownOne)
-                    .addComponent(btnUpOne))
-                .addGap(5, 5, 5)
-                .addGroup(intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(boxRenderMain)
-                    .addComponent(boxRender))
+                    .addGroup(intrumentPanelLayout.createSequentialGroup()
+                        .addComponent(btnForward)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnForwardOne)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnRightOne)
+                            .addComponent(btnLeftOne))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnBackwardOne)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnDownOne)
+                            .addComponent(btnUpOne))
+                        .addGap(5, 5, 5)
+                        .addGroup(intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(boxRenderMain)
+                            .addComponent(boxRender)))
+                    .addGroup(intrumentPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(editGrainy, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(editDTL, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(editGaitLength, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(editAngle, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnEncode)
@@ -351,13 +415,14 @@ public class CameraForm extends javax.swing.JFrame {
     public int imHeight = 256;
     public int imagecount = 0;
     private void btnDTLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDTLActionPerformed
+        updateOptions();
         images.clear();
         int count = 0;
         for (double ldtl = 3.0625; ldtl > 0; ldtl -= 0.125) {
             count++;
 
             int[] picDims = new int[]{imWidth, imHeight};
-            Tensor<Color> result = camera.aRender(ldtl, picDims);
+            Tensor<Color> result = camera.aRender(ldtl, fov, picDims);
             BufferedImage image = new BufferedImage(imWidth, imHeight, BufferedImage.TYPE_3BYTE_BGR);
             for (int x = 0; x < imWidth; x++) {
                 for (int y = 0; y < imHeight; y++) {
@@ -424,17 +489,20 @@ public class CameraForm extends javax.swing.JFrame {
 //        writer.close();
 //
     }//GEN-LAST:event_btnEncodeActionPerformed
-    public double gaitLength = 0.005;
+    public double gaitLength = 0.01;
+    public double turnAngle = 0.1;
     public double prevFloating = 0;
     public double curFloating = 0;
 
     private void btnStrafeLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStrafeLActionPerformed
+        updateOptions();
         images.clear();
         //int count = 0;
         for (int count = 0; count < 2000; count++) {
             //count++;
 
-            camera.move(camera.orientation[1].multS(-gaitLength), null);
+            //camera.move(camera.orientation[1].multS(-gaitLength), null);
+            camera.move(camera.orientation[0].multS(gaitLength), null);
             prevFloating = curFloating;
             curFloating = camera.checkFloating();
             if (curFloating > 0.005) {
@@ -455,7 +523,7 @@ public class CameraForm extends javax.swing.JFrame {
 
             if (!parent.distributeComputing) {
                 int[] picDims = new int[]{imWidth, imHeight};
-                Tensor<Color> result = camera.aRender(dtl, picDims);
+                Tensor<Color> result = camera.aRender(dtl, fov, picDims);
                 BufferedImage image = new BufferedImage(imWidth, imHeight, BufferedImage.TYPE_3BYTE_BGR);
                 for (int x = 0; x < imWidth; x++) {
                     for (int y = 0; y < imHeight; y++) {
@@ -494,7 +562,7 @@ public class CameraForm extends javax.swing.JFrame {
 
                         public void run() {
                             try {
-                                BufferedImage image = worker.renderFrameToImagePaced(camNum, dtl, imWidth, imHeight, picDims);
+                                BufferedImage image = worker.renderFrameToImagePaced(camNum, dtl, fov, imWidth, imHeight, picDims);
                                 try {
                                     java.io.FileOutputStream fout = new java.io.FileOutputStream("image" + imageNum + ".jpg");
                                     javax.imageio.ImageIO.write(image, "JPG", fout);
@@ -539,6 +607,7 @@ public class CameraForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnStrafeLActionPerformed
 
     private void btnStrafeRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStrafeRActionPerformed
+        updateOptions();
         images.clear();
         //int count = 0;
         for (int count = 0; count < 40; count++) {
@@ -547,7 +616,7 @@ public class CameraForm extends javax.swing.JFrame {
             camera.move(camera.orientation[1].multS(gaitLength), null);
 
             int[] picDims = new int[]{imWidth, imHeight};
-            Tensor<Color> result = camera.aRender(2, picDims);
+            Tensor<Color> result = camera.aRender(2, fov, picDims);
             BufferedImage image = new BufferedImage(imWidth, imHeight, BufferedImage.TYPE_3BYTE_BGR);
             for (int x = 0; x < imWidth; x++) {
                 for (int y = 0; y < imHeight; y++) {
@@ -577,6 +646,7 @@ public class CameraForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnStrafeRActionPerformed
 
     private void btnForwardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnForwardActionPerformed
+        updateOptions();
         images.clear();
         //int count = 0;
         for (int count = 0; count < 40; count++) {
@@ -585,7 +655,7 @@ public class CameraForm extends javax.swing.JFrame {
             camera.move(camera.orientation[0].multS(gaitLength), null);
 
             int[] picDims = new int[]{imWidth, imHeight};
-            Tensor<Color> result = camera.aRender(2, picDims);
+            Tensor<Color> result = camera.aRender(2, fov, picDims);
             BufferedImage image = new BufferedImage(imWidth, imHeight, BufferedImage.TYPE_3BYTE_BGR);
             for (int x = 0; x < imWidth; x++) {
                 for (int y = 0; y < imHeight; y++) {
@@ -615,8 +685,9 @@ public class CameraForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnForwardActionPerformed
 
     private void btnLeftOneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLeftOneActionPerformed
+        updateOptions();
         try {
-            camera.move(camera.orientation[1].multS(gaitLength), null);
+            camera.move(camera.orientation[1].multS(-gaitLength), null);
         } catch (StackOverflowError e) {
             System.err.println("Stack overflow! - " + camera.checkFloating());
         }
@@ -629,6 +700,7 @@ public class CameraForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLeftOneActionPerformed
 
     private void btnForwardOneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnForwardOneActionPerformed
+        updateOptions();
         camera.move(camera.orientation[0].multS(gaitLength), null);
         if (boxRender.isSelected()) {
             renderPanel.repaint();
@@ -639,7 +711,8 @@ public class CameraForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnForwardOneActionPerformed
 
     private void btnRightOneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRightOneActionPerformed
-        camera.move(camera.orientation[1].multS(-gaitLength), null);
+        updateOptions();
+        camera.move(camera.orientation[1].multS(gaitLength), null);
         if (boxRender.isSelected()) {
             renderPanel.repaint();
         }
@@ -649,6 +722,7 @@ public class CameraForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRightOneActionPerformed
 
     private void btnBackwardOneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackwardOneActionPerformed
+        updateOptions();
         camera.move(camera.orientation[0].multS(-gaitLength), null);
         if (boxRender.isSelected()) {
             renderPanel.repaint();
@@ -659,6 +733,7 @@ public class CameraForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBackwardOneActionPerformed
 
     private void btnUpOneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpOneActionPerformed
+        updateOptions();
         camera.move(camera.orientation[2].multS(gaitLength), null);
         if (boxRender.isSelected()) {
             renderPanel.repaint();
@@ -669,6 +744,7 @@ public class CameraForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnUpOneActionPerformed
 
     private void btnDownOneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDownOneActionPerformed
+        updateOptions();
         camera.move(camera.orientation[2].multS(-gaitLength), null);
         if (boxRender.isSelected()) {
             renderPanel.repaint();
@@ -679,6 +755,7 @@ public class CameraForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDownOneActionPerformed
 
     private void btnRealignActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRealignActionPerformed
+        updateOptions();
         if ((evt.getModifiers() & ActionEvent.CTRL_MASK) != 0) {
             new Thread(new Runnable() {
 
@@ -708,10 +785,12 @@ public class CameraForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRealignActionPerformed
 
     private void boxRenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boxRenderActionPerformed
+        updateOptions();
         render = boxRender.isSelected();
     }//GEN-LAST:event_boxRenderActionPerformed
 
     private void btnCenterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCenterActionPerformed
+        updateOptions();
         NVector center = new NVector(camera.dims);
         for (NPoint i : camera.cell.points) {
             center = center.plusB(i.pos);
@@ -727,6 +806,7 @@ public class CameraForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCenterActionPerformed
 
 private void btnTracerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTracerActionPerformed
+    updateOptions();
     // Do tracer
     camera.renderCameraTracer(Camera.PROJ_MERCATOR, renderPanel.getWidth(), this.getHeight(), 2);
     if (boxRender.isSelected()) {
@@ -740,39 +820,126 @@ private void btnTracerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 private void intrumentPanelKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_intrumentPanelKeyTyped
 }//GEN-LAST:event_intrumentPanelKeyTyped
 
-private void btnControlKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnControlKeyTyped
-    switch (evt.getKeyCode()) {
-        case KeyEvent.VK_LEFT:
-            btnLeftOneActionPerformed(null);
-            break;
-        case KeyEvent.VK_RIGHT:
-            btnRightOneActionPerformed(null);
-            break;
-        case KeyEvent.VK_UP:
-            btnForwardOneActionPerformed(null);
-            break;
-        case KeyEvent.VK_DOWN:
-            btnBackwardOneActionPerformed(null);
-            break;
+    public void rotateLeft() {
+        try {
+            camera.rotate(0, 1, -turnAngle);
+        } catch (Exception e) {
+            System.err.println("Rotation trouble: " + e.getMessage());
+        }
+        if (boxRender.isSelected()) {
+            renderPanel.repaint();
+        }
+        if (boxRenderMain.isSelected()) {
+            parent.dp.repaint();
+        }
     }
+
+    public void rotateRight() {
+        try {
+            camera.rotate(0, 1, turnAngle);
+        } catch (Exception e) {
+            System.err.println("Rotation trouble: " + e.getMessage());
+        }
+        if (boxRender.isSelected()) {
+            renderPanel.repaint();
+        }
+        if (boxRenderMain.isSelected()) {
+            parent.dp.repaint();
+        }
+    }
+
+    public void rotateUp() {
+        try {
+            if (engine.lattice.internalDims > 2) {
+                camera.rotate(0, 2, -turnAngle);
+            } else {
+                return;
+            }
+        } catch (Exception e) {
+            System.err.println("Rotation trouble: " + e.getMessage());
+        }
+        if (boxRender.isSelected()) {
+            renderPanel.repaint();
+        }
+        if (boxRenderMain.isSelected()) {
+            parent.dp.repaint();
+        }
+    }
+
+    public void rotateDown() {
+        try {
+            if (engine.lattice.internalDims > 2) {
+                camera.rotate(0, 2, turnAngle);
+            } else {
+                return;
+            }
+        } catch (Exception e) {
+            System.err.println("Rotation trouble: " + e.getMessage());
+        }
+        if (boxRender.isSelected()) {
+            renderPanel.repaint();
+        }
+        if (boxRenderMain.isSelected()) {
+            parent.dp.repaint();
+        }
+    }
+    
+private void btnControlKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnControlKeyTyped
 }//GEN-LAST:event_btnControlKeyTyped
 
+public void updateOptions() {
+    graininess = Integer.valueOf(editGrainy.getText());
+    dtl = Double.valueOf(editDTL.getText());
+    gaitLength = Double.valueOf(editGaitLength.getText());
+    turnAngle = Double.valueOf(editAngle.getText());
+}
+
 private void btnControlKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnControlKeyPressed
-    switch (evt.getKeyCode()) {
-        case KeyEvent.VK_LEFT:
-            btnLeftOneActionPerformed(null);
-            break;
-        case KeyEvent.VK_RIGHT:
-            btnRightOneActionPerformed(null);
-            break;
-        case KeyEvent.VK_UP:
-            btnForwardOneActionPerformed(null);
-            break;
-        case KeyEvent.VK_DOWN:
-            btnBackwardOneActionPerformed(null);
-            break;
+    updateOptions();//THINK Is this significantly inefficient?
+    if ((evt.getModifiers() & KeyEvent.SHIFT_MASK) == 0) {
+        switch (evt.getKeyCode()) {
+            case KeyEvent.VK_LEFT:
+                rotateLeft();
+                break;
+            case KeyEvent.VK_RIGHT:
+                rotateRight();
+                break;
+            case KeyEvent.VK_UP:
+                btnForwardOneActionPerformed(null);
+                break;
+            case KeyEvent.VK_DOWN:
+                btnBackwardOneActionPerformed(null);
+                break;
+            case KeyEvent.VK_SPACE:
+                if (boxRender.isSelected()) {
+                    renderPanel.repaint();
+                }
+                if (boxRenderMain.isSelected()) {
+                    parent.dp.repaint();
+                }
+                break;
+        }
+    } else {
+        switch (evt.getKeyCode()) {
+            case KeyEvent.VK_LEFT:
+                btnLeftOneActionPerformed(null);
+                break;
+            case KeyEvent.VK_RIGHT:
+                btnRightOneActionPerformed(null);
+                break;
+            case KeyEvent.VK_UP:
+                rotateUp();
+                break;
+            case KeyEvent.VK_DOWN:
+                rotateDown();
+                break;
+        }
     }
 }//GEN-LAST:event_btnControlKeyPressed
+
+private void btnControlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnControlActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_btnControlActionPerformed
 
     /**
      * @param args the command line arguments
@@ -803,7 +970,14 @@ private void btnControlKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
     private javax.swing.JButton btnStrafeR;
     private javax.swing.JButton btnTracer;
     private javax.swing.JButton btnUpOne;
+    private javax.swing.JTextField editAngle;
+    private javax.swing.JTextField editDTL;
+    private javax.swing.JTextField editGaitLength;
+    private javax.swing.JTextField editGrainy;
     private javax.swing.JPanel intrumentPanel;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JSplitPane jSplitPane1;
     // End of variables declaration//GEN-END:variables
 }

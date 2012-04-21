@@ -947,6 +947,9 @@ public class Engine {
                                 if (!chosens.isEmpty()) {
                                     g.setColor(Color.CYAN);
                                     for (NPoint i : chosens) {
+                                        if (i == null) {
+                                            continue;
+                                        }
                                         try {
                                             if (hideImmune && i.immune) {
                                                 continue;
@@ -995,7 +998,7 @@ public class Engine {
     public double repulsionCutoff = -1;
     public int repulsionMode = 0;
 
-    public void repel() {
+    public void repel(double forceFactor) {
 //        switch (mode) {
 //            case 0: // 2-2 Triangulation
         if (lattice != null) {
@@ -1047,7 +1050,7 @@ public class Engine {
                             }
                         }
                         for (int k = 0; k < dims; k++) {
-                            force.coords[k] /= 10000;
+                            force.coords[k] *= forceFactor;
                         }
 //                        force.coords[0] /= 10000;
 //                        force.coords[1] /= 10000;
@@ -1171,10 +1174,19 @@ public class Engine {
         NPoint a = lattice.points.get(r.nextInt(lattice.points.size()));
         double nearestDist = -1;
         NPoint b = null;
-        for (NPoint i : lattice.points) {
-            if (((nearestDist == -1) || (a.distSqr(i) < nearestDist)) && (a != i)) {
-                b = i;
-                nearestDist = a.distSqr(i);
+        if (!candidateSystem) {
+            for (NPoint i : lattice.points) {
+                if (((nearestDist == -1) || (a.distSqr(i) < nearestDist)) && (a != i)) {
+                    b = i;
+                    nearestDist = a.distSqr(i);
+                }
+            }
+        } else {
+            for (NPoint i : a.candidates) {
+                if (((nearestDist == -1) || (a.distSqr(i) < nearestDist)) && (a != i)) {
+                    b = i;
+                    nearestDist = a.distSqr(i);
+                }
             }
         }
         NFace leaf = new NFace(dims, lattice.internalDims);
@@ -1189,16 +1201,26 @@ public class Engine {
 //        double radius = radiusSize * leaf.points[0].dist(leaf.points[1]);
         double radius = radiusSize * leaf.points[0].dist(b);
         ArrayList<NPoint> nearest = new ArrayList<NPoint>();
-        if (radiusSize != -1) {
-            for (NPoint i : lattice.points) {
-                if ((leaf.points[0].dist(i) <= radius) && (!leaf.isaPoint(i)) && (!i.immune)) {
-                    nearest.add(i);
+        if (!candidateSystem) {
+            if (radiusSize != -1) {
+                for (NPoint i : lattice.points) {
+                    if ((leaf.points[0].dist(i) <= radius) && (!leaf.isaPoint(i)) && (!i.immune)) {
+                        nearest.add(i);
+                    }
+                }
+            } else {
+                for (NPoint i : lattice.points) {
+                    if ((!leaf.isaPoint(i)) && (!i.immune)) {
+                        nearest.add(i);
+                    }
                 }
             }
         } else {
-            for (NPoint i : lattice.points) {
-                if ((!leaf.isaPoint(i)) && (!i.immune)) {
-                    nearest.add(i);
+            nearest.addAll(leaf.points[0].candidates);
+            for (NPoint p : leaf.points) {
+                // It's like set intersection.
+                if (p != null) {
+                    nearest.retainAll(p.candidates);
                 }
             }
         }
@@ -1214,21 +1236,38 @@ public class Engine {
     public boolean seedRecurse(ArrayList<NPoint> nearest, ArrayList<NPoint> anchors, NFace leaf, int finalDepth, int currentDepth) {
         if (currentDepth < finalDepth - 1) {
             ArrayList<NPoint> subNearest = (ArrayList<NPoint>) nearest.clone();
-            for (NPoint i : nearest) {
-                leaf.points[currentDepth] = i;
-                anchors.add(i);
-                subNearest.remove(i);
-                if (seedRecurse(subNearest, anchors, leaf, finalDepth, currentDepth + 1)) {
-                    return true;
+            if (!candidateSystem) {
+                for (NPoint i : nearest) {
+                    leaf.points[currentDepth] = i;
+                    anchors.add(i);
+                    subNearest.remove(i);
+                    if (seedRecurse(subNearest, anchors, leaf, finalDepth, currentDepth + 1)) {
+                        return true;
+                    }
+                    anchors.remove(i);
+                    subNearest.add(i);
                 }
-                anchors.remove(i);
-                subNearest.add(i);
+            } else {
+                for (NPoint i : nearest) {
+                    leaf.points[currentDepth] = i;
+                    anchors.add(i);
+                    subNearest.remove(i);
+                    ArrayList<NPoint> removed = (ArrayList<NPoint>) subNearest.clone();
+                    removed.removeAll(i.candidates);
+                    subNearest.retainAll(i.candidates);
+                    if (seedRecurse(subNearest, anchors, leaf, finalDepth, currentDepth + 1)) {
+                        return true;
+                    }
+                    anchors.remove(i);
+                    subNearest.addAll(removed);
+                    subNearest.add(i);
+                }
             }
         } else {
             for (NPoint i : nearest) {
                 anchors.add(i);
                 //TODO I really ought to change this to just pick one in withinCircle and go from there, but hang on.
-                if (((maxThinness == -1) || checkThinness(anchors, maxThinness)) && ((minAngle == -1) || checkMinAngle(anchors, minAngle)) && ((minVolume == -1) || checkMinVolume(anchors, minVolume))) {
+                if (((maxThinness == -1) || checkThinness(anchors, maxThinness)) && ((minAngle == -1) || checkMinAngle(anchors, minAngle)) && checkMinMaxVolume(anchors, minVolume, maxVolume) && checkMinMaxLength(anchors, minLength, maxLength)) {
                     ArrayList<NPoint> withinCircle = findCircleContentsALT(anchors, true, false);
                     if (withinCircle.isEmpty()) {
                         NCell newCell = new NCell(dims, lattice.internalDims);
@@ -1270,6 +1309,9 @@ public class Engine {
                                 lattice.incompleteFaces.add(newFace);
                                 lattice.faces.add(newFace);
                             }
+                        }
+                        for (NPoint p : leaf.points) {
+                            p.faces.add(leaf);
                         }
                         lastCell = newCell;
                         lattice.cells.add(newCell);
@@ -1630,8 +1672,9 @@ public class Engine {
                     throw new Exception("Straight line sphere");
                 }
             }
-            if (containmentFudgeValue > 0) {
-                double newRadius = sqr(Math.sqrt(radius) - containmentFudgeValue);
+            if (containmentFudgeValue != -1) {
+                double sqrtRad = Math.sqrt(radius) - containmentFudgeValue;
+                double newRadius = sqr(sqrtRad) * Math.signum(sqrtRad);
                 if (stopAtOne) {
                     for (NPoint i : lattice.points) { //TODO This seems to be the slowest point ever.
                         if ((center.distSqr(i) < newRadius) && (!anchors.contains(i)) && (!i.immune)) {
@@ -1678,13 +1721,20 @@ public class Engine {
     public double radiusSize = 3;
     public boolean allowSkipHardFaces = true;
     public double maxThinness = -1;
-    public double containmentFudgeValue = 0;
+    public double containmentFudgeValue = -1;
     public double minAngle = -1;
     public double minVolume = -1;
+    public double maxVolume = -1;
+    public double minLength = -1;
+    public double maxLength = -1;
     public int faceBottom = 0;
     public NCell taggedCell = null;
+    public NFace taggedFace = null;
+    public double maxRefractionAngle = Math.PI / 2;
 
-    public boolean crystallize() {
+    public int lastCompleteCount = 0;
+    
+    public boolean crystallize(int runTag) {
         if (lattice != null) {//refreshCompletePoints();
             if (!lattice.incompleteFaces.isEmpty()) {//parent.dp.paintImmediately(parent.dp.getBounds());
                 int top = 0;
@@ -1697,6 +1747,15 @@ public class Engine {
                 for (int faceNumBase = 0; faceNumBase <= top; faceNumBase++) {
                     int faceNum = (faceNumBase + faceBottom) % (top + 1);
                     NFace leaf = lattice.incompleteFaces.get(faceNum);
+                    if (leaf.runTag == runTag) {
+                        continue;
+                    }
+                    if (leaf.complete()) {
+                        continue;
+                    }
+                    if (taggedFace != null && (taggedFace.equivalent(leaf))) {
+                        System.out.println("Tagged face processed.");
+                    }
                     double radius;
                     if (leaf.points.length > 1) {
                         radius = radiusSize * leaf.points[0].dist(leaf.points[1]);
@@ -1712,17 +1771,25 @@ public class Engine {
                         radius = radiusSize * Math.sqrt(nearestDist);
                     }
                     ArrayList<NPoint> nearest = new ArrayList<NPoint>();
-                    if (radiusSize != -1) {
-                        for (NPoint i : lattice.points) {
-                            if ((leaf.points[0].dist(i) <= radius) && (!leaf.cellA.isaPoint(i)) && (!i.immune)) {
-                                nearest.add(i);
+                    if (!candidateSystem) {
+                        if (radiusSize != -1) {
+                            for (NPoint i : lattice.points) {
+                                if ((leaf.points[0].dist(i) <= radius) && (!leaf.cellA.isaPoint(i)) && (!i.immune)) {
+                                    nearest.add(i);
+                                }
+                            }
+                        } else {
+                            for (NPoint i : lattice.points) {
+                                if (!leaf.cellA.isaPoint(i) && (!i.immune)) {
+                                    nearest.add(i);
+                                }
                             }
                         }
                     } else {
-                        for (NPoint i : lattice.points) {
-                            if (!leaf.cellA.isaPoint(i) && (!i.immune)) {
-                                nearest.add(i);
-                            }
+                        nearest.addAll(leaf.points[0].candidates);
+                        for (NPoint p : leaf.points) {
+                            // It's like set intersection.
+                            nearest.retainAll(p.candidates);
                         }
                     }
                     ArrayList<NPoint> anchors = new ArrayList<NPoint>();
@@ -1735,7 +1802,7 @@ public class Engine {
                             System.out.println("Tagged cell processed.");
                         }//calcThinness2(taggedCell.points);//calcThinness2(anchors.toArray(new NPoint[0]));
                         //TODO I really ought to change this to just pick one in withinCircle and go from there, but hang on.
-                        if (((maxThinness == -1) || checkThinness(anchors, maxThinness)) && ((minAngle == -1) || checkMinAngle(anchors, minAngle)) && ((minVolume == -1) || checkMinVolume(anchors, minVolume))) {
+                        if (((maxThinness == -1) || checkThinness(anchors, maxThinness)) && ((minAngle == -1) || checkMinAngle(anchors, minAngle)) && checkMinMaxVolume(anchors, minVolume, maxVolume) && checkMinMaxLength(anchors, minLength, maxLength)) {
                             ArrayList<NPoint> withinCircle = findCircleContentsALT(anchors, true, false);
                             if (withinCircle.isEmpty()) {
 //                                ArrayList
@@ -1745,7 +1812,14 @@ public class Engine {
                                     newCell.points[j] = anchors.get(j);
                                 }
                                 newCell.faces[0] = leaf;
+                                if (leaf.cellB != null) {
+                                    System.err.println("Leaf complete!");
+                                }
+                                leaf.cellBBackup = null;
                                 leaf.cellB = newCell;
+
+                                boolean undo = false;
+
                                 for (int j = 1; j < newCell.faces.length; j++) {
                                     NFace newFace = new NFace(dims, lattice.internalDims);
                                     int index = 0;
@@ -1768,6 +1842,22 @@ public class Engine {
                                         }
                                     }
                                     if (matched) {
+                                        if (match.cellB != null) {
+                                            //System.err.println("Overwriting a cellB!");
+//                                            highlighteds.clear();
+//                                            for (NPoint fp : newCell.points) {
+//                                                highlighteds.add(fp);
+//                                            }
+//                                            chosens.clear();
+//                                            for (NPoint fp : leaf.points) {
+//                                                chosens.add(fp);
+//                                            }
+//                                            //highlightedCells.clear();
+//                                            //highlightedCells.add(newCell);
+//                                            throw new RuntimeException("Full halt!");
+                                            undo = true;
+                                        }
+                                        match.cellBBackup = match.cellB;
                                         match.cellB = newCell;
                                         newCell.faces[j] = match;
                                         lattice.incompleteFaces.remove(match); //TODO Maybe double-check?
@@ -1781,18 +1871,78 @@ public class Engine {
                                         lattice.faces.add(newFace);
                                     }
                                 }
+
+                                if (!undo) {
+                                    for (int j = 0; j < newCell.faces.length; j++) {
+                                        if (newCell.faces[j].complete()) {
+                                            if (newCell.faces[j].basis == null) {
+                                                newCell.faces[j].calcBasis();
+                                            }
+                                            if (!newCell.faces[j].checkAngle(maxRefractionAngle, false)) {
+                                                undo = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (undo) {
+                                    // Undo what was done.
+
+                                    leaf.cellB = null;
+                                    for (int j = 1; j < newCell.faces.length; j++) {
+                                        if (newCell.faces[j].complete()) {
+                                            newCell.faces[j].cellB = newCell.faces[j].cellBBackup;
+                                            newCell.faces[j].cellBBackup = null;
+                                            if (!newCell.faces[j].complete()) {
+                                                lattice.incompleteFaces.add(newCell.faces[j]);
+                                            }
+                                        } else {
+                                            for (NPoint p : newCell.faces[j].points) {
+                                                p.faces.remove(newCell.faces[j]);
+                                            }
+                                            lattice.incompleteFaces.remove(newCell.faces[j]);
+                                            lattice.faces.remove(newCell.faces[j]);
+                                        }
+                                    }
+                                    anchors.remove(i);
+                                    //getMisclassifiedFaceCount();
+                                    //THINK I never figured out why the complete point count kept going down that time.
+//                                    int newCompCount = refreshCompletePoints();
+//                                    if (newCompCount < lastCompleteCount) {
+//                                        System.err.println("Decreased count!");
+//                                    }
+                                    continue;
+                                }
+
                                 lattice.cells.add(newCell);
                                 lattice.incompleteFaces.remove(leaf);
 
                                 faceBottom = faceNum;
                                 System.out.println("Found face at " + faceNum);
                                 sticksChanged = true;
+
+                                //THINK Maybe this should still be checked?  Isn't finding any, though, and REALLY slow.
+//                                for (int j = 0; j < newCell.faces.length; j++) {
+//                                    checkDuplicates(newCell.faces[j]);
+//                                }
+
+                                //TODO Check for pre-formed cells here
+
+                                //getMisclassifiedFaceCount();
+                                //THINK I never figured out why the complete point count kept going down that time.
+//                                int newCompCount = refreshCompletePoints();
+//                                if (newCompCount < lastCompleteCount) {
+//                                    System.err.println("Decreased count!");
+//                                }
+                                leaf.runTag = runTag;
                                 return true;
                             }//faceNum
                         }
                         anchors.remove(i);
                     }
                     System.out.println("Passed face " + faceNum);
+                    leaf.runTag = runTag;
                 }
             }
         }
@@ -2032,7 +2182,10 @@ public class Engine {
         }
     }
 
-    public static boolean checkMinVolume(ArrayList<NPoint> frame, double minVolume) {
+    public static boolean checkMinMaxVolume(ArrayList<NPoint> frame, double minVolume, double maxVolume) {
+        if (minVolume == -1 && maxVolume == -1) {
+            return true;
+        }
         if (frame.size() <= 0) {
             return false; // Eh, maybe I should throw an error or something.
         }
@@ -2064,10 +2217,27 @@ public class Engine {
         }
         try {
             double volume = ((1.0 / MeMath.factorial(simplexDims)) * Math.abs(m.det()));
-            if ((volume < minVolume) || Double.isInfinite(volume) || Double.isNaN(volume)) {
-                return false;
+            //System.out.println("Volume: " + volume);
+            if (minVolume != -1) {
+                if ((volume < minVolume) || Double.isInfinite(volume) || Double.isNaN(volume)) {
+                    return false;
+                } else {
+                    if (maxVolume != -1) {
+                        if (volume > maxVolume) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    } else {
+                        return true;
+                    }
+                }
             } else {
-                return true;
+                if (volume > maxVolume) {
+                    return false;
+                } else {
+                    return true;
+                }
             }
         } catch (Exception ex) {
             Logger.getLogger(NCell.class.getName()).log(Level.SEVERE, null, ex);
@@ -2380,7 +2550,7 @@ public class Engine {
     }
     public double donutCircumfrence = 30;
 
-    public void placeNDonut() {
+    public void placeNDonut() throws Exception {
         if (lattice != null) {
             if ((dims / 2) >= lattice.internalDims) {
                 NVector cursor = new NVector(lattice.internalDims);
@@ -2405,12 +2575,13 @@ public class Engine {
 
             } else {
                 // Well, can't really make one of those non-curved donuts, so...go fish.
+                throw new Exception("Total dims must be at least 2x lattice dims.");
             }
         }
     }
-
-    public double randomRange = -1;
     
+    public double randomRange = -1;
+
     public void placeNDonutRecurse(NVector cursor, NVector shiftCursor, int dim, double inc, NVector intCursor, NPoint[] donutMesh, int circ) {
         if (dim < cursor.dims) {
             double d = 0;
@@ -2421,15 +2592,15 @@ public class Engine {
 //                        if (shiftCursor.coords[j] > 0) {
 //                            shiftCursor.coords[j] = 0;
 //                        } else {
-                        if (randomRange > 0) {
-                            shiftCursor.coords[j] += 0.5 * inc + (((r.nextDouble() * 2) - 1) * randomRange);
-                        } else {
-                            shiftCursor.coords[j] += 0.5 * inc;
-                        }
+                        shiftCursor.coords[j] += 0.5 * inc;
 //                        }
                     }
                 }
-                cursor.coords[dim] = d + shiftCursor.coords[dim];
+                if (randomRange > 0) {
+                    cursor.coords[dim] = d + shiftCursor.coords[dim] + (((r.nextDouble() * 2) - 1) * randomRange);
+                } else {
+                    cursor.coords[dim] = d + shiftCursor.coords[dim];
+                }
                 intCursor.coords[dim] = i;
                 placeNDonutRecurse(cursor, shiftCursor, dim + 1, inc, intCursor, donutMesh, circ);
                 d += inc;
@@ -2451,7 +2622,7 @@ public class Engine {
         }
     }
 
-    public void placeNSaltLattice() {
+    public void placeNSaltLattice() throws Exception {
         if (lattice != null) {
             if ((dims / 2) >= lattice.internalDims) {
                 NVector cursor = new NVector(lattice.internalDims);
@@ -2476,6 +2647,7 @@ public class Engine {
 
             } else {
                 // Well, can't really make one of those non-curved donuts, so...go fish.
+                throw new Exception("Total dims must be at least 2x lattice dims.");
             }
         }
     }
@@ -2515,6 +2687,421 @@ public class Engine {
                 //bucket.pos.coords[(i * 2) + 1] = Math.cos(cursor.coords[i]);
                 bucket.pos.coords[(i * 2) + 1] = 0;
             }
+            lattice.addPoint(bucket);
+            donutMesh[calcLinearNArrayIndex(intCursor, circ)] = bucket;
+        }
+    }
+    
+    /**
+     * Rather than search lattice.points, each point is placed and assigned candidate
+     * points by calculation - the list of the only points to which it can be connected.
+     */
+    public boolean candidateSystem = false;
+
+    public void placeNMobiusDonut() throws Exception {
+        if (lattice != null) {
+            if ((dims == 7) && (lattice.internalDims == 3)) {
+                NVector cursor = new NVector(lattice.internalDims);
+                for (int i = 0; i < cursor.dims; i++) {
+                    cursor.coords[i] = 0;
+                }
+                NVector shiftCursor = new NVector(lattice.internalDims);
+                for (int i = 0; i < shiftCursor.dims; i++) {
+                    shiftCursor.coords[i] = 0;
+                }
+                NVector intCursor = new NVector(lattice.internalDims);
+                for (int i = 0; i < intCursor.dims; i++) {
+                    intCursor.coords[i] = 0;
+                }
+//                double inc = Math.PI / 20;
+//                int circ = (int) (Math.PI * 2 / inc);
+                int circ = (int) donutCircumfrence;
+                double inc = (Math.PI * 2) / donutCircumfrence; //THINK Ummm, maybe I should use circ
+                NPoint[] donutMesh = new NPoint[(int) Math.pow(circ + 2, intCursor.dims)];
+                placeNSomething(cursor, shiftCursor, 0, inc, intCursor, donutMesh, circ);
+                
+                {
+                    int ui = -1;
+                    int vi = 0;
+                    int wi = 0;
+                    for (vi = -1; vi < circ + 1; vi++) {
+                        for (wi = -1; wi < circ + 1; wi++) {
+                            NPoint overlapPoint = donutMesh[calcLinearNArrayIndex(new NVector(new double[]{ui + 1, vi + 1, wi + 1}), circ + 2)];
+                            NPoint truePoint = null;
+                            for (NPoint p : lattice.points) {
+                                if (p.pos.approximatelyEquivalent(overlapPoint.pos, 30)) {
+                                    truePoint = p;
+                                    break;
+                                }
+                            }
+                            if (truePoint == null) {
+                                System.err.println("Overlap not found for (" + ui + ", " + vi + ", " + wi + ")");
+                            }
+                            donutMesh[calcLinearNArrayIndex(new NVector(new double[]{ui + 1, vi + 1, wi + 1}), circ + 2)] = truePoint;
+                        }
+                    }
+                    vi = -1;
+                    for (ui = -1; ui < circ + 1; ui++) {
+                        for (wi = -1; wi < circ + 1; wi++) {
+                            NPoint overlapPoint = donutMesh[calcLinearNArrayIndex(new NVector(new double[]{ui + 1, vi + 1, wi + 1}), circ + 2)];
+                            NPoint truePoint = null;
+                            for (NPoint p : lattice.points) {
+                                if (p.pos.approximatelyEquivalent(overlapPoint.pos, 30)) {
+                                    truePoint = p;
+                                    break;
+                                }
+                            }
+                            if (truePoint == null) {
+                                System.err.println("Overlap not found for (" + ui + ", " + vi + ", " + wi + ")");
+                            }
+                            donutMesh[calcLinearNArrayIndex(new NVector(new double[]{ui + 1, vi + 1, wi + 1}), circ + 2)] = truePoint;
+                        }
+                    }
+                    wi = -1;
+                    for (ui = -1; ui < circ + 1; ui++) {
+                        for (vi = -1; vi < circ + 1; vi++) {
+                            NPoint overlapPoint = donutMesh[calcLinearNArrayIndex(new NVector(new double[]{ui + 1, vi + 1, wi + 1}), circ + 2)];
+                            NPoint truePoint = null;
+                            for (NPoint p : lattice.points) {
+                                if (p.pos.approximatelyEquivalent(overlapPoint.pos, 30)) {
+                                    truePoint = p;
+                                    break;
+                                }
+                            }
+                            if (truePoint == null) {
+                                System.err.println("Overlap not found for (" + ui + ", " + vi + ", " + wi + ")");
+                            }
+                            donutMesh[calcLinearNArrayIndex(new NVector(new double[]{ui + 1, vi + 1, wi + 1}), circ + 2)] = truePoint;
+                        }
+                    }
+                    ui = circ;
+                    for (vi = -1; vi < circ + 1; vi++) {
+                        for (wi = -1; wi < circ + 1; wi++) {
+                            NPoint overlapPoint = donutMesh[calcLinearNArrayIndex(new NVector(new double[]{ui + 1, vi + 1, wi + 1}), circ + 2)];
+                            NPoint truePoint = null;
+                            for (NPoint p : lattice.points) {
+                                if (p.pos.approximatelyEquivalent(overlapPoint.pos, 30)) {
+                                    truePoint = p;
+                                    break;
+                                }
+                            }
+                            if (truePoint == null) {
+                                System.err.println("Overlap not found for (" + ui + ", " + vi + ", " + wi + ")");
+                            }
+                            donutMesh[calcLinearNArrayIndex(new NVector(new double[]{ui + 1, vi + 1, wi + 1}), circ + 2)] = truePoint;
+                        }
+                    }
+                    vi = circ;
+                    for (ui = -1; ui < circ + 1; ui++) {
+                        for (wi = -1; wi < circ + 1; wi++) {
+                            NPoint overlapPoint = donutMesh[calcLinearNArrayIndex(new NVector(new double[]{ui + 1, vi + 1, wi + 1}), circ + 2)];
+                            NPoint truePoint = null;
+                            for (NPoint p : lattice.points) {
+                                if (p.pos.approximatelyEquivalent(overlapPoint.pos, 30)) {
+                                    truePoint = p;
+                                    break;
+                                }
+                            }
+                            if (truePoint == null) {
+                                System.err.println("Overlap not found for (" + ui + ", " + vi + ", " + wi + ")");
+                            }
+                            donutMesh[calcLinearNArrayIndex(new NVector(new double[]{ui + 1, vi + 1, wi + 1}), circ + 2)] = truePoint;
+                        }
+                    }
+                    wi = circ;
+                    for (ui = -1; ui < circ + 1; ui++) {
+                        for (vi = -1; vi < circ + 1; vi++) {
+                            NPoint overlapPoint = donutMesh[calcLinearNArrayIndex(new NVector(new double[]{ui + 1, vi + 1, wi + 1}), circ + 2)];
+                            NPoint truePoint = null;
+                            for (NPoint p : lattice.points) {
+                                if (p.pos.approximatelyEquivalent(overlapPoint.pos, 30)) {
+                                    truePoint = p;
+                                    break;
+                                }
+                            }
+                            if (truePoint == null) {
+                                System.err.println("Overlap not found for (" + ui + ", " + vi + ", " + wi + ")");
+                            }
+                            donutMesh[calcLinearNArrayIndex(new NVector(new double[]{ui + 1, vi + 1, wi + 1}), circ + 2)] = truePoint;
+                        }
+                    }
+                }
+                
+                for (int ui = 0; ui < circ; ui++) {
+                    for (int vi = 0; vi < circ; vi++) {
+                        for (int wi = 0; wi < circ; wi++) {
+                            // Huh, why did I decide to index the things with NVectors?
+                            NPoint p = donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui + 1, vi + 1, wi + 1}), circ + 2)];
+                            p.candidates = new ArrayList<NPoint>();
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+0, vi+0, wi+0}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+0, vi+0, wi+1}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+0, vi+0, wi+2}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+0, vi+1, wi+0}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+0, vi+1, wi+1}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+0, vi+1, wi+2}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+0, vi+2, wi+0}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+0, vi+2, wi+1}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+0, vi+2, wi+2}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+1, vi+0, wi+0}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+1, vi+0, wi+1}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+1, vi+0, wi+2}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+1, vi+1, wi+0}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+1, vi+1, wi+1}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+1, vi+1, wi+2}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+1, vi+2, wi+0}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+1, vi+2, wi+1}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+1, vi+2, wi+2}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+2, vi+0, wi+0}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+2, vi+0, wi+1}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+2, vi+0, wi+2}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+2, vi+1, wi+0}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+2, vi+1, wi+1}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+2, vi+1, wi+2}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+2, vi+2, wi+0}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+2, vi+2, wi+1}), circ + 2)]);
+                            p.candidates.add(donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui+2, vi+2, wi+2}), circ + 2)]);
+                        }
+                    }
+                }
+                candidateSystem = true;
+                //placeNMobiusDonutRecurse(cursor, shiftCursor, 0, inc, intCursor, donutMesh, circ);
+
+                // Going to try to triangulate this sucker right here.  Won't be deLaunay, but that's ok.
+
+            } else {
+                // Well, can't really make one of those non-curved klein bottles, so...go fish.
+                //throw new Exception("Total dims must be at least 3x lattice dims.");
+                throw new Exception("Required: Dims = 7, LDims = 3");
+            }
+        }
+    }
+
+    public void placeNMobiusDonutRecurse(NVector cursor, NVector shiftCursor, int dim, double inc, NVector intCursor, NPoint[] donutMesh, int circ) {
+        if (dim < cursor.dims) {
+            double d = 0;
+            //for (double d = 0; d < Math.PI * 2 * 0.25; d += inc) {
+            //for (int i = 0; i < (dim == 0 ? circ / 2 : circ); i++) {
+            for (int i = 0; i < circ + tweakValue; i++) {
+                if (dim < cursor.dims - 1) {
+                    for (int j = dim + 1; j < cursor.dims; j++) {
+                        if (shiftCursor.coords[j] > 0) {
+                            shiftCursor.coords[j] = 0;
+                        } else {
+                            shiftCursor.coords[j] += 0.5 * inc;
+                        }
+                    }
+                }
+                if (randomRange > 0) {
+                    cursor.coords[dim] = d + shiftCursor.coords[dim] + (((r.nextDouble() * 2) - 1) * randomRange);
+                } else {
+                    cursor.coords[dim] = d + shiftCursor.coords[dim];
+                }
+                intCursor.coords[dim] = i;
+                placeNMobiusDonutRecurse(cursor, shiftCursor, dim + 1, inc, intCursor, donutMesh, circ);
+                d += inc;
+            }
+        } else {
+            NPoint bucket = new NPoint(dims);
+            if (cursor.dims == 2) {
+                bucket.pos.coords[0] = Math.sin(cursor.coords[0]);
+                bucket.pos.coords[1] = Math.cos(cursor.coords[0]) * Math.cos(cursor.coords[1] * 0.5);
+                bucket.pos.coords[2] = Math.cos(cursor.coords[0]) * Math.sin(cursor.coords[1] * 0.5);
+                bucket.pos.coords[3] = Math.sin(cursor.coords[1]);
+                bucket.pos.coords[4] = Math.cos(cursor.coords[1]) * Math.cos(cursor.coords[0] * 0.5);
+                bucket.pos.coords[5] = Math.cos(cursor.coords[1]) * Math.sin(cursor.coords[0] * 0.5);
+                for (NPoint p : lattice.points) {
+                    if (p.pos.exactlyEquivalent(bucket.pos)) {
+                        System.err.println("Equal at " + intCursor.toString());
+                    }//System.out.println(bucket.pos);System.out.println(p.pos);
+                    if (p.pos.approximatelyEquivalent(bucket.pos, 15)) {
+                        System.err.println("About equal at " + intCursor.toString());
+                        chosens.add(bucket);
+                    }
+                }
+            } else {
+                for (int i = 0; i < cursor.dims; i++) {
+                    bucket.pos.coords[(i * 3) + 0] = Math.sin(cursor.coords[i]);
+                    bucket.pos.coords[(i * 3) + 1] = Math.cos(cursor.coords[i]) * Math.cos(cursor.coords[(i + 1) % cursor.dims] * 0.5);
+                    bucket.pos.coords[(i * 3) + 2] = Math.cos(cursor.coords[i]) * Math.sin(cursor.coords[(i + 1) % cursor.dims] * 0.5);
+                }
+            }
+//            for (int i = 0; i < cursor.dims; i++) {
+//                bucket.pos.coords[i * 3] = Math.sin(cursor.coords[i]);
+//            }
+//            for (int i = 0; i < cursor.dims; i++) {
+//                bucket.pos.coords[(i * 3) + 1] = Math.cos(cursor.coords[i]);
+//            }
+//            for (int i = 0; i < cursor.dims; i++) {
+//                bucket.pos.coords[(i * 3) + 2] = Math.cos(cursor.coords[i]);
+//            }
+            lattice.addPoint(bucket);
+            donutMesh[calcLinearNArrayIndex(intCursor, circ)] = bucket;
+        }
+    }
+
+    public double sin(double x) {
+        return Math.sin(x);
+    }
+
+    public double cos(double x) {
+        return Math.cos(x);
+    }
+    public int tweakValue = 0;
+
+    public void placeNSomething(NVector cursor, NVector shiftCursor, int dim, double inc, NVector intCursor, NPoint[] donutMesh, int circ) {
+        randomRange = 1.5 / circ;
+        //randomRange = 0;
+        double u = -inc;
+        for (int ui = -1; ui < circ + 1; ui++) {
+            double v = -inc;
+            for (int vi = -1; vi < circ + 1; vi++) {
+                double w = -inc;
+                for (int wi = -1; wi < circ + 1; wi++) {
+                    NPoint bucket = new NPoint(dims);
+                    double ur = (((r.nextDouble() * 2) - 1) * randomRange);
+                    double vr = (((r.nextDouble() * 2) - 1) * randomRange);
+                    double wr = (((r.nextDouble() * 2) - 1) * randomRange);
+                    ur = 0;
+                    vr = 0;
+                    wr = 0;
+                    /*
+                     * 0 x   = Sin(u) Cos(v/2)
+                     * 1 x'  = Cos(u)
+                     * 2 x'' = Sin(u) Sin(v/2)
+                     * 3 y   = Sin(v)
+                     * 4 y'  = Cos(v)
+                     * 5 y'' = 
+                     */
+                
+//                    bucket.pos.coords[0] = sin(u + ur) * cos((v + vr) / 2);
+//                    bucket.pos.coords[1] = cos(u + ur);
+//                    bucket.pos.coords[2] = sin(u + ur) * sin((v + vr) / 2);
+//                    bucket.pos.coords[3] = sin(v + vr);
+//                    bucket.pos.coords[4] = cos(v + vr);
+//                    //bucket.pos.coords[5] = Math.cos(cursor.coords[1]) * Math.sin(cursor.coords[0] * 0.5);
+
+                    /*
+                     * 0 x   = Sin(u) Cos(v/2)
+                     * 1 x'  = Cos(u)
+                     * 2 x'' = Sin(u) Sin(v/2)
+                     * 3 y   = Sin(v) Cos(u/2)
+                     * 4 y'  = Cos(v)
+                     * 5 y'' = Sin(v) Sin(u/2)
+                     */
+                
+//                    bucket.pos.coords[0] = sin(u + ur) * cos((v + vr) / 2);
+//                    bucket.pos.coords[1] = cos(u + ur);
+//                    bucket.pos.coords[2] = sin(u + ur) * sin((v + vr) / 2);
+//                    bucket.pos.coords[3] = sin(v + vr) * cos((u + ur) / 2);
+//                    bucket.pos.coords[4] = cos(v + vr);
+//                    bucket.pos.coords[5] = sin(v + vr) * sin((u + ur) / 2);
+
+//                    bucket.pos.coords[0] = sin(u + ur);
+//                    bucket.pos.coords[1] = cos(u + ur);
+//                    bucket.pos.coords[2] = 0;
+//                    bucket.pos.coords[3] = sin(v + vr) * cos((u + ur) / 2);
+//                    bucket.pos.coords[4] = cos(v + vr);
+//                    bucket.pos.coords[5] = sin(v + vr) * sin((u + ur) / 2);
+
+                    bucket.pos.coords[0] = sin(u + ur) * cos((v + vr) / 2);
+                    bucket.pos.coords[1] = cos(u + ur);
+                    bucket.pos.coords[2] = sin(u + ur) * sin((v + vr) / 2);
+                    bucket.pos.coords[3] = sin(v + vr);
+                    bucket.pos.coords[4] = cos(v + vr);
+                    bucket.pos.coords[5] = sin(w + wr);
+                    bucket.pos.coords[6] = cos(w + wr);
+
+                    if (ui > -1 && ui < circ && vi > -1 && vi < circ && wi > -1 && wi < circ) {
+                        // The extra units are for overlap, for matching edges up.
+                        lattice.addPoint(bucket);
+                        
+                    }
+                    donutMesh[calcLinearNArrayIndex(new NVector(new double[] {ui + 1, vi + 1, wi + 1}), circ + 2)] = bucket;
+                    w += inc;
+                }
+                v += inc;
+            }
+            u += inc;
+        }
+    }
+
+    public void placeNMobiusPipe() throws Exception {
+        if (lattice != null) {
+            if ((dims / 2) >= lattice.internalDims) {
+                NVector cursor = new NVector(lattice.internalDims);
+                for (int i = 0; i < cursor.dims; i++) {
+                    cursor.coords[i] = 0;
+                }
+                NVector shiftCursor = new NVector(lattice.internalDims);
+                for (int i = 0; i < shiftCursor.dims; i++) {
+                    shiftCursor.coords[i] = 0;
+                }
+                NVector intCursor = new NVector(lattice.internalDims);
+                for (int i = 0; i < intCursor.dims; i++) {
+                    intCursor.coords[i] = 0;
+                }
+//                double inc = Math.PI / 20;
+//                int circ = (int) (Math.PI * 2 / inc);
+                int circ = (int) donutCircumfrence;
+                double inc = (Math.PI * 2) / donutCircumfrence;
+                NPoint[] donutMesh = new NPoint[(int) Math.pow(circ, intCursor.dims)];
+                placeNMobiusPipeRecurse(cursor, shiftCursor, 0, inc, intCursor, donutMesh, circ);
+                // Going to try to triangulate this sucker right here.  Won't be deLaunay, but that's ok.
+
+            } else {
+                // Well, can't really make one of those non-curved klein bottles, so...go fish.
+                throw new Exception("Total dims must be at least 2x lattice dims.");
+            }
+        }
+    }
+
+    public void placeNMobiusPipeRecurse(NVector cursor, NVector shiftCursor, int dim, double inc, NVector intCursor, NPoint[] donutMesh, int circ) {
+        if (dim < cursor.dims) {
+            double d = 0;
+            //for (double d = 0; d < Math.PI * 2 * 0.25; d += inc) {
+            for (int i = 0; i < circ; i++) {
+                if (dim < cursor.dims - 1) {
+                    for (int j = dim + 1; j < cursor.dims; j++) {
+//                        if (shiftCursor.coords[j] > 0) {
+//                            shiftCursor.coords[j] = 0;
+//                        } else {
+                        shiftCursor.coords[j] += 0.5 * inc;
+//                        }
+                    }
+                }
+                if (randomRange > 0) {
+                    cursor.coords[dim] = d + shiftCursor.coords[dim] + (((r.nextDouble() * 2) - 1) * randomRange);
+                } else {
+                    cursor.coords[dim] = d + shiftCursor.coords[dim];
+                }
+                cursor.coords[dim] = d + shiftCursor.coords[dim];
+                intCursor.coords[dim] = i;
+                placeNMobiusPipeRecurse(cursor, shiftCursor, dim + 1, inc, intCursor, donutMesh, circ);
+                d += inc;
+            }
+        } else {
+            NPoint bucket = new NPoint(dims);
+            if (cursor.dims == 2) {
+                bucket.pos.coords[0] = cursor.coords[0];
+                bucket.pos.coords[1] = Math.sin(cursor.coords[1]);
+                bucket.pos.coords[2] = Math.cos(cursor.coords[1]) * Math.cos(cursor.coords[0] * 0.5);
+                bucket.pos.coords[3] = Math.cos(cursor.coords[1]) * Math.sin(cursor.coords[0] * 0.5);
+            } else {
+                for (int i = 0; i < cursor.dims; i++) {
+                    bucket.pos.coords[(i * 3) + 0] = Math.sin(cursor.coords[i]);
+                    bucket.pos.coords[(i * 3) + 1] = Math.cos(cursor.coords[i]) * Math.cos(cursor.coords[(i + 1) % cursor.dims] * 0.5);
+                    bucket.pos.coords[(i * 3) + 2] = Math.cos(cursor.coords[i]) * Math.sin(cursor.coords[(i + 1) % cursor.dims] * 0.5);
+                }
+            }
+//            for (int i = 0; i < cursor.dims; i++) {
+//                bucket.pos.coords[i * 3] = Math.sin(cursor.coords[i]);
+//            }
+//            for (int i = 0; i < cursor.dims; i++) {
+//                bucket.pos.coords[(i * 3) + 1] = Math.cos(cursor.coords[i]);
+//            }
+//            for (int i = 0; i < cursor.dims; i++) {
+//                bucket.pos.coords[(i * 3) + 2] = Math.cos(cursor.coords[i]);
+//            }
             lattice.addPoint(bucket);
             donutMesh[calcLinearNArrayIndex(intCursor, circ)] = bucket;
         }
@@ -2561,6 +3148,8 @@ public class Engine {
             for (NPoint i : lattice.points) {
                 try {
                     i.pos = Matrix.lrvMult(shear, i.pos);
+
+
                 } catch (Exception ex) {
                     Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -2577,6 +3166,8 @@ public class Engine {
             for (NPoint i : lattice.points) {
                 try {
                     i.pos = Matrix.lrvMult(shear, i.pos);
+
+
                 } catch (Exception ex) {
                     Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -2670,7 +3261,7 @@ public class Engine {
                     pointsComplete++;
                 }
             }
-            System.out.println(pointsComplete + "/" + lattice.points.size() + " : " + ((100 * pointsComplete) / ((double)lattice.points.size())) + "%");
+            System.out.println(pointsComplete + "/" + lattice.points.size() + " : " + ((100 * pointsComplete) / ((double) lattice.points.size())) + "%");
         }
         return pointsComplete;
     }
@@ -2809,6 +3400,8 @@ public class Engine {
             figure.collectPointsFromConnections();
             try {
                 ArrayList<NCell> result = truncateRecurse(figure);
+
+
             } catch (RockBottom ex) {
                 Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -3097,6 +3690,8 @@ public class Engine {
             try {
                 result = truncateRecurse(nCube);
                 //parent.was = nCube;
+
+
             } catch (RockBottom ex) {
                 Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -3138,6 +3733,22 @@ public class Engine {
             lattice.faces.removeAll(remove);
             lattice.incompleteFaces.removeAll(remove);
         }
+    }
+
+    public boolean checkDuplicates(NFace f) {
+        if (lattice != null) {
+            HashSet<NFace> remove = new HashSet<NFace>();
+            for (int i = 0; i < lattice.faces.size(); i++) {
+                if (f != lattice.faces.get(i) && lattice.faces.get(i).equivalent(f)) {
+                    remove.add(lattice.faces.get(i));
+                }
+            }
+            if (remove.isEmpty()) {
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -3295,6 +3906,8 @@ public class Engine {
         volBasis.orthogonalize();
         try {
             volBasis.calcProjection();
+
+
         } catch (Exception ex) {
             Logger.getLogger(NCell.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -3312,6 +3925,8 @@ public class Engine {
         }
         try {
             return ((1.0 / MeMath.factorial(simplexDims)) * Math.abs(m.det()));
+
+
         } catch (Exception ex) {
             Logger.getLogger(NCell.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -3333,6 +3948,8 @@ public class Engine {
         volBasis.orthogonalize();
         try {
             volBasis.calcProjection();
+
+
         } catch (Exception ex) {
             Logger.getLogger(NCell.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -3352,6 +3969,8 @@ public class Engine {
         }
         try {
             return ((1.0 / MeMath.factorial(simplexDims)) * Math.abs(m.det()));
+
+
         } catch (Exception ex) {
             Logger.getLogger(NCell.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -3483,7 +4102,7 @@ public class Engine {
         }
         sticksChanged = false;
     }
-    
+
     /**
      * Looks for cells formed of incomplete faces, yet are not counted as
      * actual cells, presumably due to violation of one or more restrictions.
@@ -3501,7 +4120,7 @@ public class Engine {
             //// Check them for connection to this face.
             // Discount the ones that are part of the complete cell connected to this face.
             // If some subset of lDim+1 (including target face) are connected, they form a cell.
-            
+
             // Hey, so this is based on the assumption that any given incomplete face
             //     has a cell for cellA and null for cellB.
             if (convertedFaces.contains(f)) {
@@ -3555,7 +4174,7 @@ public class Engine {
         }
         return converted.size();
     }
-    
+
     public ArrayList<NFace> formCellRecurse(ArrayList<NFace> connected, int[] indices, int curLevel, int maxLevel, int curIndex) {
         if (curLevel <= maxLevel) {
             for (int i = curIndex; i < connected.size() - maxLevel + curLevel; i++) {
@@ -3588,5 +4207,108 @@ public class Engine {
             }
             return null;
         }
+    }
+    public static final int GROUND_COLORFUL = 1;
+
+    public void addGround(double elevation, int type) {
+        switch (type) {
+            case GROUND_COLORFUL:
+                NSurface ground = new NSurface(lattice.dims, lattice.dims - 1, new Color(0, true));
+                ground.points[0] = new NPoint(dims);
+                ground.points[0].pos.coords[0] = elevation;
+                for (int i = 1; i < dims; i++) {
+                    ground.points[0].pos.coords[i] = -8;
+                }
+                for (int i = 1; i < ground.points.length; i++) {
+                    ground.points[i] = new NPoint(dims);
+                    ground.points[i].pos.coords[0] = elevation;
+                    for (int j = 1; j < dims; j++) {
+                        if (i == j) {
+                            ground.points[i].pos.coords[j] = 8 * dims;
+                        } else {
+                            ground.points[i].pos.coords[j] = -8;
+                        }
+                    }
+                }
+                ground.makeBasis();
+                for (NCell c : lattice.cells) {
+                    boolean hasAbove = false;
+                    for (int i = 0; i < c.points.length; i++) {
+                        if (c.points[i].pos.coords[0] >= elevation) {
+                            hasAbove = true;
+                            break;
+                        }
+                    }
+                    if (!hasAbove) {
+                        continue;
+                    }
+                    boolean hasBelow = false;
+                    for (int i = 0; i < c.points.length; i++) {
+                        if (c.points[i].pos.coords[0] <= elevation) {
+                            hasBelow = true;
+                            break;
+                        }
+                    }
+                    if (!hasBelow) {
+                        continue;
+                    }
+                    c.surfaces.add(ground);
+                }
+                break;
+            default:
+        }
+    }
+
+    public boolean checkMinMaxLength(ArrayList<NPoint> frame, double minLength, double maxLength) {
+        if (minLength == -1 && maxLength == -1) {
+            return true;
+        }
+        if (frame.size() <= 0) {
+            return false; // Eh, maybe I should throw an error or something.
+        }
+
+        if (minLength != -1) {
+            if (maxLength != -1) {
+                // Check both min and maxLength
+                for (int i = 0; i < frame.size() - 1; i++) {
+                    for (int j = i + 1; j < frame.size(); j++) {
+                        double dist = frame.get(i).pos.dist(frame.get(j).pos);
+                        if (dist < minLength || dist > maxLength) {
+                            return false;
+                        }
+                    }
+                }
+            } else {
+                // Just check minLength
+                for (int i = 0; i < frame.size() - 1; i++) {
+                    for (int j = i + 1; j < frame.size(); j++) {
+                        if (frame.get(i).pos.dist(frame.get(j).pos) < minLength) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        } else {
+            // Just check maxLength
+            for (int i = 0; i < frame.size() - 1; i++) {
+                for (int j = i + 1; j < frame.size(); j++) {
+                    if (frame.get(i).pos.dist(frame.get(j).pos) > maxLength) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    
+    public int getMisclassifiedFaceCount() {
+        int result = 0;
+        for (NFace f : lattice.incompleteFaces) {
+            if (f.complete()) {
+                result++;
+            }
+        }
+        //System.out.println("Faces misclassified: " + result);
+        return result;
     }
 }

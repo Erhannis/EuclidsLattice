@@ -26,6 +26,7 @@ public class RotationForm extends javax.swing.JFrame {
     public int[][] coords;
     public LatticeTestworkView parent = null;
     public int dims = 0;
+    public boolean resettingRotations = false;
 
     /** Creates new form RotationForm */
     public RotationForm(int dims, LatticeTestworkView parent) {
@@ -51,7 +52,9 @@ public class RotationForm extends javax.swing.JFrame {
                 scrollBars[index].addAdjustmentListener(new java.awt.event.AdjustmentListener() {
 
                     public void adjustmentValueChanged(java.awt.event.AdjustmentEvent evt) {
-                        RotationForm.this.parent.rotate();
+                        if (!resettingRotations) {
+                            RotationForm.this.parent.rotate();
+                        }
                     }
                 });
                 index++;
@@ -103,6 +106,7 @@ public class RotationForm extends javax.swing.JFrame {
         boxHideIncomplete = new javax.swing.JCheckBox();
         boxHidePoints = new javax.swing.JCheckBox();
         btnRecalcSticks = new javax.swing.JButton();
+        btnResetRotations = new javax.swing.JButton();
 
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(latticetestwork.LatticeTestworkApp.class).getContext().getResourceMap(RotationForm.class);
         setTitle(resourceMap.getString("Form.title")); // NOI18N
@@ -207,6 +211,14 @@ public class RotationForm extends javax.swing.JFrame {
             }
         });
 
+        btnResetRotations.setText(resourceMap.getString("btnResetRotations.text")); // NOI18N
+        btnResetRotations.setName("btnResetRotations"); // NOI18N
+        btnResetRotations.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnResetRotationsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -220,9 +232,12 @@ public class RotationForm extends javax.swing.JFrame {
                         .addComponent(btnRecalcSticks)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnRender, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(btnZoomIn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnZoomOut, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(btnResetRotations)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 305, Short.MAX_VALUE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnZoomIn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnZoomOut, javax.swing.GroupLayout.Alignment.TRAILING)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(boxHideComplete)
@@ -258,7 +273,9 @@ public class RotationForm extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnZoomIn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnZoomOut)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnZoomOut)
+                    .addComponent(btnResetRotations))
                 .addContainerGap())
         );
 
@@ -337,9 +354,23 @@ private void boxHidePointsActionPerformed(java.awt.event.ActionEvent evt) {//GEN
 
 private void btnRecalcSticksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecalcSticksActionPerformed
     if (parent.engine != null) {
+        parent.updateOptions();
         parent.engine.updateSticks();
+        parent.dp.repaint();
     }
 }//GEN-LAST:event_btnRecalcSticksActionPerformed
+
+private void btnResetRotationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetRotationsActionPerformed
+    if (parent.engine != null) {
+        resettingRotations = true;
+        for (int i = 0; i < scrollBars.length; i++) {
+            scrollBars[i].setValue(0);
+        }
+        resettingRotations = false;
+        parent.updateOptions();
+        parent.dp.repaint();
+    }
+}//GEN-LAST:event_btnResetRotationsActionPerformed
 
     /**
      * @param args the command line arguments
@@ -385,6 +416,7 @@ private void btnRecalcSticksActionPerformed(java.awt.event.ActionEvent evt) {//G
     public javax.swing.JCheckBox boxHidePoints;
     private javax.swing.JButton btnRecalcSticks;
     private javax.swing.JButton btnRender;
+    private javax.swing.JButton btnResetRotations;
     private javax.swing.JButton btnZoomIn;
     private javax.swing.JButton btnZoomOut;
     private javax.swing.JPanel jPanel1;

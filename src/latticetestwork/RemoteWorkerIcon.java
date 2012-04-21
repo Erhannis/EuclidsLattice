@@ -39,7 +39,7 @@ public class RemoteWorkerIcon {
         dos.flush();
     }
 
-    public Tensor<Color> renderFrame(int camNum, double dtl, int... picDims) throws IOException {
+    public Tensor<Color> renderFrame(int camNum, double dtl, double fov, int... picDims) throws IOException {
         if (camNum == -1) {
             //THINK Probably return an error.
             return null;
@@ -48,6 +48,7 @@ public class RemoteWorkerIcon {
         dos.writeInt(RemoteWorker.BOSS_RENDERFRAME);
         dos.writeInt(camNum);
         dos.writeDouble(dtl);
+        dos.writeDouble(fov);
         dos.writeInt(picDims.length);
         for (int i = 0; i < picDims.length; i++) {
             dos.writeInt(picDims[i]);
@@ -79,7 +80,7 @@ public class RemoteWorkerIcon {
      * @return
      * @throws IOException 
      */
-    public BufferedImage renderFrameToImagePaced(int camNum, double dtl, int imWidth, int imHeight, int... picDims) throws IOException {
+    public BufferedImage renderFrameToImagePaced(int camNum, double dtl, double fov, int imWidth, int imHeight, int... picDims) throws IOException {
         if (camNum == -1) {
             //THINK Probably return an error.
             return null;
@@ -88,6 +89,7 @@ public class RemoteWorkerIcon {
         dos.writeInt(RemoteWorker.BOSS_RENDERFRAME);
         dos.writeInt(camNum);
         dos.writeDouble(dtl);
+        dos.writeDouble(fov);
         dos.writeInt(picDims.length);
         for (int i = 0; i < picDims.length; i++) {
             dos.writeInt(picDims[i]);

@@ -17,6 +17,8 @@ public class Matrix implements Streamable {
     public int cols = 0;
     public int rows = 0;
     public double[][] val = null;
+    /** The binary digits after which two numbers are considered equal */
+    public static int APRX = 24;
     
     public Matrix(int cols, int rows) {
         this.cols = cols;
@@ -57,10 +59,10 @@ public class Matrix implements Streamable {
         int r2 = 0;
         while (!done) {
             for (int y = 0; y < rows; y++) {
-                if (MeMath.prettyZero(val[0][y], 17)) {
-                    if (MeMath.prettyZero(val[1][y], 17)) {
+                if (MeMath.prettyZero(val[0][y], APRX)) {
+                    if (MeMath.prettyZero(val[1][y], APRX)) {
                         // Hmm.  Pity.
-                    } else if (!qt2 && MeMath.prettyEqual(val[1][y], 1, 17)) {
+                    } else if (!qt2 && MeMath.prettyEqual(val[1][y], 1, APRX)) {
                         qt2 = true;
                         t2 = y;
                         qValues[1] = val[2][y];
@@ -68,8 +70,8 @@ public class Matrix implements Streamable {
                         val[2][y] /= val[1][y];
                         val[1][y] = 1;//
                     }
-                } else if (MeMath.prettyEqual(val[0][y], 1, 17)) {
-                    if (MeMath.prettyZero(val[1][y], 17)) {
+                } else if (MeMath.prettyEqual(val[0][y], 1, APRX)) {
+                    if (MeMath.prettyZero(val[1][y], APRX)) {
                         if (!qt1) {
                             if (!qr1) {
                                 qr1 = true;
@@ -117,29 +119,29 @@ public class Matrix implements Streamable {
             
             // Check done.
             for (int y = 0; y < rows; y++) {
-                if (!qt1 && MeMath.prettyEqual(val[0][y], 1, 17) && MeMath.prettyZero(val[1][y], 17)) {
+                if (!qt1 && MeMath.prettyEqual(val[0][y], 1, APRX) && MeMath.prettyZero(val[1][y], APRX)) {
                     qt1 = true;
                     t1 = y;
                     qValues[0] = val[2][y];
-                } else if (!qt2 && MeMath.prettyZero(val[0][y], 17) && MeMath.prettyEqual(val[1][y], 1, 17)) {
+                } else if (!qt2 && MeMath.prettyZero(val[0][y], APRX) && MeMath.prettyEqual(val[1][y], 1, APRX)) {
                     qt2 = true;
                     t2 = y;
                     qValues[1] = val[2][y];
                 }
             }
-            if ((qt1 && (!MeMath.prettyZero(qValues[0], 17))) || (qt2 && (!MeMath.prettyZero(qValues[1], 17)))) {
+            if ((qt1 && (!MeMath.prettyZero(qValues[0], APRX))) || (qt2 && (!MeMath.prettyZero(qValues[1], APRX)))) {
                 done = true;
             }
             if (debug) {
                 System.out.println(this);
             }
-            if (qt1 && MeMath.prettyZero(qValues[0], 17) && qt2 && MeMath.prettyZero(qValues[1], 17)) {
+            if (qt1 && MeMath.prettyZero(qValues[0], APRX) && qt2 && MeMath.prettyZero(qValues[1], APRX)) {
                 throw new Exception("Dead end!");
             }
         }
-        if (qt1 && (!MeMath.prettyZero(qValues[0], 17))) {
+        if (qt1 && (!MeMath.prettyZero(qValues[0], APRX))) {
             return new IntersectionResult(1,qValues[0]);
-        } else if (qt2 && (!MeMath.prettyZero(qValues[1], 17))) {
+        } else if (qt2 && (!MeMath.prettyZero(qValues[1], APRX))) {
             return new IntersectionResult(2,qValues[1]);
         } else {
             return new IntersectionResult(0,0);
@@ -247,11 +249,11 @@ if (debug) {
             if (row >= cols) {
                 // Probably don't do anything for now.
             } else {
-                if (MeMath.prettyZero(val[row][row], 17)) {
+                if (MeMath.prettyZero(val[row][row], APRX)) {
                     // Add another row to this one to get not 0.
                     boolean found = false;
                     for (int y = row + 1; y < rows; y++) {
-                        if (!MeMath.prettyZero(val[row][y], 17)) {
+                        if (!MeMath.prettyZero(val[row][y], APRX)) {
                             for (int x = 0; x < cols; x++) {
                                 val[x][row] += val[x][y];
                             }
@@ -327,11 +329,11 @@ if (debug) {
             if (row >= cols) {
                 // Probably don't do anything for now.
             } else {
-                if (MeMath.prettyZero(val[row][row], 17)) {////
+                if (MeMath.prettyZero(val[row][row], APRX)) {////
                     // Add another row to this one to get not 0.
                     boolean found = false;
                     for (int y = row + 1; y < rows; y++) {
-                        if (!MeMath.prettyZero(val[row][y], 17)) {
+                        if (!MeMath.prettyZero(val[row][y], APRX)) {
                             for (int x = 0; x < cols; x++) {
                                 val[x][row] += val[x][y];
                             }
@@ -510,6 +512,13 @@ if (debug) {
      * @return 
      */
     public static NVector[] ipTransformCoords(ArrayList<NVector> bases, ArrayList<NVector> vectors) {
+        if (bases.isEmpty()) {
+            NVector[] result = new NVector[vectors.size()];
+            for (int i = 0; i < result.length; i++) {
+                result[i] = new NVector(0);
+            }
+            return result;
+        }
         // Set up the matrix
         Matrix m = new Matrix(bases.get(0).dims + bases.size(), bases.size() + vectors.size());
         {
@@ -545,12 +554,12 @@ if (debug) {
                 // Probably don't do anything for now.
             } else {
                 //if (m.val[row + skipped][row] == 0) {
-                if (MeMath.prettyZero(m.val[row + skipped][row], 17)) {
+                if (MeMath.prettyZero(m.val[row + skipped][row], APRX)) {
                     // Add another row to this one to get not 0.
                     boolean found = false;
                     for (int y = row + 1; y < bases.size(); y++) {
                         //if (m.val[row + skipped][y] != 0) {//m.val[2][y-1]
-                        if (!MeMath.prettyZero(m.val[row + skipped][y], 17)) {
+                        if (!MeMath.prettyZero(m.val[row + skipped][y], APRX)) {
                             for (int x = row + skipped; x < m.cols; x++) {
                                 m.val[x][row] += m.val[x][y];
                             }
@@ -612,7 +621,14 @@ if (debug) {
      * @return 
      */
     public static NVector[] ipTransformCoords(NVector[] bases, NVector[] vectors) {
-        // Set up the matrix
+        if (bases.length == 0) {
+            NVector[] result = new NVector[vectors.length];
+            for (int i = 0; i < result.length; i++) {
+                result[i] = new NVector(0);
+            }
+            return result;
+        }
+        // Set up the matrix        
         Matrix m = new Matrix(bases[0].dims + bases.length, bases.length + vectors.length);
         {
         int row = 0;
@@ -647,12 +663,12 @@ if (debug) {
                 // Probably don't do anything for now.
             } else {
                 //if (m.val[row + skipped][row] == 0) {
-                if (MeMath.prettyZero(m.val[row + skipped][row], 17)) {
+                if (MeMath.prettyZero(m.val[row + skipped][row], APRX)) {
                     // Add another row to this one to get not 0.
                     boolean found = false;
                     for (int y = row + 1; y < bases.length; y++) {
                         //if (m.val[row + skipped][y] != 0) {
-                        if (!MeMath.prettyZero(m.val[row + skipped][y], 17)) {
+                        if (!MeMath.prettyZero(m.val[row + skipped][y], APRX)) {
                             for (int x = row + skipped; x < m.cols; x++) {
                                 m.val[x][row] += m.val[x][y];
                             }
@@ -805,11 +821,11 @@ if (debug) {
             if (row >= cols) {
                 // Probably don't do anything for now.
             } else {
-                if (MeMath.prettyZero(val[row][row], 17)) {
+                if (MeMath.prettyZero(val[row][row], APRX)) {
                     // Add another row to this one to get not 0.
                     boolean found = false;
                     for (int y = row + 1; y < rows; y++) {
-                        if (!MeMath.prettyZero(val[row][y], 17)) {
+                        if (!MeMath.prettyZero(val[row][y], APRX)) {
                             for (int x = 0; x < cols; x++) {
                                 val[x][row] += val[x][y];
                             }

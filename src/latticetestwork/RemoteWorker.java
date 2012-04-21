@@ -127,6 +127,7 @@ public class RemoteWorker {
                         case BOSS_RENDERFRAME:
                             int camNum = dis.readInt();
                             double dtl = dis.readDouble();
+                            double fov = dis.readDouble();
                             int picDimsCount = dis.readInt();
                             int[] picDims = new int[picDimsCount];
                             for (int i = 0; i < picDims.length; i++) {
@@ -137,7 +138,7 @@ public class RemoteWorker {
                             for (int i = 0; i < lattice.cameras.get(camNum).orientation.length; i++) {
                                 System.out.println(lattice.cameras.get(camNum).orientation[i]);
                             }
-                            Tensor<Color> result = lattice.cameras.get(camNum).aRender(dtl, picDims);
+                            Tensor<Color> result = lattice.cameras.get(camNum).aRender(dtl, fov, picDims);
                             dos.writeInt(WORK_DONE);
                             dos.flush();
                             if (dis.readInt() == BOSS_ACKNOWLDEGE) {

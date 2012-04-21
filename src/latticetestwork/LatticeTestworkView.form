@@ -172,19 +172,11 @@
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Component id="editContainmentFudgeValue" alignment="0" min="-2" pref="70" max="-2" attributes="0"/>
                                           <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
-                                          <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
-                                          <Component id="editMinVolume" alignment="0" min="-2" pref="70" max="-2" attributes="0"/>
                                       </Group>
+                                      <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="boxStereo" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="editStereoDegrees" min="-2" pref="62" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="editStereoDelta" min="-2" pref="62" max="-2" attributes="0"/>
-                              </Group>
                               <Component id="btnCalcProperties" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="btnFinishPrep" min="-2" max="-2" attributes="0"/>
@@ -192,6 +184,28 @@
                                   <Component id="btnPlaceCamera" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Component id="editMinAngle" min="-2" pref="70" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="boxStereo" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="editStereoDegrees" min="-2" pref="62" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="editStereoDelta" min="-2" pref="62" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="jLabel7" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="editMinVolume" alignment="0" min="-2" pref="70" max="-2" attributes="0"/>
+                                      <Component id="jLabel8" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="editMinLength" alignment="0" min="-2" pref="70" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="editMaxVolume" alignment="0" min="-2" pref="70" max="-2" attributes="0"/>
+                                      <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="editMaxLength" alignment="0" min="-2" pref="70" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
                           </Group>
                           <EmptySpace pref="170" max="32767" attributes="0"/>
                       </Group>
@@ -294,14 +308,28 @@
                               <Component id="editContainmentFudgeValue" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="editMinAngle" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="editMinAngle" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="editMinVolume" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="editMaxVolume" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="editMinLength" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="editMaxLength" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
@@ -316,7 +344,7 @@
                               <Component id="btnFinishPrep" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="btnPlaceCamera" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="188" max="32767" attributes="0"/>
+                          <EmptySpace pref="76" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -728,11 +756,11 @@
                     <Property name="name" type="java.lang.String" value="jLabel5" noResource="true"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JTextField" name="editMinVolume">
+                <Component class="javax.swing.JTextField" name="editMaxVolume">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="editMinVolume.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="editMinVolume.toolTipText"/>
-                    <Property name="name" type="java.lang.String" value="editMinVolume" noResource="true"/>
+                    <Property name="text" type="java.lang.String" resourceKey="editMaxVolume.text"/>
+                    <Property name="toolTipText" type="java.lang.String" resourceKey="editMaxVolume.toolTipText"/>
+                    <Property name="name" type="java.lang.String" value="editMaxVolume" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="boxSlowCrystallization">
@@ -740,6 +768,45 @@
                     <Property name="text" type="java.lang.String" resourceKey="boxSlowCrystallization.text"/>
                     <Property name="toolTipText" type="java.lang.String" resourceKey="boxSlowCrystallization.toolTipText"/>
                     <Property name="name" type="java.lang.String" value="boxSlowCrystallization" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel7">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel7.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel7" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="editMinVolume">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="editMinVolume.text"/>
+                    <Property name="toolTipText" type="java.lang.String" resourceKey="editMinVolume.toolTipText"/>
+                    <Property name="name" type="java.lang.String" value="editMinVolume" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel8">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel8.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel8" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel6">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel6.text"/>
+                    <Property name="name" type="java.lang.String" value="jLabel6" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="editMinLength">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="editMinLength.text"/>
+                    <Property name="toolTipText" type="java.lang.String" resourceKey="editMinLength.toolTipText"/>
+                    <Property name="name" type="java.lang.String" value="editMinLength" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="editMaxLength">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="editMaxLength.text"/>
+                    <Property name="toolTipText" type="java.lang.String" resourceKey="editMaxLength.toolTipText"/>
+                    <Property name="name" type="java.lang.String" value="editMaxLength" noResource="true"/>
                   </Properties>
                 </Component>
               </SubComponents>

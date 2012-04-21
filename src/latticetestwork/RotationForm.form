@@ -91,9 +91,13 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnRender" max="32767" attributes="0"/>
                           </Group>
-                          <Group type="103" alignment="1" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="btnZoomIn" alignment="1" max="32767" attributes="0"/>
-                              <Component id="btnZoomOut" alignment="1" min="-2" max="-2" attributes="1"/>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Component id="btnResetRotations" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace pref="305" max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="btnZoomIn" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="btnZoomOut" alignment="1" min="-2" max="-2" attributes="1"/>
+                              </Group>
                           </Group>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -140,7 +144,10 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnZoomIn" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="btnZoomOut" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="btnZoomOut" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnResetRotations" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -247,6 +254,15 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRecalcSticksActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnResetRotations">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="btnResetRotations.text"/>
+                <Property name="name" type="java.lang.String" value="btnResetRotations" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnResetRotationsActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>

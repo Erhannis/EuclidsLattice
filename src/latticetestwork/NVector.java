@@ -382,7 +382,17 @@ public class NVector {
      * @return 
      */
     public static double angle(NVector a, NVector b) {
-        return Math.acos(lrDot(a, b) / (a.length() * b.length()));
+        double dot = lrDot(a, b);
+        double lens = (a.length() * b.length());
+        if (!MeMath.prettyEqual(Math.abs(dot), lens, 24)) {
+            return Math.acos(dot / lens);
+        } else {
+            if (dot >= 0) {
+                return 0;
+            } else {
+                return Math.PI;
+            }
+        }
     }
     
     /**
@@ -429,5 +439,27 @@ public class NVector {
             bucket.ipNormalize();
         }
         return bucket;
+    }
+    
+    public boolean exactlyEquivalent(NVector v) {
+        if (this.dims != v.dims)
+            return false;
+        for (int i = 0; i < dims; i++) {
+            if (this.coords[i] != v.coords[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean approximatelyEquivalent(NVector v, int binDigits) {
+        if (this.dims != v.dims)
+            return false;
+        for (int i = 0; i < dims; i++) {
+            if (!MeMath.prettyEqual(this.coords[i], v.coords[i], binDigits)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

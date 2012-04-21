@@ -90,7 +90,9 @@ public class Camera {
         NVector ap = new NVector(latticeDims);
         ap.coords[0] = 1;
         IntHolder index = new IntHolder(0);
-        constructAperture(apertureAngle, 1, ap, index);
+        if (latticeDims > 1) {
+            constructAperture(apertureAngle, 1, ap, index);
+        }
         for (int i = 0; i < dims; i++) {
             pos.coords[i] = 0;
             velocity.coords[i] = 0;
@@ -160,18 +162,25 @@ public class Camera {
     public static final int PROJ_AZIMUTHAL = 1;
     public static final int PROJ_MERCATOR = 2;
     
-    public void renderCamera(Graphics2D g, int cameraMode, int width, int height, double dtl) {
+    public void renderCamera(Graphics2D g, int cameraMode, int width, int height, double dtl, double fov, int graininess) {
         switch (cameraMode) {
             case PROJ_AZIMUTHAL:
                 break;
             case PROJ_MERCATOR:
                 //TODO So, this isn't actually general, like, for multiple dimensions.
-                int[] picDims = new int[]{width, height};
-                Tensor<Color> result = aRender(dtl, picDims);
+                int dWidth = width / graininess;
+                int dHeight = height / graininess;
+                int[] picDims = new int[]{dWidth, dHeight};
+                Tensor<Color> result = aRender(dtl, fov, picDims);
                 BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-                for (int x = 0; x < width; x++) {
-                    for (int y = 0; y < height; y++) {
-                        image.setRGB(x, y, result.get(x, y).getRGB());
+                for (int x = 0; x < dWidth; x++) {
+                    for (int y = 0; y < dHeight; y++) {
+                        int rgb = result.get(x, y).getRGB();
+                        for (int xi = 0; xi < graininess; xi++) {
+                            for (int yi = 0; yi < graininess; yi++) {
+                                image.setRGB((x * graininess) + xi, (y * graininess) + yi, rgb);
+                            }
+                        }
                     }
                 }
                 g.drawImage(image, new AffineTransform(), null);
@@ -180,20 +189,20 @@ public class Camera {
         }
     }
 
-    public Tensor<Color> aRender(double dtl, int... picDims) {
+    public Tensor<Color> aRender(double dtl, double fov, int... picDims) {
         // So, the idea is to sweep from corner to corner of the aperture and ping pixels.
         Tensor<Color> result = Tensor.getColorTensor(picDims);
         //TODO Sweep like the wind!
         int[] coord = new int[picDims.length];
-        aRenderRecurse(picDims, coord, 0, result, dtl);
+        aRenderRecurse(picDims, coord, 0, result, dtl, fov);
         return result;
     }
 
-    public void aRenderRecurse(int[] picDims, int[] coord, int index, Tensor<Color> result, double dtl) {
+    public void aRenderRecurse(int[] picDims, int[] coord, int index, Tensor<Color> result, double dtl, double fov) {
         if (index < picDims.length) {
             if (latticeDims == 2 && picDims.length == 2 && index == 1) {
                 coord[index] = 0;
-                aRenderRecurse(picDims, coord, index + 1, result, dtl);
+                aRenderRecurse(picDims, coord, index + 1, result, dtl, fov);
                 Color col = result.get(coord[0], 0);
                 for (int y = 0; y < picDims[1]; y++) {
                     coord[1] = y;
@@ -202,7 +211,7 @@ public class Camera {
             } else {
                 for (int i = 0; i < picDims[index]; i++) {
                     coord[index] = i;
-                    aRenderRecurse(picDims, coord, index + 1, result, dtl);
+                    aRenderRecurse(picDims, coord, index + 1, result, dtl, fov);
                 }
             }
         } else {//System.out.println(orientation[2]);
@@ -210,7 +219,7 @@ public class Camera {
             //NVector apDir = aperture[0];
             //TODO Fix this horrible patched mess here.  (Should have aperature.)  I just want to see the pretty pictures!
             // Actually, this works pretty well.  I might leave it.
-            dir = dir.plusB(orientation[0].multS(0.5));
+            dir = dir.plusB(orientation[0].multS(0.5 / fov));
             for (int i = 1; i < latticeDims; i++) { //THINK ARGH, is this even the right bound?
                 dir = dir.plusB(orientation[i].multS((((double)coord[i - 1]) / picDims[i - 1]) - 0.5)); //THINK Ugh.  Way jury-rigged.
             }
@@ -412,6 +421,14 @@ public class Camera {
 //                g.drawImage(image, new AffineTransform(), null);
                 break;
             default:
+        }
+    }
+    
+    public void rotate(int axis1, int axis2, double angle) throws Exception {
+        NVector ax1 = orientation[axis1].copy();
+        NVector ax2 = orientation[axis2].copy();
+        for (int i = 0; i < orientation.length; i++) {
+            orientation[i] = NVector.rotate(ax1, ax2, orientation[i], angle);
         }
     }
 }

@@ -29,6 +29,8 @@ public class NPoint implements Streamable {
     public Point2D displayPoint = new Point2D.Double();
     public Point2D displayPointStereo = new Point2D.Double();
     
+    public ArrayList<NPoint> candidates = null;
+    
     public NPoint(int dims) {
         this.dims = dims;
         pos = new NVector(dims);

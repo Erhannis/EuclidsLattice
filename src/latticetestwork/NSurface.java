@@ -87,4 +87,21 @@ public class NSurface {
         }
         return result;
     }
+
+    public void makeBasis() {
+        try {
+        ArrayList<NPoint> bucket = new ArrayList<NPoint>(points.length);
+        for (int i = 0; i < points.length; i++) {
+            bucket.add(points[i]);
+        }//System.out.println(bucket);
+        basis = NBasis.pointsToBases(bucket);
+        basis.makeStandardized();
+        } catch (NullPointerException e) {
+            boolean manualRetry = false;
+            if (manualRetry) {
+                makeBasis();
+            }
+        }
+    }
+
 }
