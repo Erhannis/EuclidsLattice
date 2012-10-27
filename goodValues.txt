@@ -1,0 +1,7 @@
+-- 6x3 Donut --
+joggle 0.01
+search radius 1.9
+
+-- 4x2 Donut --
+joggle 0.01
+search radius 1.5
