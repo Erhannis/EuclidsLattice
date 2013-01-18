@@ -48,6 +48,8 @@ public class MiscForm extends javax.swing.JFrame {
         btnCellVolumes = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         btnFullCheckIncomplete = new javax.swing.JButton();
+        btnAddGround = new javax.swing.JButton();
+        editGroundElevation = new javax.swing.JTextField();
 
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(latticetestwork.LatticeTestworkApp.class).getContext().getResourceMap(MiscForm.class);
         setTitle(resourceMap.getString("Form.title")); // NOI18N
@@ -144,6 +146,18 @@ public class MiscForm extends javax.swing.JFrame {
             }
         });
 
+        btnAddGround.setText(resourceMap.getString("btnAddGround.text")); // NOI18N
+        btnAddGround.setName("btnAddGround"); // NOI18N
+        btnAddGround.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddGroundActionPerformed(evt);
+            }
+        });
+
+        editGroundElevation.setText(resourceMap.getString("editGroundElevation.text")); // NOI18N
+        editGroundElevation.setToolTipText(resourceMap.getString("editGroundElevation.toolTipText")); // NOI18N
+        editGroundElevation.setName("editGroundElevation"); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -165,8 +179,12 @@ public class MiscForm extends javax.swing.JFrame {
                     .addComponent(btnCheckDuplicates)
                     .addComponent(btnKatanaMath)
                     .addComponent(btnCellVolumes)
-                    .addComponent(jButton1))
-                .addContainerGap(92, Short.MAX_VALUE))
+                    .addComponent(jButton1)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnAddGround)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(editGroundElevation, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(161, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -193,7 +211,11 @@ public class MiscForm extends javax.swing.JFrame {
                 .addComponent(btnCellVolumes)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
-                .addContainerGap(50, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAddGround)
+                    .addComponent(editGroundElevation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -206,10 +228,10 @@ public class MiscForm extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(71, Short.MAX_VALUE))
         );
 
-        setBounds(50, 400, 412, 379);
+        setBounds(50, 400, 511, 474);
     }// </editor-fold>//GEN-END:initComponents
 
 private void bntBindSphereActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntBindSphereActionPerformed
@@ -222,7 +244,7 @@ private void bntBindSphereActionPerformed(java.awt.event.ActionEvent evt) {//GEN
 private void btnBindSphereX100ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBindSphereX100ActionPerformed
     if (parent.engine != null) {
         for (int i = 0; i < 100; i++) {
-            parent.engine.repel();
+            parent.engine.repel(0.0001);
             parent.engine.bindSphere();
         }
         parent.dp.repaint();
@@ -295,7 +317,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             parent.engine.skeleton.add(new NLatticeBone(3, a, b, 0.5));
         }
         for (int i = 0; i < 100; i++) {
-            parent.engine.repel();
+            parent.engine.repel(0.0001);
             parent.engine.bindToSkeletonHard();
         }
         parent.dp.repaint();
@@ -309,6 +331,13 @@ private void btnFullCheckIncompleteActionPerformed(java.awt.event.ActionEvent ev
         parent.dp.repaint();
     }
 }//GEN-LAST:event_btnFullCheckIncompleteActionPerformed
+
+private void btnAddGroundActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddGroundActionPerformed
+    if (parent.engine != null) {
+        parent.engine.addGround(Double.valueOf(editGroundElevation.getText()), Engine.GROUND_COLORFUL);
+        parent.dp.repaint();
+    }
+}//GEN-LAST:event_btnAddGroundActionPerformed
 
     /**
      * @param args the command line arguments
@@ -347,6 +376,7 @@ private void btnFullCheckIncompleteActionPerformed(java.awt.event.ActionEvent ev
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bntBindSphere;
+    private javax.swing.JButton btnAddGround;
     private javax.swing.JButton btnBindSphereX100;
     private javax.swing.JButton btnCellVolumes;
     private javax.swing.JButton btnCheckDuplicates;
@@ -356,6 +386,7 @@ private void btnFullCheckIncompleteActionPerformed(java.awt.event.ActionEvent ev
     private javax.swing.JButton btnKatanaMath;
     private javax.swing.JButton btnNewTruncate;
     private javax.swing.JButton btnTruncate;
+    private javax.swing.JTextField editGroundElevation;
     private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables

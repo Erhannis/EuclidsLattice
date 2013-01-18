@@ -382,13 +382,13 @@ private void btnApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 private void btnBind100ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBind100ActionPerformed
     if (groupSnapping.isSelected(radioHardSnap.getModel())) {
         for (int i = 0; i < 100; i++) {
-            parent.engine.repel();
+            parent.engine.repel(0.0001);
             parent.engine.bindToSkeletonHard();
         }
         parent.dp.repaint();
     } else if (groupSnapping.isSelected(radioElasticSnap.getModel())) {
         for (int i = 0; i < 100; i++) {
-            parent.engine.repel();
+            parent.engine.repel(0.0001);
             parent.engine.bindToSkeletonElastic();
         }
         parent.dp.repaint();

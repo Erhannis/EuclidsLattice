@@ -17,6 +17,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import javax.swing.Timer;
 import javax.swing.Icon;
 import javax.swing.JDialog;
@@ -69,6 +72,7 @@ public class LatticeTestworkView extends FrameView {
                 if (dp.engine != null) {
                     if (e.getButton() == 1) {
                         dp.engine.taggedCell = null;
+                        dp.engine.taggedFace = null;
                         dp.engine.highlightedCells.clear();
                         dp.engine.highlighteds.clear();
                         dp.engine.clickPoint(e.getPoint(), ((e.getModifiers() & ActionEvent.SHIFT_MASK) != 0), ((e.getModifiers() & ActionEvent.CTRL_MASK) != 0), ((e.getModifiers() & ActionEvent.ALT_MASK) != 0), e.getButton());
@@ -79,7 +83,14 @@ public class LatticeTestworkView extends FrameView {
                         JMenuItem itemPlusStats = m.add("+Stats");
                         JMenuItem itemTagCell = m.add("Tag cell");
                         JMenuItem itemDistance = m.add("Distance");
+                        JMenuItem itemTagFace = m.add("Tag face");
                         JMenuItem itemShowFaceCells = m.add("Show face's cells");
+                        JMenuItem itemNearest10 = m.add("Nearest 10 pts");
+                        JMenuItem itemCoords = m.add("Coords");
+                        if (dp.engine.chosens.size() != 1) {
+                            itemNearest10.setEnabled(false);
+                            itemCoords.setEnabled(false);
+                        }
                         if (dp.engine.chosens.size() != 2) {
                             itemDistance.setEnabled(false);
                         }
@@ -90,6 +101,7 @@ public class LatticeTestworkView extends FrameView {
                         }
                         if (dp.engine.chosens.size() != (dp.engine.lattice.internalDims)) {
                             itemShowFaceCells.setEnabled(false);
+                            itemTagFace.setEnabled(false);
                         }
                         itemCircumsphere.addActionListener(new ActionListener() {
 
@@ -124,6 +136,16 @@ public class LatticeTestworkView extends FrameView {
                                 JOptionPane.showMessageDialog(mainPanel, "D: " + engine.chosens.get(0).pos.dist(engine.chosens.get(1).pos));
                             }
                         });
+                        itemTagFace.addActionListener(new ActionListener() {
+
+                            public void actionPerformed(ActionEvent e) {
+                                NFace bucket = new NFace(dp.engine.lattice.dims, dp.engine.lattice.internalDims);
+                                for (int i = 0; i < bucket.points.length; i++) {
+                                    bucket.points[i] = dp.engine.chosens.get(i);
+                                }
+                                dp.engine.taggedFace = bucket;
+                            }
+                        });
                         itemShowFaceCells.addActionListener(new ActionListener() {
 
                             public void actionPerformed(ActionEvent e) {
@@ -142,10 +164,56 @@ public class LatticeTestworkView extends FrameView {
                                             System.out.println("Selecting cellB");
                                             dp.engine.highlightedCells.add(f.cellB);
                                         }
-                                        break;
+//                                        break;
                                     }
                                 }
                                 dp.repaint();
+                            }
+                        });
+                        itemNearest10.addActionListener(new ActionListener() {
+
+                            public void actionPerformed(ActionEvent e) {
+                                //TODO Inefficient.
+                                final NPoint pt = dp.engine.chosens.get(0);
+                                //HashMap<NPoint, Double> dists = new HashMap<NPoint, Double>();
+                                ArrayList<NPoint> points = new ArrayList<NPoint>();
+                                for (NPoint p : dp.engine.lattice.points) {
+                                    if (p != pt) {
+                                        //dists.put(p, p.pos.dist(pt.pos));
+                                        points.add(p);
+                                    }
+                                }
+                                Collections.sort(points, new Comparator<NPoint>() {
+
+                                    public int compare(NPoint o1, NPoint o2) {
+                                        double d1 = o1.dist(pt);
+                                        double d2 = o2.dist(pt);
+                                        return Double.compare(d1, d2);
+                                    }
+                                });
+                                StringBuilder sb = new StringBuilder();
+                                dp.engine.highlighteds.clear();
+                                for (int i = 0; i < 10; i++) {
+                                    if (i >= points.size()) {
+                                        break;
+                                    }
+                                    sb.append(i + ": " + points.get(i).dist(pt) + "\n");
+                                    dp.engine.highlighteds.add(points.get(i));
+                                }
+                                JOptionPane.showMessageDialog(null, sb.toString());
+                                dp.repaint();
+                            }
+                        });
+                        itemCoords.addActionListener(new ActionListener() {
+
+                            public void actionPerformed(ActionEvent e) {
+                                //TODO Inefficient.
+                                final NPoint pt = dp.engine.chosens.get(0);
+                                StringBuilder sb = new StringBuilder();
+                                for (int i = 0; i < pt.pos.dims; i++) {
+                                    sb.append(i + ": " + pt.pos.coords[i] + "\n");
+                                }
+                                JOptionPane.showMessageDialog(null, sb.toString());
                             }
                         });
                         m.show(dp, e.getX(), e.getY());
@@ -259,8 +327,14 @@ public class LatticeTestworkView extends FrameView {
         jLabel4 = new javax.swing.JLabel();
         editMinAngle = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        editMinVolume = new javax.swing.JTextField();
+        editMaxVolume = new javax.swing.JTextField();
         boxSlowCrystallization = new javax.swing.JCheckBox();
+        jLabel7 = new javax.swing.JLabel();
+        editMinVolume = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        editMinLength = new javax.swing.JTextField();
+        editMaxLength = new javax.swing.JTextField();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
@@ -597,13 +671,34 @@ public class LatticeTestworkView extends FrameView {
         jLabel5.setText(resourceMap.getString("jLabel5.text")); // NOI18N
         jLabel5.setName("jLabel5"); // NOI18N
 
-        editMinVolume.setText(resourceMap.getString("editMinVolume.text")); // NOI18N
-        editMinVolume.setToolTipText(resourceMap.getString("editMinVolume.toolTipText")); // NOI18N
-        editMinVolume.setName("editMinVolume"); // NOI18N
+        editMaxVolume.setText(resourceMap.getString("editMaxVolume.text")); // NOI18N
+        editMaxVolume.setToolTipText(resourceMap.getString("editMaxVolume.toolTipText")); // NOI18N
+        editMaxVolume.setName("editMaxVolume"); // NOI18N
 
         boxSlowCrystallization.setText(resourceMap.getString("boxSlowCrystallization.text")); // NOI18N
         boxSlowCrystallization.setToolTipText(resourceMap.getString("boxSlowCrystallization.toolTipText")); // NOI18N
         boxSlowCrystallization.setName("boxSlowCrystallization"); // NOI18N
+
+        jLabel7.setText(resourceMap.getString("jLabel7.text")); // NOI18N
+        jLabel7.setName("jLabel7"); // NOI18N
+
+        editMinVolume.setText(resourceMap.getString("editMinVolume.text")); // NOI18N
+        editMinVolume.setToolTipText(resourceMap.getString("editMinVolume.toolTipText")); // NOI18N
+        editMinVolume.setName("editMinVolume"); // NOI18N
+
+        jLabel8.setText(resourceMap.getString("jLabel8.text")); // NOI18N
+        jLabel8.setName("jLabel8"); // NOI18N
+
+        jLabel6.setText(resourceMap.getString("jLabel6.text")); // NOI18N
+        jLabel6.setName("jLabel6"); // NOI18N
+
+        editMinLength.setText(resourceMap.getString("editMinLength.text")); // NOI18N
+        editMinLength.setToolTipText(resourceMap.getString("editMinLength.toolTipText")); // NOI18N
+        editMinLength.setName("editMinLength"); // NOI18N
+
+        editMaxLength.setText(resourceMap.getString("editMaxLength.text")); // NOI18N
+        editMaxLength.setToolTipText(resourceMap.getString("editMaxLength.toolTipText")); // NOI18N
+        editMaxLength.setName("editMaxLength"); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -688,22 +783,33 @@ public class LatticeTestworkView extends FrameView {
                             .addGap(18, 18, 18)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(editContainmentFudgeValue, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel3)
-                                .addComponent(jLabel5)
-                                .addComponent(editMinVolume, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jLabel3))
+                            .addGap(13, 13, 13)))
                     .addComponent(jLabel4)
+                    .addComponent(btnCalcProperties)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnFinishPrep)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnPlaceCamera))
+                    .addComponent(editMinAngle, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(boxStereo)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(editStereoDegrees, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(editStereoDelta, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnCalcProperties)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnFinishPrep)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnPlaceCamera))
-                    .addComponent(editMinAngle, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel7)
+                            .addComponent(editMinVolume, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8)
+                            .addComponent(editMinLength, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(editMaxVolume, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6)
+                            .addComponent(editMaxLength, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(170, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -788,13 +894,25 @@ public class LatticeTestworkView extends FrameView {
                     .addComponent(editMaxThinness, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(editContainmentFudgeValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(editMinAngle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
+                    .addComponent(jLabel7)
                     .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(editMinAngle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editMinVolume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(editMinVolume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(editMaxVolume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(editMinLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(editMaxLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(boxStereo)
@@ -806,7 +924,7 @@ public class LatticeTestworkView extends FrameView {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnFinishPrep)
                     .addComponent(btnPlaceCamera))
-                .addContainerGap(188, Short.MAX_VALUE))
+                .addContainerGap(76, Short.MAX_VALUE))
         );
 
         jSplitPane1.setLeftComponent(jPanel1);
@@ -937,6 +1055,9 @@ public class LatticeTestworkView extends FrameView {
             engine.containmentFudgeValue = Double.valueOf(editContainmentFudgeValue.getText());
             engine.minAngle = Double.valueOf(editMinAngle.getText());
             engine.minVolume = Double.valueOf(editMinVolume.getText());
+            engine.maxVolume = Double.valueOf(editMaxVolume.getText());
+            engine.minLength = Double.valueOf(editMinLength.getText());
+            engine.maxLength = Double.valueOf(editMaxLength.getText());
             engine.allowSkipHardFaces = boxSkipHardFaces.isSelected();
             engine.hideImmune = rotationForm.boxHideImmune.isSelected();
             engine.joggleScale = Double.valueOf(editJoggleScale.getText());
@@ -1140,7 +1261,7 @@ private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
 private void btnRepelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRepelActionPerformed
     if (engine != null) {
-        engine.repel();
+        engine.repel(0.0001);
         dp.repaint();
     }
 }//GEN-LAST:event_btnRepelActionPerformed
@@ -1148,14 +1269,19 @@ private void btnRepelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 private void btnPlaceNDonutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlaceNDonutActionPerformed
     if (engine != null) {
         updateOptions();
-        if ((evt.getModifiers() & ActionEvent.CTRL_MASK) != 0) {
-            engine.placeNSaltLattice();
-        } else if ((evt.getModifiers() & ActionEvent.SHIFT_MASK) != 0) {
-            engine.randomRange = Double.valueOf(editJoggleScale.getText());
-            engine.placeNDonut();
-        } else {
-            engine.randomRange = -1;
-            engine.placeNDonut();
+        try {
+            if ((evt.getModifiers() & ActionEvent.CTRL_MASK) != 0) {
+                engine.placeNSaltLattice();
+            } else if ((evt.getModifiers() & ActionEvent.SHIFT_MASK) != 0) {
+                engine.randomRange = Double.valueOf(editJoggleScale.getText());
+                engine.placeNDonut();
+            } else {
+                engine.randomRange = -1;
+                engine.placeNMobiusDonut();
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, e);
         }
         dp.repaint();
     }
@@ -1208,6 +1334,7 @@ private void btnFinishPrepActionPerformed(java.awt.event.ActionEvent evt) {//GEN
     if (engine != null) {
         for (NCell c : engine.lattice.cells) {
             c.makeBasis();
+            c.color = new Color(c.color.getRed(), c.color.getGreen(), c.color.getBlue(), 0xFF);
         }
         for (int i = 0; i < 25; i++) {
             int j = engine.r.nextInt(engine.lattice.cells.size());
@@ -1217,7 +1344,7 @@ private void btnFinishPrepActionPerformed(java.awt.event.ActionEvent evt) {//GEN
             engine.lattice.cells.get(j).surfaces.add(null);
         }
         for (NFace f : engine.lattice.faces) {
-            f.calcAll();
+            f.calcAll();//engine.highlightedCells.add(f.cellA);
         }
     }
 }//GEN-LAST:event_btnFinishPrepActionPerformed
@@ -1237,9 +1364,20 @@ private void btn34PresetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 }//GEN-LAST:event_btn34PresetActionPerformed
 
 private void btnBind1000ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBind1000ActionPerformed
-    for (int i = 0; i < 1000; i++) {
-        btnRepelActionPerformed(evt);
-        btnBindActionPerformed(evt);
+    if ((evt.getModifiers() & ActionEvent.CTRL_MASK) != 0) {
+        for (int i = 0; i < 1000; i++) {
+            //btnRepelActionPerformed(evt);
+            if (engine != null) {
+                engine.repel(0.01);
+                dp.repaint();
+            }
+            btnBindActionPerformed(evt);
+        }
+    } else {
+        for (int i = 0; i < 1000; i++) {
+            btnRepelActionPerformed(evt);
+            btnBindActionPerformed(evt);
+        }
     }
 }//GEN-LAST:event_btnBind1000ActionPerformed
 
@@ -1286,13 +1424,23 @@ private void btnBindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
         dp.repaint();
     }
 }//GEN-LAST:event_btnBindActionPerformed
+    /**
+     * This is incremented when you hit one of the crystallization buttons.
+     * It marks potential changes of face criteria, signaling the engine to
+     * recheck all incomplete faces.
+     * (Previously I was rechecking them on every loop, and suddenly I thought,
+     * "Why the heck am I doing that?  It's not like anything's changed.")
+     */
+    public int runTag = 0;
 
 private void btnFullActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFullActionPerformed
 //    new Thread(){
 //        public void run() {
     if (engine != null) {
         updateOptions();
+        runTag++;
         boolean slow = boxShowCrystallization.isSelected();
+        boolean verySlow = boxSlowCrystallization.isSelected();
         boolean firstTime = true;
         //engine.refreshCompletePoints();
         final BoolHolder done = new BoolHolder(false);
@@ -1315,7 +1463,7 @@ private void btnFullActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
             }
         });
         t.start();
-        while (engine.crystallize() || firstTime) {
+        while (engine.crystallize(runTag) || firstTime) {
             firstTime = false;
             if (engine.dims == 2 && engine.lattice.internalDims == 2) {
                 ArrayList<NFace> markedForRemoval = new ArrayList<NFace>();
@@ -1335,9 +1483,12 @@ private void btnFullActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
             if (!slow) {
                 dp.repaint();
             } else {
-                //dp.paintImmediately(dp.getBounds());
-                synchronized (repaint) {
-                    repaint.notify();
+                if (verySlow) {
+                    dp.paintImmediately(dp.getBounds());
+                } else {
+                    synchronized (repaint) {
+                        repaint.notify();
+                    }
                 }
 //                try {
 //                    Thread.sleep(50);
@@ -1373,6 +1524,7 @@ private void btnShearNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 private void btnCrystallizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrystallizeActionPerformed
     if (engine != null) {
         updateOptions();
+        runTag++;
         if (engine.dims == 2 && engine.lattice.internalDims == 2) {
             ArrayList<NFace> markedForRemoval = new ArrayList<NFace>();
             for (NFace i : engine.lattice.incompleteFaces) {
@@ -1387,7 +1539,7 @@ private void btnCrystallizeActionPerformed(java.awt.event.ActionEvent evt) {//GE
                 engine.lattice.incompleteFaces.remove(i);
             }
         }
-        if (!engine.crystallize()) {
+        if (!engine.crystallize(runTag)) {
             JOptionPane.showMessageDialog(null, "Crystallization failed.");
         }
         if (engine.dims == 2 && engine.lattice.internalDims == 2) {
@@ -1444,7 +1596,27 @@ private void btnSwapHandsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
         sb.append("T1: " + Engine.calcThinness1(points) + "\n");
         sb.append("T2: " + Engine.calcThinness2(points) + "\n");
         sb.append("MA: " + Engine.calcMinAngle(points) + "\n");
+        double min = -1;
+        double max = -1;
+        for (int i = 0; i < points.length - 1; i++) {
+            for (int j = i + 1; j < points.length; j++) {
+                double dist = points[i].dist(points[j]);
+                if (min == -1 || dist < min) {
+                    min = dist;
+                }
+                if (max == -1 || dist > max) {
+                    max = dist;
+                }
+            }
+        }
+        sb.append("MN: " + min + "\n");
+        sb.append("MX: " + max + "\n");
         sb.append("VL: " + Engine.getSimplexNVolume(points) + "\n");
+        ArrayList<NPoint> pts = new ArrayList<NPoint>();
+        for (int i = 0; i < points.length; i++) {
+            pts.add(points[i]);
+        }
+        sb.append("VC: " + Engine.checkMinMaxVolume(pts, engine.minVolume, engine.maxVolume) + "\n");
         sb.append(extra);
         //sb.deleteCharAt(sb.length() - 1);
         JOptionPane.showMessageDialog(null, sb.toString());
@@ -1452,6 +1624,7 @@ private void btnSwapHandsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 
 private void btnCheckCellActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCheckCellActionPerformed
     if (engine != null) {
+        updateOptions();
         if (engine.permacenter != null && engine.lastCell != null) {
             checkCell(engine.permacenter, engine.permaradius, engine.lastCell.points, "EX: (0)");
         } else {
@@ -1490,8 +1663,11 @@ private void btnCheckCellActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
     private javax.swing.JTextField editContainmentFudgeValue;
     private javax.swing.JTextField editDonutCircumfrence;
     private javax.swing.JTextField editJoggleScale;
+    private javax.swing.JTextField editMaxLength;
     private javax.swing.JTextField editMaxThinness;
+    private javax.swing.JTextField editMaxVolume;
     private javax.swing.JTextField editMinAngle;
+    private javax.swing.JTextField editMinLength;
     private javax.swing.JTextField editMinVolume;
     private javax.swing.JTextField editNumPoints;
     private javax.swing.JTextField editSearchRadius;
@@ -1503,6 +1679,9 @@ private void btnCheckCellActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;

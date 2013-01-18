@@ -32,6 +32,8 @@ public class NPoint implements Streamable {
     
     public Color color;
 
+    public ArrayList<NPoint> candidates = null;
+    
     public NPoint(int dims) {
         this.dims = dims;
         pos = new NVector(dims);

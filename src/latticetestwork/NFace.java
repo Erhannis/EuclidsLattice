@@ -22,10 +22,14 @@ public class NFace implements Streamable {
     public NPoint[] points = null;
     public NCell cellA = null;
     public NCell cellB = null;
+    public NCell cellBBackup = null;
     public NBasis basis = null;
     public NVector aDir = null;
     public NVector bDir = null;
     public double angle = 0;
+    
+    // Impermanent variables
+    public int runTag = -1;
 
     public NFace(int dims, int latticeDims) {
         this.dims = dims;
@@ -194,18 +198,31 @@ public class NFace implements Streamable {
                 vA = a.pos.minusB(points[0].pos);
                 break;
             }
-        }
+        }//System.out.println(vA);
         NVector vB = null;
-        for (NPoint b : cellB.points) {
-            if (!isaPoint(b)) {
-                vB = b.pos.minusB(points[0].pos);
-                break;
-            }
-        }
+        if (cellB != null) {
+            for (NPoint b : cellB.points) {
+                if (!isaPoint(b)) {
+                    vB = b.pos.minusB(points[0].pos);
+                    break;
+                }//System.out.println(cellA);
+            }//System.out.println(cellB);
+        }//System.out.println(vB);
         try {//System.out.println(basis.projection);
             aDir = Matrix.lrvMult(basis.projection, vA).minusB(vA);
-            bDir = vB.minusB(Matrix.lrvMult(basis.projection, vB));
-            angle = NVector.angle(aDir, bDir);
+            if (vB != null) {//System.out.println(aDir);
+                bDir = vB.minusB(Matrix.lrvMult(basis.projection, vB));
+                angle = NVector.angle(aDir, bDir);
+                if (Double.isNaN(angle)) {//
+                    System.err.println("Angle NaNners");
+                }
+                if (angle > (Math.PI / 2)) {
+                    System.err.println("Improbably large angle");
+                }//
+            } else {//System.out.println(bDir);
+                bDir = null;
+                angle = Math.PI;
+            }
         } catch (Exception ex) {
             Logger.getLogger(NFace.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -213,6 +230,10 @@ public class NFace implements Streamable {
 
     public NVector crossCornerVector(NCell from, NVector dir) {
         if (from == cellA) {
+            if (cellB == null) {
+                // This'll reflect, if it really wants a direction to go.
+                return dir.multS(-1);
+            }
             try {
                 return NVector.rotate(aDir, bDir, dir, angle);
             } catch (Exception ex) {
@@ -299,5 +320,51 @@ public class NFace implements Streamable {
             return true;
         }
         return false;
+    }
+    
+    public boolean checkAngle(double maxAngle, boolean allowWorldEdgeReflection) {
+        NVector vA = null;
+        for (NPoint a : cellA.points) {
+            if (!isaPoint(a)) {
+                vA = a.pos.minusB(points[0].pos);
+                break;
+            }
+        }//System.out.println(vA);
+        NVector vB = null;
+        if (cellB != null) {
+            for (NPoint b : cellB.points) {
+                if (!isaPoint(b)) {
+                    vB = b.pos.minusB(points[0].pos);
+                    break;
+                }//System.out.println(cellA);
+            }//System.out.println(cellB);
+        }//System.out.println(vB);
+        try {//System.out.println(basis.projection);
+            aDir = Matrix.lrvMult(basis.projection, vA).minusB(vA);
+            if (vB != null) {//System.out.println(aDir);
+                bDir = vB.minusB(Matrix.lrvMult(basis.projection, vB));
+                angle = NVector.angle(aDir, bDir);
+                if (Double.isNaN(angle)) {//
+                    //System.err.println("Angle NaNners");
+                    return false;
+                }
+                if (angle > maxAngle) {
+                    //System.err.println("Angle too large: " + angle);
+                    return false;
+                }//
+                return true;
+            } else {//System.out.println(bDir);
+                if (allowWorldEdgeReflection) {
+                    bDir = null;
+                    angle = Math.PI;
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(NFace.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
     }
 }

@@ -45,6 +45,9 @@
           <Properties>
             <Property name="name" type="java.lang.String" value="intrumentPanel" noResource="true"/>
           </Properties>
+          <Events>
+            <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="intrumentPanelKeyTyped"/>
+          </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
               <JSplitPaneConstraints position="right"/>
@@ -55,11 +58,22 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace pref="36" max="32767" attributes="0"/>
-                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                          <Component id="btnTracer" max="32767" attributes="1"/>
-                          <Component id="btnRealign" max="32767" attributes="1"/>
-                          <Component id="btnCenter" alignment="1" max="32767" attributes="1"/>
+                      <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="btnControl" alignment="1" pref="71" max="32767" attributes="1"/>
+                          <Component id="btnTracer" alignment="1" pref="71" max="32767" attributes="1"/>
+                          <Component id="btnRealign" alignment="1" pref="71" max="32767" attributes="1"/>
+                          <Component id="btnCenter" alignment="1" pref="71" max="32767" attributes="1"/>
+                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                          <Component id="editGrainy" alignment="0" min="0" pref="0" max="32767" attributes="1"/>
+                          <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="editDTL" min="0" pref="0" max="32767" attributes="1"/>
+                          <Group type="102" attributes="0">
+                              <Component id="editGaitLength" min="-2" pref="36" max="-2" attributes="1"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="editAngle" pref="29" max="32767" attributes="1"/>
+                          </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -114,28 +128,51 @@
                           <Component id="btnTracer" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="btnForward" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="btnForwardOne" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="btnRightOne" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="btnLeftOne" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Component id="btnForward" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="btnForwardOne" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="btnRightOne" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btnLeftOne" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="btnBackwardOne" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="btnDownOne" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btnUpOne" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="5" pref="5" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="boxRenderMain" min="-2" max="-2" attributes="0"/>
+                                  <Component id="boxRender" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="editGrainy" min="-2" pref="27" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="editDTL" min="-2" pref="27" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="editGaitLength" alignment="3" min="-2" pref="27" max="-2" attributes="0"/>
+                                  <Component id="editAngle" alignment="3" min="-2" pref="27" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="btnBackwardOne" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="btnDownOne" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="btnUpOne" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="btnEncode" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnControl" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="5" pref="5" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="boxRenderMain" min="-2" max="-2" attributes="0"/>
-                          <Component id="boxRender" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="btnEncode" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -303,6 +340,63 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTracerActionPerformed"/>
               </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnControl">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="btnControl.text"/>
+                <Property name="name" type="java.lang.String" value="btnControl" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnControlActionPerformed"/>
+                <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="btnControlKeyPressed"/>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="btnControlKeyTyped"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel1">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="jLabel1.text"/>
+                <Property name="name" type="java.lang.String" value="jLabel1" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="editGrainy">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="editGrainy.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="editGrainy.toolTipText"/>
+                <Property name="name" type="java.lang.String" value="editGrainy" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel2">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="jLabel2.text"/>
+                <Property name="name" type="java.lang.String" value="jLabel2" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="editDTL">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="editDTL.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="editDTL.toolTipText"/>
+                <Property name="name" type="java.lang.String" value="editDTL" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel3">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="jLabel3.text"/>
+                <Property name="name" type="java.lang.String" value="jLabel3" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="editGaitLength">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="editGaitLength.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="editGaitLength.toolTipText"/>
+                <Property name="name" type="java.lang.String" value="editGaitLength" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="editAngle">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="editAngle.text"/>
+                <Property name="toolTipText" type="java.lang.String" resourceKey="editAngle.toolTipText"/>
+                <Property name="name" type="java.lang.String" value="editAngle" noResource="true"/>
+              </Properties>
             </Component>
           </SubComponents>
         </Container>
