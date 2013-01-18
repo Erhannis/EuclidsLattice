@@ -31,7 +31,7 @@ public class Engine {
     public double sqr(double a) {
         return a * a;
     }
-    public Random r = new Random();
+    public static Random r = new Random();
     public int dims = 0;
     public LatticeTestworkView parent = null;
     public ArrayList<NLatticeBone> skeleton = null;
@@ -79,6 +79,8 @@ public class Engine {
     public boolean stereo = true;
     public double stereoDegrees = 0.1;
     public double stereoDelta = 2.5;
+    public static boolean stereo4 = false;
+    public double stereo4Alpha = 0.1;
     public boolean hideImmune = false;
     public boolean hideComplete = false;
     public boolean hideIncomplete = false;
@@ -394,16 +396,23 @@ public class Engine {
                         if (lattice != null) {
                             for (int hasStereo = 0; hasStereo <= 1; hasStereo++) {
                                 double stereoCurDelta = 0;
+                                double stereo4CurAlpha = 0;
                                 if (hasStereo == 1) {
                                     if (stereo && rot.length > 1) {
                                         stereoCurDelta = 0.5 * stereoDelta;
                                         rot[1] -= stereoDegrees;
+                                        if (stereo4) {
+                                            stereo4CurAlpha = -stereo4Alpha;
+                                        }
                                     } else {
                                         break;
                                     }
                                 } else {
                                     if (stereo && rot.length > 1) {
                                         stereoCurDelta = -0.5 * stereoDelta;
+                                        if (stereo4) {
+                                            stereo4CurAlpha = stereo4Alpha;
+                                        }
                                     }
                                 }
                                 //TODO I should probably be able to rotate this thing.
@@ -414,6 +423,7 @@ public class Engine {
                                             if (hideImmune && i.immune) {
                                                 continue;
                                             }
+                                            g.setColor(i.color);
                                             Ellipse2D.Double bucket = new Ellipse2D.Double();
 
                                             NVector current = viewRotate(i.pos, rot, rotCoords);
@@ -429,6 +439,7 @@ public class Engine {
 //                            bucket.y = second.coords[1] - 0.01;
 //                            bucket.width = (0.02 * (second.coords[2] + 1)) + 0.01;
 //                            bucket.height = (0.02 * (second.coords[2] + 1)) + 0.01;
+                                            //TODO Nest and combine these and all such ifs here.
                                             if (current.coords.length > 0) {
                                                 bucket.x = current.coords[0] - 0.01 + stereoCurDelta;
                                             } else {
@@ -450,6 +461,9 @@ public class Engine {
                                                 i.displayPoint.setLocation(bucket.x, bucket.y);
                                             } else {
                                                 i.displayPointStereo.setLocation(bucket.x, bucket.y);
+                                            }
+                                            if (stereo4 && current.coords.length > 3) {
+                                                bucket.y = bucket.y + (stereo4CurAlpha * current.coords[3]);
                                             }
                                             g.draw(bucket);
                                         } catch (Exception e) {
@@ -485,6 +499,9 @@ public class Engine {
                                             bucket.width = 0.01;
                                             bucket.height = 0.01;
                                         }
+                                        if (stereo4 && second.coords.length > 3) {
+                                            bucket.y = bucket.y + (stereo4CurAlpha * second.coords[3]);
+                                        }
                                         g.setColor(Color.magenta);
                                         g.draw(bucket);
                                     } catch (Exception e) {
@@ -512,15 +529,21 @@ public class Engine {
                                             } else {
                                                 line.y1 = 0;
                                             }
+                                            if (stereo4 && second.coords.length > 3) {
+                                                line.y1 = line.y1 + (stereo4CurAlpha * second.coords[3]);
+                                            }
                                             if (fourth.coords.length > 0) {
                                                 line.x2 = fourth.coords[0] + stereoCurDelta;
                                             } else {
                                                 line.x2 = 0;
                                             }
-                                            if (second.coords.length > 1) {
+                                            if (fourth.coords.length > 1) {
                                                 line.y2 = fourth.coords[1];
                                             } else {
                                                 line.y2 = 0;
+                                            }
+                                            if (stereo4 && fourth.coords.length > 3) {
+                                                line.y2 = line.y2 + (stereo4CurAlpha * fourth.coords[3]);
                                             }
                                             //bucket.width = 0.02;
                                             //bucket.height = 0.02;
@@ -551,15 +574,21 @@ public class Engine {
                                             } else {
                                                 line.y1 = 0;
                                             }
+                                            if (stereo4 && second.coords.length > 3) {
+                                                line.y1 = line.y1 + (stereo4CurAlpha * second.coords[3]);
+                                            }
                                             if (fourth.coords.length > 0) {
                                                 line.x2 = fourth.coords[0] + stereoCurDelta;
                                             } else {
                                                 line.x2 = 0;
                                             }
-                                            if (second.coords.length > 1) {
+                                            if (fourth.coords.length > 1) {
                                                 line.y2 = fourth.coords[1];
                                             } else {
                                                 line.y2 = 0;
+                                            }
+                                            if (stereo4 && fourth.coords.length > 3) {
+                                                line.y2 = line.y2 + (stereo4CurAlpha * fourth.coords[3]);
                                             }
                                             //bucket.width = 0.02;
                                             //bucket.height = 0.02;
@@ -752,15 +781,21 @@ public class Engine {
                                             } else {
                                                 line.y1 = 0;
                                             }
+                                            if (stereo4 && second.coords.length > 3) {
+                                                line.y1 = line.y1 + (stereo4CurAlpha * second.coords[3]);
+                                            }
                                             if (fourth.coords.length > 0) {
                                                 line.x2 = fourth.coords[0] + stereoCurDelta;
                                             } else {
                                                 line.x2 = 0;
                                             }
-                                            if (second.coords.length > 1) {
+                                            if (fourth.coords.length > 1) {
                                                 line.y2 = fourth.coords[1];
                                             } else {
                                                 line.y2 = 0;
+                                            }
+                                            if (stereo4 && fourth.coords.length > 3) {
+                                                line.y2 = line.y2 + (stereo4CurAlpha * fourth.coords[3]);
                                             }
                                             //bucket.width = 0.02;
                                             //bucket.height = 0.02;
@@ -793,15 +828,21 @@ public class Engine {
                                                 } else {
                                                     line.y1 = 0;
                                                 }
+                                                if (stereo4 && second.coords.length > 3) {
+                                                    line.y1 = line.y1 + (stereo4CurAlpha * second.coords[3]);
+                                                }
                                                 if (fourth.coords.length > 0) {
                                                     line.x2 = fourth.coords[0] + stereoCurDelta;
                                                 } else {
                                                     line.x2 = 0;
                                                 }
-                                                if (second.coords.length > 1) {
+                                                if (fourth.coords.length > 1) {
                                                     line.y2 = fourth.coords[1];
                                                 } else {
                                                     line.y2 = 0;
+                                                }
+                                                if (stereo4 && fourth.coords.length > 3) {
+                                                    line.y2 = line.y2 + (stereo4CurAlpha * fourth.coords[3]);
                                                 }
                                                 //bucket.width = 0.02;
                                                 //bucket.height = 0.02;
@@ -839,6 +880,9 @@ public class Engine {
                                             } else {
                                                 bucket.width = 0.01;
                                                 bucket.height = 0.01;
+                                            }
+                                            if (stereo4 && current.coords.length > 3) {
+                                                bucket.y = bucket.y + (stereo4CurAlpha * current.coords[3]);
                                             }
                                             g.draw(bucket);
                                         } catch (Exception e) {
@@ -887,15 +931,21 @@ public class Engine {
                                                             } else {
                                                                 line.y1 = 0;
                                                             }
+                                                            if (stereo4 && second.coords.length > 3) {
+                                                                line.y1 = line.y1 + (stereo4CurAlpha * second.coords[3]);
+                                                            }
                                                             if (fourth.coords.length > 0) {
                                                                 line.x2 = fourth.coords[0] + stereoCurDelta;
                                                             } else {
                                                                 line.x2 = 0;
                                                             }
-                                                            if (second.coords.length > 1) {
+                                                            if (fourth.coords.length > 1) {
                                                                 line.y2 = fourth.coords[1];
                                                             } else {
                                                                 line.y2 = 0;
+                                                            }
+                                                            if (stereo4 && fourth.coords.length > 3) {
+                                                                line.y2 = line.y2 + (stereo4CurAlpha * fourth.coords[3]);
                                                             }
                                                             //bucket.width = 0.02;
                                                             //bucket.height = 0.02;
@@ -924,15 +974,21 @@ public class Engine {
                                                     } else {
                                                         line.y1 = 0;
                                                     }
+                                                    if (stereo4 && second.coords.length > 3) {
+                                                        line.y1 = line.y1 + (stereo4CurAlpha * second.coords[3]);
+                                                    }
                                                     if (fourth.coords.length > 0) {
                                                         line.x2 = fourth.coords[0] + stereoCurDelta;
                                                     } else {
                                                         line.x2 = 0;
                                                     }
-                                                    if (second.coords.length > 1) {
+                                                    if (fourth.coords.length > 1) {
                                                         line.y2 = fourth.coords[1];
                                                     } else {
                                                         line.y2 = 0;
+                                                    }
+                                                    if (stereo4 && fourth.coords.length > 3) {
+                                                        line.y2 = line.y2 + (stereo4CurAlpha * fourth.coords[3]);
                                                     }
                                                     //bucket.width = 0.02;
                                                     //bucket.height = 0.02;
@@ -971,6 +1027,9 @@ public class Engine {
                                             } else {
                                                 bucket.width = 0.01;
                                                 bucket.height = 0.01;
+                                            }
+                                            if (stereo4 && current.coords.length > 3) {
+                                                bucket.y = bucket.y + (stereo4CurAlpha * current.coords[3]);
                                             }
                                             g.draw(bucket);
                                         } catch (Exception e) {

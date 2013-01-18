@@ -145,6 +145,7 @@ public class Camera {
     public static final int PROJ_MERCATOR = 2;
     
     public void renderCamera(Graphics2D g, int cameraMode, int width, int height, double dtl) {
+        //Cuda?
         switch (cameraMode) {
             case PROJ_AZIMUTHAL:
                 break;
@@ -192,7 +193,7 @@ public class Camera {
         } else {//System.out.println(orientation[2]);
             NVector dir = new NVector(dims);
             //NVector apDir = aperture[0];
-            //TODO Fix this horrible patched mess here.  (Should have aperature.)  I just want to see the pretty pictures!
+            //TODO Fix this horrible patched mess here.  (Should have aperture.)  I just want to see the pretty pictures!
             // Actually, this works pretty well.  I might leave it.
             dir = dir.plusB(orientation[0].multS(0.5));
             for (int i = 1; i < latticeDims; i++) { //THINK ARGH, is this even the right bound?

@@ -4,6 +4,7 @@
  */
 package latticetestwork;
 
+import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -29,10 +30,18 @@ public class NPoint implements Streamable {
     public Point2D displayPoint = new Point2D.Double();
     public Point2D displayPointStereo = new Point2D.Double();
     
+    public Color color;
+
     public NPoint(int dims) {
         this.dims = dims;
         pos = new NVector(dims);
         faces = new HashSet<NFace>();
+        
+        if (Engine.stereo4) { 
+            this.color = new Color(Engine.r.nextInt(0x1000000));
+        } else {
+            color = Color.BLACK;
+        }
     }
 
     public double distSqr(NPoint p) {
