@@ -84,7 +84,7 @@ public class ParallelRender {
                 //TODO DO SOMETHING
                 // Ok, for now, I'm gonna just straight up say "HEY THRS SUMTHIN HERE!"
                 if (cell.surfaces.get(0) == null) {
-                    return new Color((int) (cell.color.getRed() * percentOfIncidence), (int) (cell.color.getGreen() * percentOfIncidence), (int) (cell.color.getBlue() * percentOfIncidence));
+                    return (((int) (cell.color.getRed() * percentOfIncidence)) * 0x010000) + (((int) (cell.color.getGreen() * percentOfIncidence)) * 0x000100) + ((int) (cell.color.getBlue() * percentOfIncidence));
                 } else {
                     //TODO Actually deal with the surfaces.
                     // Check which side you hit
@@ -201,10 +201,12 @@ public class ParallelRender {
 //                    }
 //                    crossedFace = hitFace;
                         if (hitSurface.color != null && hitSurface.color.getRGB() != 0) {
-                            return new Color((int) (hitSurface.color.getRed() * percentOfIncidence), (int) (hitSurface.color.getGreen() * percentOfIncidence), (int) (hitSurface.color.getBlue() * percentOfIncidence));
+//                            return new Color((int) (hitSurface.color.getRed() * percentOfIncidence), (int) (hitSurface.color.getGreen() * percentOfIncidence), (int) (hitSurface.color.getBlue() * percentOfIncidence));
+                            return (((int) (hitSurface.color.getRed() * percentOfIncidence)) * 0x010000) + (((int) (hitSurface.color.getGreen() * percentOfIncidence)) * 0x000100) + ((int) (hitSurface.color.getBlue() * percentOfIncidence));
                         } else {
                             // Jury-rigged to be ground.
-                            return new Color((int) (cell.color.getRed() * percentOfIncidence), (int) (cell.color.getGreen() * percentOfIncidence), (int) (cell.color.getBlue() * percentOfIncidence));
+//                            return new Color((int) (cell.color.getRed() * percentOfIncidence), (int) (cell.color.getGreen() * percentOfIncidence), (int) (cell.color.getBlue() * percentOfIncidence));
+                            return (((int) (cell.color.getRed() * percentOfIncidence)) * 0x010000) + (((int) (cell.color.getGreen() * percentOfIncidence)) * 0x000100) + ((int) (cell.color.getBlue() * percentOfIncidence));
                         }
                     }
                 }
@@ -274,7 +276,7 @@ public class ParallelRender {
                     dir = hitFace.crossCornerVector(cell, dir);
                     cell = hitFace.crossCornerCell(cell);
                 } else {
-                    return cell.color;
+                    return cell.color.getRGB();
                 }
                 crossedFace = hitFace;
 //            }
