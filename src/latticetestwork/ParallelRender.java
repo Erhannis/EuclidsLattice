@@ -44,15 +44,27 @@ public class ParallelRender {
         return result;
     }
 
-    public void aRenderSpawn(int[] blockIndex, int coordIndex, final int[] picDims, final int dims, final int latticeDims, int[] division, final NVector[] orientation, final NVector pos, final NCell cell, final Tensor<Integer> result, final double dtl) {
-        new Thread(new Runnable() {
-            public void run() {
-                int[] coord = new int[picDims.length];
-                int[] fromCoords = new int[picDims.length];
-                int[] toCoords = new int[picDims.length];
-                aRenderRecurse(dims, latticeDims, picDims, fromCoords, toCoords, coord, 0, orientation, pos, cell, result, dtl);
+    public void aRenderSpawn(int[] blockIndex, int coordIndex, final int[] picDims, final int dims, final int latticeDims, final int[] division, final NVector[] orientation, final NVector pos, final NCell cell, final Tensor<Integer> result, final double dtl) {
+        if (coordIndex < blockIndex.length) {
+            for (int i = 0; i < division[coordIndex]; i++) {
+                blockIndex[coordIndex] = i;
+                aRenderSpawn(blockIndex, coordIndex + 1, picDims, dims, latticeDims, division, orientation, pos, cell, result, dtl);
             }
-        }).run();
+        } else {
+            final int[] blockIdx = blockIndex.clone();
+            new Thread(new Runnable() {
+                public void run() {
+                    int[] coord = new int[picDims.length];
+                    int[] fromCoords = new int[picDims.length];
+                    int[] toCoords = new int[picDims.length];
+                    for (int i = 0; i < blockIdx.length; i++) {
+                        fromCoords[i] = ((picDims[i] / division[i]) + 1) * blockIdx[i];
+                        toCoords[i] = Math.min(((picDims[i] / division[i]) + 1) * (blockIdx[i] + 1), picDims[i]);
+                    }
+                    aRenderRecurse(dims, latticeDims, picDims, fromCoords, toCoords, coord, 0, orientation, pos, cell, result, dtl);
+                }
+            }).run();
+        }
     }
     
 /**/
