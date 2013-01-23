@@ -161,6 +161,7 @@ public class Camera {
     public int projectionType = PROJ_MERCATOR;
     public static final int PROJ_AZIMUTHAL = 1;
     public static final int PROJ_MERCATOR = 2;
+    public boolean parallel = true;
     
     public void renderCamera(Graphics2D g, int cameraMode, int width, int height, double dtl, double fov, int graininess) {
         //Cuda?
@@ -171,12 +172,21 @@ public class Camera {
                 //TODO So, this isn't actually general, like, for multiple dimensions.
                 int dWidth = width / graininess;
                 int dHeight = height / graininess;
-                int[] picDims = new int[]{dWidth, dHeight};
-                Tensor<Color> result = aRender(dtl, fov, picDims);
+                int[] picDims = new int[]{dWidth, dHeight};                
+//                Tensor<Color> result = aRender(dtl, fov, picDims);
+//                if (parallel) {
+                // Testing parallel.
+                int[] division = new int[picDims.length];
+                for (int i = 0; i < division.length; i++) {
+                    division[i] = 4;
+                }
+                Tensor<Integer> result = ParallelRender.aRender(dims, latticeDims, division, orientation, pos, cell, dtl, picDims);
                 BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
                 for (int x = 0; x < dWidth; x++) {
                     for (int y = 0; y < dHeight; y++) {
-                        int rgb = result.get(x, y).getRGB();
+//                        int rgb = result.get(x, y).getRGB();
+                        int rgb = result.get(x, y);//Integer.toHexString(result.get(x, y))
+                        rgb = 0xFF000000 + (0x00FFFFFF & rgb);
                         for (int xi = 0; xi < graininess; xi++) {
                             for (int yi = 0; yi < graininess; yi++) {
                                 image.setRGB((x * graininess) + xi, (y * graininess) + yi, rgb);

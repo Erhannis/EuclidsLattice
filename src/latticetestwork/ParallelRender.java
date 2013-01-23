@@ -4,6 +4,8 @@
  */
 package latticetestwork;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,7 +34,7 @@ public class ParallelRender {
         //TODO
     }
     
-    public Tensor<Integer> aRender(int dims, int latticeDims, int[] division, NVector[] orientation, NVector pos, NCell cell, double dtl, int... picDims) {
+    public static Tensor<Integer> aRender(int dims, int latticeDims, int[] division, NVector[] orientation, NVector pos, NCell cell, double dtl, int... picDims) {
         // So, the idea is to sweep from corner to corner of the aperture and ping pixels.
         Tensor<Integer> result = Tensor.getIntTensor(picDims);
         
@@ -40,19 +42,29 @@ public class ParallelRender {
         int[] blockIndex = new int[picDims.length];
         
         //TODO Sweep like the wind!
-        aRenderSpawn(blockIndex, 0, picDims, dims, latticeDims, division, orientation, pos, cell, result, dtl);
+        HashSet<Thread> threadz = new HashSet<Thread>();
+        aRenderSpawn(threadz, blockIndex, 0, picDims, dims, latticeDims, division, orientation, pos, cell, result, dtl);
+        while (!threadz.isEmpty()) {
+            HashSet<Thread> toDelete = new HashSet<Thread>();
+            for (Thread t : threadz) {
+                if (!t.isAlive()) {
+                    toDelete.add(t);
+                }
+            }
+            threadz.removeAll(toDelete);
+        }
         return result;
     }
 
-    public void aRenderSpawn(int[] blockIndex, int coordIndex, final int[] picDims, final int dims, final int latticeDims, final int[] division, final NVector[] orientation, final NVector pos, final NCell cell, final Tensor<Integer> result, final double dtl) {
+    public static void aRenderSpawn(HashSet<Thread> threadz, int[] blockIndex, int coordIndex, final int[] picDims, final int dims, final int latticeDims, final int[] division, final NVector[] orientation, final NVector pos, final NCell cell, final Tensor<Integer> result, final double dtl) {
         if (coordIndex < blockIndex.length) {
             for (int i = 0; i < division[coordIndex]; i++) {
                 blockIndex[coordIndex] = i;
-                aRenderSpawn(blockIndex, coordIndex + 1, picDims, dims, latticeDims, division, orientation, pos, cell, result, dtl);
+                aRenderSpawn(threadz, blockIndex, coordIndex + 1, picDims, dims, latticeDims, division, orientation, pos, cell, result, dtl);
             }
         } else {
             final int[] blockIdx = blockIndex.clone();
-            new Thread(new Runnable() {
+            Thread t = new Thread(new Runnable() {
                 public void run() {
                     int[] coord = new int[picDims.length];
                     int[] fromCoords = new int[picDims.length];
@@ -61,14 +73,18 @@ public class ParallelRender {
                         fromCoords[i] = ((picDims[i] / division[i]) + 1) * blockIdx[i];
                         toCoords[i] = Math.min(((picDims[i] / division[i]) + 1) * (blockIdx[i] + 1), picDims[i]);
                     }
+                    System.out.println("start block " + Arrays.toString(blockIdx) + "; " + Arrays.toString(fromCoords) + "; " + Arrays.toString(toCoords));
                     aRenderRecurse(dims, latticeDims, picDims, fromCoords, toCoords, coord, 0, orientation, pos, cell, result, dtl);
+                    System.out.println("end block " + Arrays.toString(blockIdx) + "; " + Arrays.toString(fromCoords) + "; " + Arrays.toString(toCoords));
                 }
-            }).run();
+            });
+            threadz.add(t);
+            t.start();
         }
     }
     
 /**/
-    public void aRenderRecurse(int dims, int latticeDims, int[] picDims, int[] fromCoords, int[] toCoords, int[] coord, int index, NVector[] orientation, NVector pos, NCell cell, Tensor<Integer> result, double dtl) {
+    public static void aRenderRecurse(int dims, int latticeDims, int[] picDims, int[] fromCoords, int[] toCoords, int[] coord, int index, NVector[] orientation, NVector pos, NCell cell, Tensor<Integer> result, double dtl) {
         if (index < picDims.length) {
             if (latticeDims == 2 && picDims.length == 2 && index == 1) {
                 coord[index] = 0;
@@ -100,7 +116,7 @@ public class ParallelRender {
         }
     }
 
-    public int proceed(NVector pos, NVector dir, NCell cell, double dtl) {
+    public static int proceed(NVector pos, NVector dir, NCell cell, double dtl) {
         // So, want to continue through the cell.
         // If there's nothing in the cell, go straight to the other side.
         // If there is, check for collisions.
