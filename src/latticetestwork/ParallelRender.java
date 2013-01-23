@@ -32,30 +32,45 @@ public class ParallelRender {
         //TODO
     }
     
-    public Tensor<Integer> aRender(int dims, int latticeDims, NVector[] orientation, NVector pos, NCell cell, double dtl, int... picDims) {
+    public Tensor<Integer> aRender(int dims, int latticeDims, int[] division, NVector[] orientation, NVector pos, NCell cell, double dtl, int... picDims) {
         // So, the idea is to sweep from corner to corner of the aperture and ping pixels.
         Tensor<Integer> result = Tensor.getIntTensor(picDims);
+        
+        // Have to spawn Product(division) threads
+        int[] blockIndex = new int[picDims.length];
+        
         //TODO Sweep like the wind!
-        int[] coord = new int[picDims.length];
-        aRenderRecurse(dims, latticeDims, picDims, coord, 0, orientation, pos, cell, result, dtl);
+        aRenderSpawn(blockIndex, 0, picDims, dims, latticeDims, division, orientation, pos, cell, result, dtl);
         return result;
+    }
+
+    public void aRenderSpawn(int[] blockIndex, int coordIndex, final int[] picDims, final int dims, final int latticeDims, int[] division, final NVector[] orientation, final NVector pos, final NCell cell, final Tensor<Integer> result, final double dtl) {
+        new Thread(new Runnable() {
+            public void run() {
+                int[] coord = new int[picDims.length];
+                int[] fromCoords = new int[picDims.length];
+                int[] toCoords = new int[picDims.length];
+                aRenderRecurse(dims, latticeDims, picDims, fromCoords, toCoords, coord, 0, orientation, pos, cell, result, dtl);
+            }
+        }).run();
     }
     
 /**/
-    public void aRenderRecurse(int dims, int latticeDims, int[] picDims, int[] coord, int index, NVector[] orientation, NVector pos, NCell cell, Tensor<Integer> result, double dtl) {
+    public void aRenderRecurse(int dims, int latticeDims, int[] picDims, int[] fromCoords, int[] toCoords, int[] coord, int index, NVector[] orientation, NVector pos, NCell cell, Tensor<Integer> result, double dtl) {
         if (index < picDims.length) {
             if (latticeDims == 2 && picDims.length == 2 && index == 1) {
                 coord[index] = 0;
-                aRenderRecurse(dims, latticeDims, picDims, coord, index + 1, orientation, pos, cell, result, dtl);
+                aRenderRecurse(dims, latticeDims, picDims, fromCoords, toCoords, coord, index + 1, orientation, pos, cell, result, dtl);
                 int colr = result.get(coord[0], 0);
-                for (int y = 0; y < picDims[1]; y++) {
+                for (int y = fromCoords[1]; y < toCoords[1]; y++) {
                     coord[1] = y;
                     result.put(colr, coord);
                 }
             } else {
-                for (int i = 0; i < picDims[index]; i++) {
+                //THINK For future reference, make sure that toCoords doesn't go beyond picDims.
+                for (int i = fromCoords[index]; i < toCoords[index]; i++) {
                     coord[index] = i;
-                    aRenderRecurse(dims, latticeDims, picDims, coord, index + 1, orientation, pos, cell, result, dtl);
+                    aRenderRecurse(dims, latticeDims, picDims, fromCoords, toCoords, coord, index + 1, orientation, pos, cell, result, dtl);
                 }
             }
         } else {//System.out.println(orientation[2]);
@@ -282,7 +297,7 @@ public class ParallelRender {
 //            }
         }
         //return new Color((int)(cell.color.getRed() * percentOfIncidence), (int)(cell.color.getGreen() * percentOfIncidence), (int)(cell.color.getBlue() * percentOfIncidence));
-        return Color.BLACK;
+        return 0x00000000;
 //        return cell.color;
     }
 /**/
