@@ -169,7 +169,7 @@ public class Camera {
     public static final int PROJ_AZIMUTHAL = 1;
     public static final int PROJ_MERCATOR = 2;
     
-    public void renderCamera(Graphics2D g, int cameraMode, int width, int height, double dtl, double fov, int graininess, int distribution) {
+    public void renderCamera(Graphics2D g, int cameraMode, int width, int height, double xOffset, double yOffset, double dtl, double fov, int graininess, int distribution) {
         switch (cameraMode) {
             case PROJ_AZIMUTHAL:
                 break;
@@ -184,7 +184,7 @@ public class Camera {
                         for (int i = 0; i < division.length; i++) {
                             division[i] = 4;
                         }
-                        Tensor<Integer> result = ParallelRender.aRender(dims, latticeDims, division, orientation, pos, cell, dtl, picDims);
+                        Tensor<Integer> result = ParallelRender.aRender(dims, latticeDims, division, orientation, pos, cell, dtl, fov, picDims);
                         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
                         for (int x = 0; x < dWidth; x++) {
                             for (int y = 0; y < dHeight; y++) {
@@ -198,7 +198,13 @@ public class Camera {
                                 }
                             }
                         }
-                        g.drawImage(image, new AffineTransform(), null);
+                        if (xOffset == 0 && yOffset == 0) {
+                            g.drawImage(image, new AffineTransform(), null);
+                        } else {
+                            AffineTransform at = new AffineTransform();
+                            at.setToTranslation(xOffset, yOffset);
+                            g.drawImage(image, at, null);
+                        }
                     }
                     break;
                     case DIST_NONE:
@@ -218,7 +224,13 @@ public class Camera {
                                 }
                             }
                         }
-                        g.drawImage(image, new AffineTransform(), null);
+                        if (xOffset == 0 && yOffset == 0) {
+                            g.drawImage(image, new AffineTransform(), null);
+                        } else {
+                            AffineTransform at = new AffineTransform();
+                            at.setToTranslation(xOffset, yOffset);
+                            g.drawImage(image, at, null);
+                        }
                     }
                     break;
                 }
@@ -468,5 +480,23 @@ public class Camera {
         for (int i = 0; i < orientation.length; i++) {
             orientation[i] = NVector.rotate(ax1, ax2, orientation[i], angle);
         }
+    }
+    
+    public Camera copy() {
+        Camera copy = new Camera(dims, latticeDims, lattice);        
+        for (int i = 0; i < this.aperture.length; i++) {
+            copy.aperture[i] = this.aperture[i].copy();
+        }
+        copy.camForm = this.camForm;
+        copy.cell = this.cell;
+        copy.cellId = this.cellId;
+        copy.latticeVelocity = this.latticeVelocity.copy();
+        for (int i = 0; i < this.orientation.length; i++) {
+            copy.orientation[i] = this.orientation[i].copy();
+        }
+        copy.pos = this.pos.copy();
+        copy.projectionType = this.projectionType;
+        copy.velocity = this.velocity.copy();
+        return copy;
     }
 }

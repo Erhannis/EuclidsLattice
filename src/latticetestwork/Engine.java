@@ -4370,4 +4370,53 @@ public class Engine {
         //System.out.println("Faces misclassified: " + result);
         return result;
     }
+
+    /**
+     * Creates and returns a camera without adding it to the lattice's list of
+     * cameras, and without alerting whatever form you assign it to.  I think
+     * that currently you can safely pass in null for cameraForm.
+     * @param orient
+     * @param cameraForm
+     * @return 
+     */
+    public Camera createIndependentCamera(boolean orient, CameraForm cameraForm) {
+        Camera newCam = null;
+        if (lattice != null) {
+            if (orient) {
+                newCam = new Camera(dims, lattice.internalDims, lattice);
+                NCell cell = lattice.cells.get(r.nextInt(lattice.cells.size()));
+                NVector center = new NVector(dims);
+                for (NPoint i : cell.points) {
+                    center = center.plusB(i.pos);
+                }
+                center = center.multS(1.0 / cell.points.length);
+                newCam.pos = center;
+                try {
+                    newCam.realignOrientation(cell);
+                } catch (Exception ex) {
+                    Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                newCam.camForm = cameraForm;
+            } else {
+                newCam = new Camera(dims, lattice.internalDims, lattice);
+                NCell cell = lattice.cells.get(r.nextInt(lattice.cells.size()));
+                newCam.cell = cell;
+                NVector center = new NVector(dims);
+                for (NPoint i : cell.points) {
+                    center = center.plusB(i.pos);
+                }
+                center = center.multS(1.0 / cell.points.length);
+                //newCam.pos = center;
+                permacenter.pos = center;
+                permaradius = cell.points[0].pos.minusB(center).length();
+//                try {
+//                    newCam.realignOrientation(cell);
+//                } catch (Exception ex) {
+//                    Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+                newCam.camForm = cameraForm;
+            }
+        }
+        return newCam;
+    }
 }

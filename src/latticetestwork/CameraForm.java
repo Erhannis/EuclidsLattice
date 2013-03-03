@@ -40,6 +40,7 @@ public class CameraForm extends javax.swing.JFrame {
     public LatticeTestworkView parent = null;
     public boolean render;
     public double fov = 1.0;
+    public boolean stereoRender = false;
 
     /** Creates new form CameraForm */
     public CameraForm(final Engine engine0, Camera cam, final LatticeTestworkView parent) {
@@ -59,7 +60,18 @@ public class CameraForm extends javax.swing.JFrame {
                 if (engine != null && render) {
                     System.out.println("Start render " + renderCount);
                     Graphics2D g = (Graphics2D) g1;
-                    camera.renderCamera(g, Camera.PROJ_MERCATOR, this.getWidth(), this.getHeight(), dtl, fov, graininess, parent.distribution);
+                    if (stereoRender) {
+                        Camera stereoCam = camera.copy();
+                        try {
+                            stereoCam.move(stereoCam.orientation[1].multS(-5*gaitLength), null);
+                        } catch (StackOverflowError e) {
+                            System.err.println("Stack overflow! - " + stereoCam.checkFloating());
+                        }
+                        camera.renderCamera(g, Camera.PROJ_MERCATOR, this.getWidth() / 2, this.getHeight(), 0, 0, dtl, fov, graininess, parent.distribution);
+                        stereoCam.renderCamera(g, Camera.PROJ_MERCATOR, this.getWidth() / 2, this.getHeight(), this.getWidth() / 2.0, 0, dtl, fov, graininess, parent.distribution);
+                    } else {
+                        camera.renderCamera(g, Camera.PROJ_MERCATOR, this.getWidth(), this.getHeight(), 0, 0, dtl, fov, graininess, parent.distribution);
+                    }
                     System.out.println("Finish render " + renderCount++);
                     //engine.render(g, 0, this.getWidth(), this.getHeight(), transX, transY, scaleX, scaleY);
                 }
@@ -103,6 +115,7 @@ public class CameraForm extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         editGaitLength = new javax.swing.JTextField();
         editAngle = new javax.swing.JTextField();
+        boxStereo = new javax.swing.JCheckBox();
 
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(latticetestwork.LatticeTestworkApp.class).getContext().getResourceMap(CameraForm.class);
         setTitle(resourceMap.getString("Form.title")); // NOI18N
@@ -293,26 +306,36 @@ public class CameraForm extends javax.swing.JFrame {
         editAngle.setToolTipText(resourceMap.getString("editAngle.toolTipText")); // NOI18N
         editAngle.setName("editAngle"); // NOI18N
 
+        boxStereo.setText(resourceMap.getString("boxStereo.text")); // NOI18N
+        boxStereo.setToolTipText(resourceMap.getString("boxStereo.toolTipText")); // NOI18N
+        boxStereo.setName("boxStereo"); // NOI18N
+        boxStereo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                boxStereoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout intrumentPanelLayout = new javax.swing.GroupLayout(intrumentPanel);
         intrumentPanel.setLayout(intrumentPanelLayout);
         intrumentPanelLayout.setHorizontalGroup(
             intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, intrumentPanelLayout.createSequentialGroup()
                 .addGap(36, 36, 36)
-                .addGroup(intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnControl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
-                    .addComponent(btnTracer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
-                    .addComponent(btnRealign, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
-                    .addComponent(btnCenter, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
-                    .addComponent(jLabel1)
-                    .addComponent(editGrainy, 0, 0, Short.MAX_VALUE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addComponent(editDTL, 0, 0, Short.MAX_VALUE)
-                    .addGroup(intrumentPanelLayout.createSequentialGroup()
+                .addGroup(intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(boxStereo, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
+                    .addComponent(btnControl, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
+                    .addComponent(btnTracer, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
+                    .addComponent(btnRealign, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
+                    .addComponent(btnCenter, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(editGrainy, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(editDTL, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, intrumentPanelLayout.createSequentialGroup()
                         .addComponent(editGaitLength, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(editAngle, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)))
+                        .addComponent(editAngle)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(intrumentPanelLayout.createSequentialGroup()
@@ -387,7 +410,9 @@ public class CameraForm extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(editGaitLength, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(editAngle, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(editAngle, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(boxStereo)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnEncode)
@@ -418,15 +443,24 @@ public class CameraForm extends javax.swing.JFrame {
         updateOptions();
         images.clear();
         int count = 0;
-        for (double ldtl = 3.0625; ldtl > 0; ldtl -= 0.125) {
+        //for (double ldtl = 3.0625; ldtl > 0; ldtl -= 0.125) {
+        for (double lfov = 0.1; lfov <= 10; lfov *= 1.05) {
             count++;
 
-            int[] picDims = new int[]{imWidth, imHeight};
-            Tensor<Color> result = camera.aRender(ldtl, fov, picDims);
+            int[] picDims = new int[]{imWidth, imHeight};            
+            //Tensor<Color> result = camera.aRender(dtl, lfov, picDims);
+            int[] division = new int[picDims.length];
+            for (int i = 0; i < division.length; i++) {
+                division[i] = 4;
+            }
+            Tensor<Integer> result = ParallelRender.aRender(camera.dims, camera.latticeDims, division, camera.orientation, camera.pos, camera.cell, dtl, lfov, picDims);
             BufferedImage image = new BufferedImage(imWidth, imHeight, BufferedImage.TYPE_3BYTE_BGR);
             for (int x = 0; x < imWidth; x++) {
                 for (int y = 0; y < imHeight; y++) {
-                    image.setRGB(x, y, result.get(x, y).getRGB());
+                    //image.setRGB(x, y, result.get(x, y).getRGB());
+                    int rgb = result.get(x, y);//Integer.toHexString(result.get(x, y))
+                    rgb = 0xFF000000 + (0x00FFFFFF & rgb);
+                    image.setRGB(x, y, rgb);
                 }
             }
 
@@ -941,6 +975,11 @@ private void btnControlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 // TODO add your handling code here:
 }//GEN-LAST:event_btnControlActionPerformed
 
+private void boxStereoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boxStereoActionPerformed
+    stereoRender = boxStereo.isSelected();
+    renderPanel.repaint();
+}//GEN-LAST:event_boxStereoActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -955,6 +994,7 @@ private void btnControlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JCheckBox boxRender;
     public javax.swing.JCheckBox boxRenderMain;
+    private javax.swing.JCheckBox boxStereo;
     private javax.swing.JButton btnBackwardOne;
     private javax.swing.JButton btnCenter;
     private javax.swing.JButton btnControl;

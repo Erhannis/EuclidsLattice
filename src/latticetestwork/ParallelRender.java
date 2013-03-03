@@ -34,7 +34,7 @@ public class ParallelRender {
         //TODO
     }
     
-    public static Tensor<Integer> aRender(int dims, int latticeDims, int[] division, NVector[] orientation, NVector pos, NCell cell, double dtl, int... picDims) {
+    public static Tensor<Integer> aRender(int dims, int latticeDims, int[] division, NVector[] orientation, NVector pos, NCell cell, double dtl, double fov, int... picDims) {
         // So, the idea is to sweep from corner to corner of the aperture and ping pixels.
         Tensor<Integer> result = Tensor.getIntTensor(picDims);
         
@@ -43,7 +43,7 @@ public class ParallelRender {
         
         //TODO Sweep like the wind!
         HashSet<Thread> threadz = new HashSet<Thread>();
-        aRenderSpawn(threadz, blockIndex, 0, picDims, dims, latticeDims, division, orientation, pos, cell, result, dtl);
+        aRenderSpawn(threadz, blockIndex, 0, picDims, dims, latticeDims, division, orientation, pos, cell, result, dtl, fov);
         while (!threadz.isEmpty()) {
             HashSet<Thread> toDelete = new HashSet<Thread>();
             for (Thread t : threadz) {
@@ -56,11 +56,11 @@ public class ParallelRender {
         return result;
     }
 
-    public static void aRenderSpawn(HashSet<Thread> threadz, int[] blockIndex, int coordIndex, final int[] picDims, final int dims, final int latticeDims, final int[] division, final NVector[] orientation, final NVector pos, final NCell cell, final Tensor<Integer> result, final double dtl) {
+    public static void aRenderSpawn(HashSet<Thread> threadz, int[] blockIndex, int coordIndex, final int[] picDims, final int dims, final int latticeDims, final int[] division, final NVector[] orientation, final NVector pos, final NCell cell, final Tensor<Integer> result, final double dtl, final double fov) {
         if (coordIndex < blockIndex.length) {
             for (int i = 0; i < division[coordIndex]; i++) {
                 blockIndex[coordIndex] = i;
-                aRenderSpawn(threadz, blockIndex, coordIndex + 1, picDims, dims, latticeDims, division, orientation, pos, cell, result, dtl);
+                aRenderSpawn(threadz, blockIndex, coordIndex + 1, picDims, dims, latticeDims, division, orientation, pos, cell, result, dtl, fov);
             }
         } else {
             final int[] blockIdx = blockIndex.clone();
@@ -74,7 +74,7 @@ public class ParallelRender {
                         toCoords[i] = Math.min(((picDims[i] / division[i]) + 1) * (blockIdx[i] + 1), picDims[i]);
                     }
                     System.out.println("start block " + Arrays.toString(blockIdx) + "; " + Arrays.toString(fromCoords) + "; " + Arrays.toString(toCoords));
-                    aRenderRecurse(dims, latticeDims, picDims, fromCoords, toCoords, coord, 0, orientation, pos, cell, result, dtl);
+                    aRenderRecurse(dims, latticeDims, picDims, fromCoords, toCoords, coord, 0, orientation, pos, cell, result, dtl, fov);
                     System.out.println("end block " + Arrays.toString(blockIdx) + "; " + Arrays.toString(fromCoords) + "; " + Arrays.toString(toCoords));
                 }
             });
@@ -84,11 +84,11 @@ public class ParallelRender {
     }
     
 /**/
-    public static void aRenderRecurse(int dims, int latticeDims, int[] picDims, int[] fromCoords, int[] toCoords, int[] coord, int index, NVector[] orientation, NVector pos, NCell cell, Tensor<Integer> result, double dtl) {
+    public static void aRenderRecurse(int dims, int latticeDims, int[] picDims, int[] fromCoords, int[] toCoords, int[] coord, int index, NVector[] orientation, NVector pos, NCell cell, Tensor<Integer> result, double dtl, double fov) {
         if (index < picDims.length) {
             if (latticeDims == 2 && picDims.length == 2 && index == 1) {
                 coord[index] = 0;
-                aRenderRecurse(dims, latticeDims, picDims, fromCoords, toCoords, coord, index + 1, orientation, pos, cell, result, dtl);
+                aRenderRecurse(dims, latticeDims, picDims, fromCoords, toCoords, coord, index + 1, orientation, pos, cell, result, dtl, fov);
                 int colr = result.get(coord[0], 0);
                 for (int y = fromCoords[1]; y < toCoords[1]; y++) {
                     coord[1] = y;
@@ -98,7 +98,7 @@ public class ParallelRender {
                 //THINK For future reference, make sure that toCoords doesn't go beyond picDims.
                 for (int i = fromCoords[index]; i < toCoords[index]; i++) {
                     coord[index] = i;
-                    aRenderRecurse(dims, latticeDims, picDims, fromCoords, toCoords, coord, index + 1, orientation, pos, cell, result, dtl);
+                    aRenderRecurse(dims, latticeDims, picDims, fromCoords, toCoords, coord, index + 1, orientation, pos, cell, result, dtl, fov);
                 }
             }
         } else {//System.out.println(orientation[2]);
@@ -106,7 +106,7 @@ public class ParallelRender {
             //NVector apDir = aperture[0];
             //TODO Fix this horrible patched mess here.  (Should have aperture.)  I just want to see the pretty pictures!
             // Actually, this works pretty well.  I might leave it.
-            dir = dir.plusB(orientation[0].multS(0.5));
+            dir = dir.plusB(orientation[0].multS(0.5 / fov));
             for (int i = 1; i < latticeDims; i++) { //THINK ARGH, is this even the right bound?
                 dir = dir.plusB(orientation[i].multS((((double)coord[i - 1]) / picDims[i - 1]) - 0.5)); //THINK Ugh.  Way jury-rigged.
             }
