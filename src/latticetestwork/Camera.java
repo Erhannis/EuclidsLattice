@@ -158,13 +158,18 @@ public class Camera {
         this.cell = cell;
     }
     
+    /** I don't think these work together, yet.  */
+    //TODO Ooh, idea!  We could have a cool interactive routing diagram, like patchage!
+    public static final int DIST_NONE = LatticeTestworkView.DIST_NONE;
+    public static final int DIST_CPU  = LatticeTestworkView.DIST_CPU;
+    public static final int DIST_GPU  = LatticeTestworkView.DIST_GPU;
+    public static final int DIST_MOB  = LatticeTestworkView.DIST_MOB;
+    
     public int projectionType = PROJ_MERCATOR;
     public static final int PROJ_AZIMUTHAL = 1;
     public static final int PROJ_MERCATOR = 2;
-    public boolean parallel = true;
     
-    public void renderCamera(Graphics2D g, int cameraMode, int width, int height, double dtl, double fov, int graininess) {
-        //Cuda?
+    public void renderCamera(Graphics2D g, int cameraMode, int width, int height, double dtl, double fov, int graininess, int distribution) {
         switch (cameraMode) {
             case PROJ_AZIMUTHAL:
                 break;
@@ -173,28 +178,50 @@ public class Camera {
                 int dWidth = width / graininess;
                 int dHeight = height / graininess;
                 int[] picDims = new int[]{dWidth, dHeight};                
-//                Tensor<Color> result = aRender(dtl, fov, picDims);
-//                if (parallel) {
-                // Testing parallel.
-                int[] division = new int[picDims.length];
-                for (int i = 0; i < division.length; i++) {
-                    division[i] = 4;
-                }
-                Tensor<Integer> result = ParallelRender.aRender(dims, latticeDims, division, orientation, pos, cell, dtl, picDims);
-                BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-                for (int x = 0; x < dWidth; x++) {
-                    for (int y = 0; y < dHeight; y++) {
+                switch (distribution) {
+                    case DIST_CPU: {
+                        int[] division = new int[picDims.length];
+                        for (int i = 0; i < division.length; i++) {
+                            division[i] = 4;
+                        }
+                        Tensor<Integer> result = ParallelRender.aRender(dims, latticeDims, division, orientation, pos, cell, dtl, picDims);
+                        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+                        for (int x = 0; x < dWidth; x++) {
+                            for (int y = 0; y < dHeight; y++) {
 //                        int rgb = result.get(x, y).getRGB();
-                        int rgb = result.get(x, y);//Integer.toHexString(result.get(x, y))
-                        rgb = 0xFF000000 + (0x00FFFFFF & rgb);
-                        for (int xi = 0; xi < graininess; xi++) {
-                            for (int yi = 0; yi < graininess; yi++) {
-                                image.setRGB((x * graininess) + xi, (y * graininess) + yi, rgb);
+                                int rgb = result.get(x, y);//Integer.toHexString(result.get(x, y))
+                                rgb = 0xFF000000 + (0x00FFFFFF & rgb);
+                                for (int xi = 0; xi < graininess; xi++) {
+                                    for (int yi = 0; yi < graininess; yi++) {
+                                        image.setRGB((x * graininess) + xi, (y * graininess) + yi, rgb);
+                                    }
+                                }
                             }
                         }
+                        g.drawImage(image, new AffineTransform(), null);
                     }
+                    break;
+                    case DIST_NONE:
+                    case DIST_GPU:
+                    case DIST_MOB:
+                    default: {
+                        Tensor<Color> result = aRender(dtl, fov, picDims);
+                        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+                        for (int x = 0; x < dWidth; x++) {
+                            for (int y = 0; y < dHeight; y++) {
+                                int rgb = result.get(x, y).getRGB();
+                                rgb = 0xFF000000 + (0x00FFFFFF & rgb);
+                                for (int xi = 0; xi < graininess; xi++) {
+                                    for (int yi = 0; yi < graininess; yi++) {
+                                        image.setRGB((x * graininess) + xi, (y * graininess) + yi, rgb);
+                                    }
+                                }
+                            }
+                        }
+                        g.drawImage(image, new AffineTransform(), null);
+                    }
+                    break;
                 }
-                g.drawImage(image, new AffineTransform(), null);
                 break;
             default:
         }

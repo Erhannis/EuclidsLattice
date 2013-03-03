@@ -49,6 +49,10 @@ public class Lattice {
         //THINK This has the potential to use memory stupidly.
         return baos.toByteArray();
     }
+
+    public void toArrays() {
+        
+    }
     
     public static Lattice fromByteArray(byte[] lattice) {
         ByteArrayInputStream bais = new ByteArrayInputStream(lattice);

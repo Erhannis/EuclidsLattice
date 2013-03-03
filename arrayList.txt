@@ -1,0 +1,58 @@
+Assuming const. dims, latticeDims
+
+faces    - const size
+points   - varying faces
+cells    - varying surfaces
+basiss   - varying bases, maybe
+matrices - varying rows/cols => vals
+surfaces - varying points
+cameras  - const size
+
+faceIDs
+pointIDs
+cellIDs
+basisIDs
+matrixIDs
+surfaceIDs
+cameraIDs
+
+Faces:
+  dims
+  latticeDims
+  cellA.id
+  cellB.id
+  id
+  points.length
+    points[i].id
+  basis.id
+  aDir:
+    dims
+      coords[i] dbl
+  bDir:
+    dims
+      coords[i] dbl
+  angle dbl
+
+Points:
+  dims
+  complete bool
+  id
+  faces.size
+    f.id
+  immune bool
+  (dims)
+    coords[i] dbl
+  (dims)
+    posOffhand.coords[i] dbl
+
+Cells:
+
+Basiss:
+
+Matrices:
+
+Surfaces:
+
+Cameras:
+
+(write IDs)

@@ -42,7 +42,7 @@ public class CameraForm extends javax.swing.JFrame {
     public double fov = 1.0;
 
     /** Creates new form CameraForm */
-    public CameraForm(final Engine engine0, Camera cam, LatticeTestworkView parent) {
+    public CameraForm(final Engine engine0, Camera cam, final LatticeTestworkView parent) {
         this.engine = engine0;
         this.camera = cam;
         this.parent = parent;
@@ -59,7 +59,7 @@ public class CameraForm extends javax.swing.JFrame {
                 if (engine != null && render) {
                     System.out.println("Start render " + renderCount);
                     Graphics2D g = (Graphics2D) g1;
-                    camera.renderCamera(g, Camera.PROJ_MERCATOR, this.getWidth(), this.getHeight(), dtl, fov, graininess);
+                    camera.renderCamera(g, Camera.PROJ_MERCATOR, this.getWidth(), this.getHeight(), dtl, fov, graininess, parent.distribution);
                     System.out.println("Finish render " + renderCount++);
                     //engine.render(g, 0, this.getWidth(), this.getHeight(), transX, transY, scaleX, scaleY);
                 }

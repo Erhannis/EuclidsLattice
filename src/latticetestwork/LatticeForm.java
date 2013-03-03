@@ -1070,6 +1070,245 @@ private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         return lattice;
     }
 
+    public static void latticeToArrays(OutputStream os, Lattice lattice) {
+        try {
+            //Lattice lattice = parent.engine.lattice;
+
+            DataOutputStream dos = new DataOutputStream(os);
+            dos.writeInt(VERSION);
+            dos.writeInt(lattice.dims);
+            dos.writeInt(lattice.internalDims);
+            HashMap<NFace, Integer> faceIDs = new HashMap<NFace, Integer>();
+            HashMap<NPoint, Integer> pointIDs = new HashMap<NPoint, Integer>();
+            HashMap<NCell, Integer> cellIDs = new HashMap<NCell, Integer>();
+            HashMap<NBasis, Integer> basisIDs = new HashMap<NBasis, Integer>();
+            HashMap<Matrix, Integer> matrixIDs = new HashMap<Matrix, Integer>();
+            HashMap<NSurface, Integer> surfaceIDs = new HashMap<NSurface, Integer>();
+            HashMap<Camera, Integer> cameraIDs = new HashMap<Camera, Integer>();
+
+            faceIDs.put(null, -1);
+            pointIDs.put(null, -1);
+            cellIDs.put(null, -1);
+            basisIDs.put(null, -1);
+            matrixIDs.put(null, -1);
+            surfaceIDs.put(null, -1);
+            cameraIDs.put(null, -1);
+
+            int faceId = 0;
+            int pointId = 0;
+            int cellId = 0;
+            int basisId = 0;
+            int matrixId = 0;
+            int surfaceId = 0;
+            int cameraId = 0;
+
+            // Assign all ids.
+            for (NFace f : lattice.faces) {
+                f.id = faceId++;
+                faceIDs.put(f, f.id);
+                // This here should always be unnecessary - but I'm irritatingly careful.
+                for (NPoint p : f.points) {
+                    p.id = pointId++;
+                    pointIDs.put(p, p.id);
+                }
+                if (f.cellA != null) {
+                    f.cellA.id = cellId++;
+                    cellIDs.put(f.cellA, f.cellA.id);
+                }
+                if (f.cellB != null) {
+                    f.cellB.id = cellId++;
+                    cellIDs.put(f.cellB, f.cellB.id);
+                }
+                if (f.basis != null) {
+                    f.basis.id = basisId++;
+                    basisIDs.put(f.basis, f.basis.id);
+                    if (f.basis.basis != null) {
+                        f.basis.basis.id = matrixId++;
+                        matrixIDs.put(f.basis.basis, f.basis.basis.id);
+                    }
+                    if (f.basis.projection != null) {
+                        f.basis.projection.id = matrixId++;
+                        matrixIDs.put(f.basis.projection, f.basis.projection.id);
+                    }
+                }
+            }
+            for (NPoint p : lattice.points) {
+                p.id = pointId++;
+                pointIDs.put(p, p.id);
+                // Unnecessary
+                for (NFace f : p.faces) {
+                    f.id = faceId++;
+                    faceIDs.put(f, f.id);
+                }
+            }
+            for (NCell c : lattice.cells) {
+                c.id = cellId++;
+                cellIDs.put(c, c.id);
+                for (NFace f : c.faces) {
+                    if (f != null) {
+                        f.id = faceId++;
+                        faceIDs.put(f, f.id);
+                    }
+                }
+                for (NPoint p : c.points) {
+                    if (p != null) {
+                        p.id = pointId++;
+                        pointIDs.put(p, p.id);
+                    }
+                }
+                if (c.basis != null) {
+                    c.basis.id = basisId++;
+                    basisIDs.put(c.basis, c.basis.id);
+                    if (c.basis.basis != null) {
+                        c.basis.basis.id = matrixId++;
+                        matrixIDs.put(c.basis.basis, c.basis.basis.id);
+                    }
+                    if (c.basis.projection != null) {
+                        c.basis.projection.id = matrixId++;
+                        matrixIDs.put(c.basis.projection, c.basis.projection.id);
+                    }
+                }
+                for (NSurface s : c.surfaces) {
+                    if (s != null) {
+                        s.id = surfaceId++;
+                        surfaceIDs.put(s, s.id);
+                        for (NPoint p : s.points) {
+                            if (p != null) {
+                                p.id = pointId++;
+                                pointIDs.put(p, p.id);
+                            }
+                        }
+                        if (s.basis != null) {
+                            s.basis.id = basisId++;
+                            basisIDs.put(s.basis, s.basis.id);
+                            if (s.basis.basis != null) {
+                                s.basis.basis.id = matrixId++;
+                                matrixIDs.put(s.basis.basis, s.basis.basis.id);
+                            }
+                            if (s.basis.projection != null) {
+                                s.basis.projection.id = matrixId++;
+                                matrixIDs.put(s.basis.projection, s.basis.projection.id);
+                            }
+                        }
+                    }
+                }
+            }
+            for (NSurface s : lattice.surfaces) {
+                if (s != null) {
+                    s.id = surfaceId++;
+                    surfaceIDs.put(s, s.id);
+                    for (NPoint p : s.points) {
+                        if (p != null) {
+                            p.id = pointId++;
+                            pointIDs.put(p, p.id);
+                        }
+                    }
+                    if (s.basis != null) {
+                        s.basis.id = basisId++;
+                        basisIDs.put(s.basis, s.basis.id);
+                        if (s.basis.basis != null) {
+                            s.basis.basis.id = matrixId++;
+                            matrixIDs.put(s.basis.basis, s.basis.basis.id);
+                        }
+                        if (s.basis.projection != null) {
+                            s.basis.projection.id = matrixId++;
+                            matrixIDs.put(s.basis.projection, s.basis.projection.id);
+                        }
+                    }
+                }
+            }
+            for (Camera c : lattice.cameras) {
+                if (c != null) {
+                    c.id = cameraId++;
+                    cameraIDs.put(c, c.id);
+                    if (c.cell != null) {
+                        c.cell.id = cellId++;
+                        cellIDs.put(c.cell, c.cell.id);
+                    }
+                }
+            }
+
+            // Write everything.
+            dos.writeInt(faceIDs.keySet().size() - 1);
+            for (NFace f : faceIDs.keySet()) {
+                if (f != null) {
+                    f.calcBasis();
+                    f.toBytes(dos);
+                }
+            }
+            dos.writeInt(pointIDs.keySet().size() - 1);
+            for (NPoint p : pointIDs.keySet()) {
+                if (p != null) {
+                    p.toBytes(dos);
+                }
+            }
+            dos.writeInt(cellIDs.keySet().size() - 1);
+            for (NCell c : cellIDs.keySet()) {
+                if (c != null) {
+                    c.toBytes(dos);
+                }
+            }
+            dos.writeInt(basisIDs.keySet().size() - 1);
+            for (NBasis b : basisIDs.keySet()) {
+                if (b != null) {
+                    b.toBytes(dos);
+                }
+            }
+            dos.writeInt(matrixIDs.keySet().size() - 1);
+            for (Matrix m : matrixIDs.keySet()) {
+                if (m != null) {
+                    m.toBytes(dos);
+                }
+            }
+            dos.writeInt(surfaceIDs.keySet().size() - 1);
+            for (NSurface s : surfaceIDs.keySet()) {
+                if (s != null) {
+                    s.toBytes(dos);
+                }
+            }
+            dos.writeInt(cameraIDs.keySet().size() - 1);
+            for (Camera c : cameraIDs.keySet()) {
+                if (c != null) {
+                    c.toBytes(dos);
+                }
+            }
+
+            dos.writeInt(lattice.cells.size());
+            for (int i = 0; i < lattice.cells.size(); i++) {
+                dos.writeInt(cellIDs.get(lattice.cells.get(i)));
+            }
+            dos.writeInt(lattice.faces.size());
+            for (int i = 0; i < lattice.faces.size(); i++) {
+                dos.writeInt(faceIDs.get(lattice.faces.get(i)));
+            }
+            dos.writeInt(lattice.incompleteFaces.size());
+            for (int i = 0; i < lattice.incompleteFaces.size(); i++) {
+                dos.writeInt(faceIDs.get(lattice.incompleteFaces.get(i)));
+            }
+            dos.writeInt(lattice.points.size());
+            for (int i = 0; i < lattice.points.size(); i++) {
+                dos.writeInt(pointIDs.get(lattice.points.get(i)));
+            }
+            dos.writeInt(lattice.surfaces.size());
+            for (int i = 0; i < lattice.surfaces.size(); i++) {
+                dos.writeInt(surfaceIDs.get(lattice.surfaces.get(i)));
+            }
+            dos.writeInt(lattice.cameras.size());
+            for (int i = 0; i < lattice.cameras.size(); i++) {
+                dos.writeInt(cameraIDs.get(lattice.cameras.get(i)));
+            }
+
+            dos.flush();
+            //dos.close();
+        } catch (FileNotFoundException ex) {
+            JOptionPane.showMessageDialog(null, "IO error or something.");
+            Logger.getLogger(SkeletonForm.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "IO error.");
+            Logger.getLogger(SkeletonForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     /**
      * @param args the command line arguments
      */

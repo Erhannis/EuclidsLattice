@@ -1153,9 +1153,17 @@ private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         repulsionForm.show();
     }
 }//GEN-LAST:event_jMenuItem6ActionPerformed
+
+    /** I don't think these work together, yet.  */
+    public static final int DIST_NONE = 0x00000000;
+    public static final int DIST_CPU  = 0x00000001;
+    public static final int DIST_GPU  = 0x00000010;
+    public static final int DIST_MOB  = 0x00000100;
+
     public DistributedComputingForm mobBossForm = null;
     public MobBoss mobBoss = new MobBoss(null);
     public boolean distributeComputing = false;
+    public int distribution = DIST_CPU;
 
 private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
     if (mobBossForm != null) {
