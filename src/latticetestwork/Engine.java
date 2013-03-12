@@ -172,14 +172,14 @@ public class Engine {
         }
 
         public boolean equivalent(Stick s) {
-            if (((this.pointA == s.pointA) || (this.pointA == s.pointB)) && ((this.pointB == s.pointA) || (this.pointB == s.pointB))) {
+            if (((this.pointA == s.pointA) && (this.pointB == s.pointB)) || ((this.pointB == s.pointA) && (this.pointA == s.pointB))) {
                 return true;
             }
             return false;
         }
 
         public boolean equivalent(NPoint pointA, NPoint pointB) {
-            if (((this.pointA == pointA) || (this.pointA == pointB)) && ((this.pointB == pointA) || (this.pointB == pointB))) {
+            if (((this.pointA == pointA) && (this.pointB == pointB)) || ((this.pointB == pointA) && (this.pointA == pointB))) {
                 return true;
             }
             return false;
@@ -1229,6 +1229,23 @@ public class Engine {
     }
 
     public boolean seed() {
+        if (radiusNearestAverageCount == -1) {
+            radiusNearestAverageCount = 0;
+            double radiusNearestTotal = 0;
+            for (NPoint p : lattice.points) {
+                double nearestDist = -1;
+                NPoint b = null;
+                for (NPoint i : lattice.points) {
+                    if (((nearestDist == -1) || (p.distSqr(i) < nearestDist)) && (p != i)) {
+                        b = i;
+                        nearestDist = p.distSqr(i);
+                    }
+                }
+                radiusNearestTotal += Math.sqrt(nearestDist);
+                radiusNearestAverageCount++;
+            }
+            radiusNearestAverage = radiusNearestTotal / radiusNearestAverageCount;
+        }        
         //NFace leaf = lattice.incompleteFaces.get(faceNum);
         NPoint a = lattice.points.get(r.nextInt(lattice.points.size()));
         double nearestDist = -1;
@@ -1258,7 +1275,20 @@ public class Engine {
 
 
 //        double radius = radiusSize * leaf.points[0].dist(leaf.points[1]);
-        double radius = radiusSize * leaf.points[0].dist(b);
+        double radius;
+        if (radiusLimitAverage) {
+            radiusAverage = leaf.points[0].dist(b);
+            radiusCount = 1;
+            radius = radiusSize * radiusAverage;
+        } else {
+            radius = radiusSize * leaf.points[0].dist(b);
+        }
+        if (radiusLimitNearestAverage) {
+            radius = Math.min(radius, radiusSize * radiusNearestAverage);
+        }
+        if (maxLength > -1) {
+            radius = Math.min(radius, maxLength);
+        }
         ArrayList<NPoint> nearest = new ArrayList<NPoint>();
         if (!candidateSystem) {
             if (radiusSize != -1) {
@@ -1377,6 +1407,19 @@ public class Engine {
                         lattice.incompleteFaces.add(leaf);
                         lattice.faces.add(leaf);
                         sticksChanged = true;
+                        
+                        if (radiusLimitAverage) {
+                            radiusAverage = 0;
+                            radiusCount = 0;
+                            for (int j = 0; j < newCell.points.length - 1; j++) {
+                                for (int k = j + 1; k < newCell.points.length; k++) {
+                                    radiusAverage += newCell.points[j].dist(newCell.points[k]);
+                                    radiusCount++;
+                                }
+                            }
+                            // I'm going to assume cells have at least one point in them.
+                            radiusAverage /= radiusCount;
+                        }
                         return true;
                     }
                 }
@@ -1608,7 +1651,7 @@ public class Engine {
                     bases.add(anchors.get(i).pos.minusB(anchors.get(0).pos));
                     points.add(anchors.get(i).pos.minusB(anchors.get(0).pos));
                 }
-                basis = new Matrix(bases.size(), dims);
+                basis = Matrix.getCachedMatrix(bases.size(), dims, false);//MTXOFT*
                 // Gram-Schmidt orthogonalization
                 for (int i = 0; i < bases.size(); i++) {
                     for (int j = 0; j < i; j++) {
@@ -1645,7 +1688,7 @@ public class Engine {
             }
             // NOPE Make vectors out of pi - p0.
             // Lay the vectors out and make them into a matrix.  We're using Cramer's Rule.
-            Matrix cramer = new Matrix(newAnchors.get(0).dims + 1, newAnchors.size());
+            Matrix cramer = Matrix.getCachedMatrix(newAnchors.get(0).dims + 1, newAnchors.size(), false);
             for (int row = 0; row < newAnchors.size(); row++) {
                 for (int col = 0; col < newAnchors.get(0).dims; col++) {
                     cramer.val[col][row] = 2 * newAnchors.get(row).coords[col];
@@ -1653,13 +1696,13 @@ public class Engine {
                 cramer.val[newAnchors.get(0).dims][row] = 1;
             }
 //            if (0 == 1) {
-            Matrix test = new Matrix(newAnchors.get(0).dims, newAnchors.size());
-            for (int row = 0; row < newAnchors.size(); row++) {
-                //THINK Er...maybe use arraycopy?
-                for (int col = 0; col < newAnchors.get(0).dims; col++) {
-                    test.val[col][row] = newAnchors.get(row).coords[col];
-                }
-            }
+//            Matrix test = new Matrix(newAnchors.get(0).dims, newAnchors.size());
+//            for (int row = 0; row < newAnchors.size(); row++) {
+//                //THINK Er...maybe use arraycopy?
+//                for (int col = 0; col < newAnchors.get(0).dims; col++) {
+//                    test.val[col][row] = newAnchors.get(row).coords[col];
+//                }
+//            }
 //                System.out.println(test);
 //                System.out.println(cramer);
 //            }
@@ -1674,14 +1717,16 @@ public class Engine {
             // For each coordinate of the center, replace that number column of the matrix with b and get the determinant and divide the result by denom.
             NVector centerV = new NVector(newAnchors.get(0).dims);
             for (int col = 0; col < newAnchors.get(0).dims; col++) {
-                Matrix temp = cramer.copy();
+                Matrix temp = cramer.copyWCache();//MTXOFT*
                 System.arraycopy(b.coords, 0, temp.val[col], 0, temp.rows);
 //                for (int row = 0; row < temp.rows; row++) {
 //                    temp.val[col][row] = b.coords[row];
 //                }//System.out.println(temp);
                 centerV.coords[col] = temp.det() / denom;
+                temp.doneWithMatrix();
 //                System.out.println(temp.det());
             }
+            cramer.doneWithMatrix();
 //            System.out.println(centerV);
 
             double radius = 0;
@@ -1712,6 +1757,7 @@ public class Engine {
 //                    System.out.println("travec" + i + "=" + bucket.toString());
 //                    System.out.println("vector" + i + "=" + anchors.get(i).pos.toString());
                 }
+                basis.doneWithMatrix();
             } else {
                 center.pos = centerV;
             }
@@ -1790,11 +1836,34 @@ public class Engine {
     public NCell taggedCell = null;
     public NFace taggedFace = null;
     public double maxRefractionAngle = Math.PI / 2;
+    public double radiusAverage = 0;
+    public int radiusCount = 0;
+    public boolean radiusLimitAverage = true;
+    public boolean radiusLimitNearestAverage = false;
+    public double radiusNearestAverage = 0;
+    public int radiusNearestAverageCount = -1;
 
     public int lastCompleteCount = 0;
     
     public boolean crystallize(int runTag) {
         if (lattice != null) {//refreshCompletePoints();
+            if (radiusNearestAverageCount == -1) {
+                radiusNearestAverageCount = 0;
+                double radiusNearestTotal = 0;
+                for (NPoint p : lattice.points) {
+                    double nearestDist = -1;
+                    NPoint b = null;
+                    for (NPoint i : lattice.points) {
+                        if (((nearestDist == -1) || (p.distSqr(i) < nearestDist)) && (p != i)) {
+                            b = i;
+                            nearestDist = p.distSqr(i);
+                        }
+                    }
+                    radiusNearestTotal += Math.sqrt(nearestDist);
+                    radiusNearestAverageCount++;
+                }
+                radiusNearestAverage = radiusNearestTotal / radiusNearestAverageCount;
+            }
             if (!lattice.incompleteFaces.isEmpty()) {//parent.dp.paintImmediately(parent.dp.getBounds());
                 int top = 0;
                 if (!allowSkipHardFaces) {
@@ -1816,25 +1885,42 @@ public class Engine {
                         System.out.println("Tagged face processed.");
                     }
                     double radius;
-                    if (leaf.points.length > 1) {
-                        radius = radiusSize * leaf.points[0].dist(leaf.points[1]);
+                    if (radiusLimitAverage) {
+                        // Should I include stats from the current leaf?
+                        //   It shouldn't matter, after a few leaves get added.
+                        radius = radiusSize * radiusAverage;
                     } else {
-                        double nearestDist = -1;
-                        NPoint b = null;
-                        for (NPoint i : lattice.points) {
-                            if (((nearestDist == -1) || (leaf.points[0].distSqr(i) < nearestDist)) && (leaf.points[0] != i)) {
-                                b = i;
-                                nearestDist = leaf.points[0].distSqr(i);
+                        if (leaf.points.length > 1) {
+                            radius = radiusSize * leaf.points[0].dist(leaf.points[1]);
+                        } else {
+                            double nearestDist = -1;
+                            NPoint b = null;
+                            for (NPoint i : lattice.points) {
+                                if (((nearestDist == -1) || (leaf.points[0].distSqr(i) < nearestDist)) && (leaf.points[0] != i)) {
+                                    b = i;
+                                    nearestDist = leaf.points[0].distSqr(i);
+                                }
                             }
+                            radius = radiusSize * Math.sqrt(nearestDist);
                         }
-                        radius = radiusSize * Math.sqrt(nearestDist);
+                    }
+                    if (radiusLimitNearestAverage) {
+                        radius = Math.min(radius, radiusSize * radiusNearestAverage);
+                    }
+                    if (maxLength > -1) {
+                        radius = Math.min(radius, maxLength);
                     }
                     ArrayList<NPoint> nearest = new ArrayList<NPoint>();
                     if (!candidateSystem) {
                         if (radiusSize != -1) {
                             for (NPoint i : lattice.points) {
-                                if ((leaf.points[0].dist(i) <= radius) && (!leaf.cellA.isaPoint(i)) && (!i.immune)) {
-                                    nearest.add(i);
+                                if (!i.complete) {
+                                    i.calcComplete();
+                                    if (!i.complete) {
+                                        if ((leaf.points[0].dist(i) <= radius) && (!leaf.cellA.isaPoint(i)) && (!i.immune)) {
+                                            nearest.add(i);
+                                        }
+                                    }
                                 }
                             }
                         } else {
@@ -1855,6 +1941,12 @@ public class Engine {
                     for (NPoint i : leaf.points) {
                         anchors.add(i);
                     }
+                    int failCauseWithin = 0;
+                    int failCauseThinness = 0;
+                    int failCauseAngle = 0;
+                    int failCauseVolume = 0;
+                    int failCauseLength = 0;
+                    int failCauseUndo = 0;
                     for (NPoint i : nearest) {
                         anchors.add(i);
                         if (taggedCell != null && (taggedCell.equivalent(anchors))) {
@@ -1862,8 +1954,36 @@ public class Engine {
                         }//calcThinness2(taggedCell.points);//calcThinness2(anchors.toArray(new NPoint[0]));
                         //TODO I really ought to change this to just pick one in withinCircle and go from there, but hang on.
                         if (((maxThinness == -1) || checkThinness(anchors, maxThinness)) && ((minAngle == -1) || checkMinAngle(anchors, minAngle)) && checkMinMaxVolume(anchors, minVolume, maxVolume) && checkMinMaxLength(anchors, minLength, maxLength)) {
-                            ArrayList<NPoint> withinCircle = findCircleContentsALT(anchors, true, false);
-                            if (withinCircle.isEmpty()) {
+                            // If it's already an existing structure, formalize it.
+                            NCell bucket = new NCell(lattice.dims, lattice.internalDims);
+                            for (int j = 0; j < bucket.points.length; j++) {
+                                bucket.points[j] = anchors.get(j);
+                            }
+                            bucket.soloMakeFaces();
+                            boolean cellStructureExists = true;
+                            for (NFace f : bucket.faces) {
+                                if (f.points.length > 0) {
+                                    boolean found = false;
+                                    for (NFace pf : f.points[0].faces) {
+                                        if (pf.equivalent(f)) {
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!found) {
+                                        cellStructureExists = false;
+                                        break;
+                                    }
+                                }
+//                                } else {
+//                                    // Umm, else what?  I dunno; I'm leaving it.
+//                                }
+                            }
+                            ArrayList<NPoint> withinCircle = null;
+                            if (!cellStructureExists) {
+                                withinCircle = findCircleContentsALT(anchors, true, false);
+                            }
+                            if (cellStructureExists || withinCircle.isEmpty()) {
 //                                ArrayList
                                 NCell newCell = new NCell(dims, lattice.internalDims);
                                 lastCell = newCell;
@@ -1971,6 +2091,7 @@ public class Engine {
 //                                    if (newCompCount < lastCompleteCount) {
 //                                        System.err.println("Decreased count!");
 //                                    }
+                                    failCauseUndo++;
                                     continue;
                                 }
 
@@ -1995,12 +2116,175 @@ public class Engine {
 //                                    System.err.println("Decreased count!");
 //                                }
                                 leaf.runTag = runTag;
+                                
+                                // Update average radius
+                                if (radiusLimitAverage) {
+                                    double additionalRadius = 0;
+                                    int additionalRadiusCount = 0;
+                                    for (NPoint p : newCell.points) {
+                                        if (p != i) {
+                                            additionalRadius += p.dist(i);
+                                            additionalRadiusCount++;
+                                        }
+                                    }
+                                    //THINK This could cause inaccuracy.  Not sure how to circumvent that.
+                                    radiusAverage = (((radiusAverage * radiusCount) + additionalRadius) / (radiusCount + additionalRadiusCount));
+                                    radiusCount += additionalRadiusCount;
+                                }
                                 return true;
-                            }//faceNum
+                            } else { //faceNum
+                                failCauseWithin++;
+                            }
+                        } else {
+                            if (!((maxThinness == -1) || checkThinness(anchors, maxThinness))) {
+                                failCauseThinness++;
+                            }
+                            if (!((minAngle == -1) || checkMinAngle(anchors, minAngle))) {
+                                failCauseAngle++;
+                            }
+                            if (!checkMinMaxVolume(anchors, minVolume, maxVolume)) {
+                                failCauseVolume++;
+                            }
+                            if (!checkMinMaxLength(anchors, minLength, maxLength)) {
+                                failCauseLength++;
+                            }
                         }
                         anchors.remove(i);
                     }
-                    System.out.println("Passed face " + faceNum);
+                    //System.out.println("Passed face " + faceNum);
+                    if (nearest.size() == 0) {
+                        System.out.println("Passed face RANGE  " + faceNum);
+                    } else {
+                        if (failCauseAngle >= failCauseUndo) {
+                            if (failCauseAngle >= failCauseLength) {
+                                if (failCauseAngle >= failCauseThinness) {
+                                    if (failCauseAngle >= failCauseVolume) {
+                                        if (failCauseAngle >= failCauseWithin) {
+                                            if (failCauseAngle >= 1) {
+                                                System.out.println("Passed face ANGLE  " + faceNum);
+                                            } else {
+                                                System.out.println("Passed face NONE   " + faceNum);
+                                            }
+                                        } else {
+                                            System.out.println("Passed face WITHIN " + faceNum);
+                                        }
+                                    } else {
+                                        if (failCauseVolume >= failCauseWithin) {
+                                            System.out.println("Passed face VOLUME " + faceNum);
+                                        } else {
+                                            System.out.println("Passed face WITHIN " + faceNum);
+                                        }
+                                    }
+                                } else {
+                                    if (failCauseThinness >= failCauseVolume) {
+                                        if (failCauseThinness >= failCauseWithin) {
+                                            System.out.println("Passed face THINNS " + faceNum);
+                                        } else {
+                                            System.out.println("Passed face WITHIN " + faceNum);
+                                        }
+                                    } else {
+                                        if (failCauseVolume >= failCauseWithin) {
+                                            System.out.println("Passed face VOLUME " + faceNum);
+                                        } else {
+                                            System.out.println("Passed face WITHIN " + faceNum);
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (failCauseLength >= failCauseThinness) {
+                                    if (failCauseLength >= failCauseVolume) {
+                                        if (failCauseLength >= failCauseWithin) {
+                                            System.out.println("Passed face LENGTH " + faceNum);
+                                        } else {
+                                            System.out.println("Passed face WITHIN " + faceNum);
+                                        }
+                                    } else {
+                                        if (failCauseVolume >= failCauseWithin) {
+                                            System.out.println("Passed face VOLUME " + faceNum);
+                                        } else {
+                                            System.out.println("Passed face WITHIN " + faceNum);
+                                        }
+                                    }
+                                } else {
+                                    if (failCauseThinness >= failCauseVolume) {
+                                        if (failCauseThinness >= failCauseWithin) {
+                                            System.out.println("Passed face THINNS  " + faceNum);
+                                        } else {
+                                            System.out.println("Passed face WITHIN " + faceNum);
+                                        }
+                                    } else {
+                                        if (failCauseVolume >= failCauseWithin) {
+                                            System.out.println("Passed face VOLUME " + faceNum);
+                                        } else {
+                                            System.out.println("Passed face WITHIN " + faceNum);
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            if (failCauseUndo >= failCauseLength) {
+                                if (failCauseUndo >= failCauseThinness) {
+                                    if (failCauseUndo >= failCauseVolume) {
+                                        if (failCauseUndo >= failCauseWithin) {
+                                            System.out.println("Passed face UNDO   " + faceNum);
+                                        } else {
+                                            System.out.println("Passed face WITHIN " + faceNum);
+                                        }
+                                    } else {
+                                        if (failCauseVolume >= failCauseWithin) {
+                                            System.out.println("Passed face VOLUME " + faceNum);
+                                        } else {
+                                            System.out.println("Passed face WITHIN " + faceNum);
+                                        }
+                                    }
+                                } else {
+                                    if (failCauseThinness >= failCauseVolume) {
+                                        if (failCauseThinness >= failCauseWithin) {
+                                            System.out.println("Passed face THINNS " + faceNum);
+                                        } else {
+                                            System.out.println("Passed face WITHIN " + faceNum);
+                                        }
+                                    } else {
+                                        if (failCauseVolume >= failCauseWithin) {
+                                            System.out.println("Passed face VOLUME " + faceNum);
+                                        } else {
+                                            System.out.println("Passed face WITHIN " + faceNum);
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (failCauseLength >= failCauseThinness) {
+                                    if (failCauseLength >= failCauseVolume) {
+                                        if (failCauseLength >= failCauseWithin) {
+                                            System.out.println("Passed face LENGTH " + faceNum);
+                                        } else {
+                                            System.out.println("Passed face WITHIN " + faceNum);
+                                        }
+                                    } else {
+                                        if (failCauseVolume >= failCauseWithin) {
+                                            System.out.println("Passed face VOLUME " + faceNum);
+                                        } else {
+                                            System.out.println("Passed face WITHIN " + faceNum);
+                                        }
+                                    }
+                                } else {
+                                    if (failCauseThinness >= failCauseVolume) {
+                                        if (failCauseThinness >= failCauseWithin) {
+                                            System.out.println("Passed face THINNS  " + faceNum);
+                                        } else {
+                                            System.out.println("Passed face WITHIN " + faceNum);
+                                        }
+                                    } else {
+                                        if (failCauseVolume >= failCauseWithin) {
+                                            System.out.println("Passed face VOLUME " + faceNum);
+                                        } else {
+                                            System.out.println("Passed face WITHIN " + faceNum);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                     leaf.runTag = runTag;
                 }
             }
@@ -2337,9 +2621,9 @@ public class Engine {
             for (int j = 2; j < frame.size(); j++) {
                 basises[0].bases[index++] = frame.get(j).pos.minusB(frame.get(1).pos);
             }
-            basises[0].orthogonalize();
+            basises[0].orthogonalizeWCache();
             try {
-                basises[0].calcProjection();// System.out.println(basises[i - 1].projection);
+                basises[0].calcProjectionWCache();// System.out.println(basises[i - 1].projection);//MTXOFT
                 double bucket = Matrix.lrvMult(basises[0].projection, frame.get(0).pos.minusB(frame.get(1).pos)).dist(frame.get(0).pos.minusB(frame.get(1).pos));
 //                System.out.println("0: " + bucket);
                 if (min == -1) {
@@ -2351,9 +2635,13 @@ public class Engine {
                     max = bucket;
                 }
             } catch (Exception ex) {
+                basises[0].basis.doneWithMatrix();
+                basises[0].projection.doneWithMatrix();
                 //Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }
+            basises[0].basis.doneWithMatrix();
+            basises[0].projection.doneWithMatrix();
         }
         for (int i = 1; i < basises.length; i++) {
             basises[i] = new NBasis(frame.get(0).dims, frame.size() - 2);
@@ -2363,10 +2651,10 @@ public class Engine {
                     basises[i].bases[index++] = frame.get(j).pos.minusB(frame.get(0).pos);
                 }
             }
-            basises[i].orthogonalize();
+            basises[i].orthogonalizeWCache();//MTXOFT*
             try {
-                basises[i].calcProjection();// System.out.println(basises[i - 1].projection);
-                double bucket = Matrix.lrvMult(basises[i].projection, frame.get(i).pos.minusB(frame.get(0).pos)).dist(frame.get(i).pos.minusB(frame.get(0).pos));
+                basises[i].calcProjectionWCache();// System.out.println(basises[i - 1].projection);
+                double bucket = Matrix.lrvMult(basises[i].projection, frame.get(i).pos.minusB(frame.get(0).pos)).dist(frame.get(i).pos.minusB(frame.get(0).pos));                
 //                System.out.println(i + ": " + bucket);
                 if (min == -1) {
                     min = bucket;
@@ -2377,9 +2665,13 @@ public class Engine {
                     max = bucket;
                 }
             } catch (Exception ex) {
+                basises[i].basis.doneWithMatrix();
+                basises[i].projection.doneWithMatrix();
                 //Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }
+            basises[i].basis.doneWithMatrix();
+            basises[i].projection.doneWithMatrix();
         }
 
         result = max / min;
@@ -4418,5 +4710,20 @@ public class Engine {
             }
         }
         return newCam;
+    }
+    
+    public void clearEdges() {
+        if (lattice != null) {
+            lattice.cells.clear();
+            lattice.faces.clear();
+            lattice.incompleteFaces.clear();
+            lattice.cameras.clear();
+            completeSticks.clear();
+            incompleteSticks.clear();
+            sticksChanged = true;
+            for (NPoint p : lattice.points) {
+                p.faces.clear();
+            }
+        }
     }
 }

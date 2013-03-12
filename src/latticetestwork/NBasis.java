@@ -41,7 +41,7 @@ public class NBasis implements Streamable {
      * and construct a basis matrix out of them.
      */
     public void orthogonalize() {
-        basis = new Matrix(bases.length, dims);
+        basis = new Matrix(bases.length, dims);//MTXOFT*
         // Gram-Schmidt orthogonalization
         for (int i = 0; i < bases.length; i++) {
             for (int j = 0; j < i; j++) {
@@ -55,6 +55,25 @@ public class NBasis implements Streamable {
         orthogonal = true;
     }//System.out.println(basis);
 
+    /**
+     * Uses Gram-Schmidt orthogonalization to orthogonalize the bases (in place)
+     * and construct a basis matrix out of them.
+     */
+    public void orthogonalizeWCache() {
+        basis = Matrix.getCachedMatrix(bases.length, dims, false);//MTXOFT
+        // Gram-Schmidt orthogonalization
+        for (int i = 0; i < bases.length; i++) {
+            for (int j = 0; j < i; j++) {
+                bases[i] = bases[i].minusB(NVector.lrProj(bases[j], bases[i]));
+            }//System.out.println(bases);
+            bases[i].ipNormalize();
+            for (int j = 0; j < dims; j++) {
+                basis.val[i][j] = bases[i].coords[j];
+            }
+        }
+        orthogonal = true;
+    }//System.out.println(basis);
+    
     /**
      * Constructs a basis matrix straight out of the bases.
      */
@@ -73,9 +92,22 @@ public class NBasis implements Streamable {
      */
     public void calcProjection() throws Exception {//System.out.println(Matrix.lrMult(basis, Matrix.transpose(basis)));
         //TODO You know, maybe I should catch the error here - since, it's like definitionally fine.
-        projection = Matrix.lrMult(basis, Matrix.transpose(basis));
+        Matrix bt = Matrix.transposeWCache(basis);
+        projection = Matrix.lrMult(basis, bt);//MTXOFT*
+        bt.doneWithMatrix();
     }
 
+    /**
+     * Constructs a projection matrix out of the basis matrix.
+     * @throws Exception 
+     */
+    public void calcProjectionWCache() throws Exception {//System.out.println(Matrix.lrMult(basis, Matrix.transpose(basis)));
+        //TODO You know, maybe I should catch the error here - since, it's like definitionally fine.
+        Matrix bt = Matrix.transposeWCache(basis);
+        projection = Matrix.lrMultWCache(basis, bt);//MTXOFT*
+        bt.doneWithMatrix();
+    }
+    
     /**
      * Turns the points into a basis.
      * Note that the first point is used as origin.

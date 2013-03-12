@@ -335,6 +335,7 @@ public class LatticeTestworkView extends FrameView {
         jLabel6 = new javax.swing.JLabel();
         editMinLength = new javax.swing.JTextField();
         editMaxLength = new javax.swing.JTextField();
+        btnClearEdges = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
@@ -366,7 +367,7 @@ public class LatticeTestworkView extends FrameView {
         );
         panelDisplayLayout.setVerticalGroup(
             panelDisplayLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1072, Short.MAX_VALUE)
+            .addGap(0, 1074, Short.MAX_VALUE)
         );
 
         jSplitPane1.setRightComponent(panelDisplay);
@@ -700,6 +701,14 @@ public class LatticeTestworkView extends FrameView {
         editMaxLength.setToolTipText(resourceMap.getString("editMaxLength.toolTipText")); // NOI18N
         editMaxLength.setName("editMaxLength"); // NOI18N
 
+        btnClearEdges.setText(resourceMap.getString("btnClearEdges.text")); // NOI18N
+        btnClearEdges.setName("btnClearEdges"); // NOI18N
+        btnClearEdges.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearEdgesActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -714,7 +723,10 @@ public class LatticeTestworkView extends FrameView {
                             .addComponent(btn34Preset))
                         .addComponent(radio32Tri)
                         .addComponent(radio33Tri)
-                        .addComponent(btnClear)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(btnClear)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btnClearEdges))
                         .addGroup(jPanel1Layout.createSequentialGroup()
                             .addComponent(btnRepel)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -833,7 +845,9 @@ public class LatticeTestworkView extends FrameView {
                     .addComponent(spinDims, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(spinLatticeDims, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(btnClear)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnClear)
+                    .addComponent(btnClearEdges))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnPlacePoints)
@@ -924,7 +938,7 @@ public class LatticeTestworkView extends FrameView {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnFinishPrep)
                     .addComponent(btnPlaceCamera))
-                .addContainerGap(76, Short.MAX_VALUE))
+                .addContainerGap(54, Short.MAX_VALUE))
         );
 
         jSplitPane1.setLeftComponent(jPanel1);
@@ -942,7 +956,7 @@ public class LatticeTestworkView extends FrameView {
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1076, Short.MAX_VALUE)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1078, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1182,6 +1196,9 @@ private void btnPlacePointsActionPerformed(java.awt.event.ActionEvent evt) {//GE
 }//GEN-LAST:event_btnPlacePointsActionPerformed
 
 private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+    if (engine != null) {
+        engine.radiusNearestAverageCount = -1;
+    }
     //TODO All over the place, I may be able to make use of my RemoteWorkers.
     if (skeletonForm != null) {
         skeletonForm.dispose();
@@ -1470,7 +1487,8 @@ private void btnFullActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                 }
             }
         });
-        t.start();
+        //  Now, why did I parallel render here?  It's giving comodification errors.
+        //t.start();
         while (engine.crystallize(runTag) || firstTime) {
             firstTime = false;
             if (engine.dims == 2 && engine.lattice.internalDims == 2) {
@@ -1640,6 +1658,15 @@ private void btnCheckCellActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
         }
     }
 }//GEN-LAST:event_btnCheckCellActionPerformed
+
+private void btnClearEdgesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearEdgesActionPerformed
+    if (engine != null) {
+        engine.radiusNearestAverageCount = -1;
+        engine.clearEdges();
+        dp.repaint();
+    }
+}//GEN-LAST:event_btnClearEdgesActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox boxAutoNCorners;
     private javax.swing.JCheckBox boxShowCrystallization;
@@ -1653,6 +1680,7 @@ private void btnCheckCellActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
     private javax.swing.JButton btnCalcProperties;
     private javax.swing.JButton btnCheckCell;
     private javax.swing.JButton btnClear;
+    private javax.swing.JButton btnClearEdges;
     private javax.swing.JButton btnCrystallize;
     private javax.swing.JButton btnFinishPrep;
     private javax.swing.JButton btnFull;

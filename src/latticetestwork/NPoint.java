@@ -25,6 +25,7 @@ public class NPoint implements Streamable {
     public HashSet<NFace> faces = null;
     public boolean complete = false;
     public boolean immune = false;
+    public NVector force = null;
 
     // This just stores where the point was last shown to allow one to click on it.
     public Point2D displayPoint = new Point2D.Double();

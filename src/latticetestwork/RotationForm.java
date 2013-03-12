@@ -11,10 +11,12 @@
 package latticetestwork;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import javax.swing.GroupLayout.Group;
 import javax.swing.GroupLayout.ParallelGroup;
 import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.JScrollBar;
+import latticetestwork.Engine.Stick;
 
 /**
  *
@@ -107,6 +109,7 @@ public class RotationForm extends javax.swing.JFrame {
         boxHidePoints = new javax.swing.JCheckBox();
         btnRecalcSticks = new javax.swing.JButton();
         btnResetRotations = new javax.swing.JButton();
+        btnPareSticks = new javax.swing.JButton();
 
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(latticetestwork.LatticeTestworkApp.class).getContext().getResourceMap(RotationForm.class);
         setTitle(resourceMap.getString("Form.title")); // NOI18N
@@ -124,7 +127,7 @@ public class RotationForm extends javax.swing.JFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 319, Short.MAX_VALUE)
+            .addGap(0, 318, Short.MAX_VALUE)
         );
 
         jSplitPane1.setLeftComponent(jPanel1);
@@ -219,6 +222,14 @@ public class RotationForm extends javax.swing.JFrame {
             }
         });
 
+        btnPareSticks.setText(resourceMap.getString("btnPareSticks.text")); // NOI18N
+        btnPareSticks.setName("btnPareSticks"); // NOI18N
+        btnPareSticks.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPareSticksActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -226,12 +237,6 @@ public class RotationForm extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(boxHideImmune)
-                        .addGap(107, 107, 107)
-                        .addComponent(btnRecalcSticks)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnRender, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(btnResetRotations)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 305, Short.MAX_VALUE)
@@ -240,13 +245,22 @@ public class RotationForm extends javax.swing.JFrame {
                             .addComponent(btnZoomOut, javax.swing.GroupLayout.Alignment.TRAILING)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(boxHideImmune)
                             .addComponent(boxHideComplete)
                             .addComponent(boxHideIncomplete)
                             .addComponent(boxHidePoints))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 225, Short.MAX_VALUE)
-                        .addComponent(barTransX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(barTransY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(89, 89, 89)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(btnPareSticks)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                                .addComponent(barTransX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(barTransY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(btnRecalcSticks)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnRender, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -268,8 +282,9 @@ public class RotationForm extends javax.swing.JFrame {
                             .addComponent(btnRecalcSticks))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(barTransX, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
-                            .addComponent(barTransY, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE))))
+                            .addComponent(btnPareSticks)
+                            .addComponent(barTransX, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+                            .addComponent(barTransY, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnZoomIn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -289,7 +304,7 @@ public class RotationForm extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE)
         );
 
         setBounds(50, 50, 463, 348);
@@ -372,6 +387,30 @@ private void btnResetRotationsActionPerformed(java.awt.event.ActionEvent evt) {/
     }
 }//GEN-LAST:event_btnResetRotationsActionPerformed
 
+private void btnPareSticksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPareSticksActionPerformed
+    if (parent.engine != null) {
+        int i = 0;
+        Iterator<Stick> it = parent.engine.completeSticks.iterator();
+        while (it.hasNext()) {
+            it.next();
+            if (i % 2 == 0) {
+                it.remove();
+            }
+            i++;
+        }
+        i = 0;
+        it = parent.engine.incompleteSticks.iterator();
+        while (it.hasNext()) {
+            it.next();
+            if (i % 2 == 0) {
+                it.remove();
+            }
+            i++;
+        }
+        parent.dp.repaint();
+    }
+}//GEN-LAST:event_btnPareSticksActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -414,6 +453,7 @@ private void btnResetRotationsActionPerformed(java.awt.event.ActionEvent evt) {/
     public javax.swing.JCheckBox boxHideImmune;
     public javax.swing.JCheckBox boxHideIncomplete;
     public javax.swing.JCheckBox boxHidePoints;
+    private javax.swing.JButton btnPareSticks;
     private javax.swing.JButton btnRecalcSticks;
     private javax.swing.JButton btnRender;
     private javax.swing.JButton btnResetRotations;

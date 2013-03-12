@@ -62,6 +62,27 @@ public class NVector {
         return result;
     }
 
+    public NVector plusBIP(NVector b) {
+        for (int i = 0; i < dims; i++) {
+            coords[i] += b.coords[i];
+        }
+        return this;
+    }
+
+    public NVector minusBIP(NVector b) {
+        for (int i = 0; i < dims; i++) {
+            coords[i] -= b.coords[i];
+        }
+        return this;
+    }
+
+    public NVector multSIP(double s) {
+        for (int i = 0; i < dims; i++) {
+            coords[i] *= s;
+        }
+        return this;
+    }
+    
     public static double lrDot(NVector l, NVector r) {
         double result = 0;
         for (int i = 0; i < l.dims; i++) {

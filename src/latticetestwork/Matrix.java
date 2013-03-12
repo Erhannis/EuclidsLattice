@@ -14,18 +14,130 @@ import java.util.ArrayList;
  * @author mewer12
  */
 public class Matrix implements Streamable {
+
     public int cols = 0;
     public int rows = 0;
     public double[][] val = null;
     /** The binary digits after which two numbers are considered equal */
     public static int APRX = 24;
-    
+    public static CachedMatrix[][][] cache = null;
+    public static final int CACHED_ROWS = 10;
+    public static final int CACHED_COLS = 10;
+    public static final int CACHED_COPIES = 5;
+    public int usedCached = -1;
+
+    static {
+        cache = new CachedMatrix[CACHED_COLS][CACHED_ROWS][CACHED_COPIES];
+        for (int i = 0; i < CACHED_COLS; i++) {
+            for (int j = 0; j < CACHED_ROWS; j++) {
+                for (int k = 0; k < CACHED_COPIES; k++) {
+                    cache[i][j][k] = new CachedMatrix(i, j, k);
+                }
+            }
+        }
+    }
+
+    public static class CachedMatrix {
+        // Warning: Not thread safe yet
+
+        public boolean inUse = false;
+        public Matrix matrix = null;
+
+        public CachedMatrix(int cols, int rows, int copy) {
+            matrix = new Matrix(cols, rows);
+            matrix.usedCached = copy;
+        }
+    }
+
     public Matrix(int cols, int rows) {
         this.cols = cols;
         this.rows = rows;
         this.val = new double[cols][rows];
     }
+
+//    /**
+//     * Currently hard-coded to have up to 10x10 matrices in cache.  Will crash
+//     * if you try to access one that isn't there.  If you want bigger ones cached,
+//     * init the cache yourself like<br/>
+//     * cache = new CachedMatrix[CACHED_COLS][CACHED_ROWS];<br/>
+//     * for (int i = 0; i &lt; CACHED_COLS; i++) {<br/>
+//     *     for (int j = 0; j &lt; CACHED_ROWS; j++) {<br/>
+//     *         cache[i][j] = new CachedMatrix(i, j);<br/>
+//     *     }<br/>
+//     * }<br/>
+//     * 
+//     * @param cols
+//     * @param rows
+//     * @param init 
+//     */
+//    public Matrix(int cols, int rows, boolean init) {
+//        this.cols = cols;
+//        this.rows = rows;
+//        for (int k = 0; k < CACHED_COPIES; k++) {
+//            if (!cache[cols][rows][k].inUse) {
+//                cache[cols][rows][k].inUse = true;
+//                usedCached = k;
+//                if (!init) {
+//                    this.val = cache[cols][rows][k].val;
+//                } else {
+//                    this.val = cache[cols][rows][k].val;
+//                    for (int i = 0; i < cols; i++) {
+//                        for (int j = 0; j < rows; j++) {
+//                            cache[cols][rows][k].val[i][j] = 0;
+//                        }
+//                    }
+//                }
+//                return;
+//            }
+//        }
+//        if (usedCached == -1) {
+//            this.val = new double[cols][rows];
+//        }
+//    }
     
+    /**
+     * Currently hard-coded to have up to 10x10 matrices in cache.  Will crash
+     * if you try to access one that isn't there.  If you want bigger ones cached,
+     * init the cache yourself like<br/>
+     * cache = new CachedMatrix[CACHED_COLS][CACHED_ROWS][CACHED_COPIES];<br/>
+     * for (int i = 0; i &lt; CACHED_COLS; i++) {<br/>
+     *     for (int j = 0; j &lt; CACHED_ROWS; j++) {<br/>
+     *         for (int k = 0; k &lt; CACHED_COPIES; k++) {<br/>
+     *             cache[i][j][k] = new CachedMatrix(i, j, k);<br/>
+     *         }<br/>
+     *     }<br/>
+     * }<br/>
+     * 
+     * @param cols
+     * @param rows
+     * @param init 
+     */
+    public static Matrix getCachedMatrix(int cols, int rows, boolean init) {
+        for (int k = 0; k < CACHED_COPIES; k++) {
+            if (!cache[cols][rows][k].inUse) {
+                cache[cols][rows][k].inUse = true;
+                cache[cols][rows][k].matrix.usedCached = k;
+                if (!init) {
+                    return cache[cols][rows][k].matrix;
+                } else {
+                    for (int i = 0; i < cols; i++) {
+                        for (int j = 0; j < rows; j++) {
+                            cache[cols][rows][k].matrix.val[i][j] = 0;
+                        }
+                    }
+                    return cache[cols][rows][k].matrix;
+                }
+            }
+        }
+        return new Matrix(cols, rows);
+    }
+
+    public void doneWithMatrix() {
+        if (usedCached != -1) {
+            cache[cols][rows][usedCached].inUse = false;
+        }
+    }
+
     public Matrix(Matrix source) {
         this.cols = source.cols;
         this.rows = source.rows;
@@ -36,9 +148,8 @@ public class Matrix implements Streamable {
             }
         }
     }
-    
     public boolean debug = false;
-    
+
     /**
      * This matrix is an augmented matrix representing two lines which theoretically intersect.
      * Upon that assumption, it will try to get values for the two variables using some form of row-echelon reduction.
@@ -82,7 +193,7 @@ public class Matrix implements Streamable {
                             qValues[0] = val[2][y];
                         }
                     }/*else if (val[1][y] == 1) {
-                    }*/else {
+                    }*/ else {
                         if (qt1) {
                             if (qt2) {
                                 // Oh, well, we're already done.
@@ -115,8 +226,8 @@ public class Matrix implements Streamable {
                     val[0][y] = 1;
                 }
             }
-            
-            
+
+
             // Check done.
             for (int y = 0; y < rows; y++) {
                 if (!qt1 && MeMath.prettyEqual(val[0][y], 1, APRX) && MeMath.prettyZero(val[1][y], APRX)) {
@@ -140,22 +251,22 @@ public class Matrix implements Streamable {
             }
         }
         if (qt1 && (!MeMath.prettyZero(qValues[0], APRX))) {
-            return new IntersectionResult(1,qValues[0]);
+            return new IntersectionResult(1, qValues[0]);
         } else if (qt2 && (!MeMath.prettyZero(qValues[1], APRX))) {
-            return new IntersectionResult(2,qValues[1]);
+            return new IntersectionResult(2, qValues[1]);
         } else {
-            return new IntersectionResult(0,0);
+            return new IntersectionResult(0, 0);
         }
 //        return qValues;
     }
-    
+
     public IntersectionResult solveIntersect() throws Exception {
         Matrix backup = new Matrix(this);
         IntersectionResult result = ipSolveIntersect();
         this.val = backup.val;
         return result;
     }
-    
+
     public String toString() {
         StringBuilder result = new StringBuilder();
         for (int y = 0; y < rows; y++) {
@@ -166,7 +277,7 @@ public class Matrix implements Streamable {
             } else {
                 result.append("|");
             }
-            
+
             for (int x = 0; x < cols; x++) {
                 result.append(String.format("%7.4f", val[x][y]) + "\t");
             }
@@ -180,8 +291,8 @@ public class Matrix implements Streamable {
         }
         return result.toString();
     }
-    
     public static CrossProducts cp = new CrossProducts();
+
     public static double[] cross(double[][] p) throws Exception {
 
         double[] result = new double[p.length + 1];
@@ -198,7 +309,7 @@ public class Matrix implements Streamable {
         crossRecurse(result, 1, taken, 0, state, p.length + 1, p, new int[1], cp);
         return result;
     }
-    
+
     private static void crossRecurse(double[] total, double product, boolean[] taken, int level, int[] state, int edgeLength, double[][] p, int[] curComponent, CrossProducts crossProductsA) {
         //prod take next available row, incmod state, if level == edgeLength +/- product, untake, return
         for (int y = -1; y < (edgeLength - 1); y++) {
@@ -240,11 +351,11 @@ public class Matrix implements Streamable {
         }
 //        return total.value;
     }
-    
+
     public void ipRRowForm() { // Kinda.  It does its best to turn the left side into the identity matrix.
-if (debug) {
-    System.out.println(this);
-}
+        if (debug) {
+            System.out.println(this);
+        }
         for (int row = 0; row < rows; row++) {
             if (row >= cols) {
                 // Probably don't do anything for now.
@@ -261,9 +372,9 @@ if (debug) {
                             break;
                         }
                     }
-if (debug) {
-    System.out.println(this);
-}
+                    if (debug) {
+                        System.out.println(this);
+                    }
                     if (!found) {
                         // Maybe I should error here.  We'll leave it, for now.
                         System.err.println("Matrix can't be left-identity.");
@@ -275,9 +386,9 @@ if (debug) {
                     val[col][row] /= val[row][row];
                 }
                 val[row][row] = 1;
-if (debug) {
-    System.out.println(this);
-}
+                if (debug) {
+                    System.out.println(this);
+                }
                 // Apply this row to all other ones.
                 for (int y = 0; y < rows; y++) {
                     if (y != row) {
@@ -286,14 +397,14 @@ if (debug) {
 //                            System.err.println("row=" + row + ";y=" + y + ";i=" + i);
                             val[i][y] -= factor * val[i][row];
                         }
-if (debug) {
-    System.out.println(this);
-}
+                        if (debug) {
+                            System.out.println(this);
+                        }
                     }
                 }
             }
         }
-        
+
 //        // Make identity.
 //        int max = Math.min(rows, cols);
 //        for (int row = 0; row < rows; row++) {
@@ -322,9 +433,9 @@ if (debug) {
     }
 
     public void ipRRowFormMod() { // Kinda.  It does its best to turn the left side into the identity matrix.
-if (debug) {
-    System.out.println(this);
-}
+        if (debug) {
+            System.out.println(this);
+        }
         for (int row = 0; (row < rows && row < cols - 1); row++) {
             if (row >= cols) {
                 // Probably don't do anything for now.
@@ -341,9 +452,9 @@ if (debug) {
                             break;
                         }
                     }
-if (debug) {
-    System.out.println(this);
-}
+                    if (debug) {
+                        System.out.println(this);
+                    }
                     if (!found) {
                         // Maybe I should error here.  We'll leave it, for now.
                         System.err.println("Matrix can't be left-identity.");
@@ -355,9 +466,9 @@ if (debug) {
                     val[col][row] /= val[row][row];
                 }
                 val[row][row] = 1;
-if (debug) {
-    System.out.println(this);
-}
+                if (debug) {
+                    System.out.println(this);
+                }
                 // Apply this row to all other ones.
                 for (int y = 0; y < rows; y++) {
                     if (y != row) {
@@ -366,14 +477,14 @@ if (debug) {
 //                            System.err.println("row=" + row + ";y=" + y + ";i=" + i);
                             val[i][y] -= factor * val[i][row];
                         }
-if (debug) {
-    System.out.println(this);
-}
+                        if (debug) {
+                            System.out.println(this);
+                        }
                     }
                 }
             }
         }
-        
+
 //        // Make identity.
 //        int max = Math.min(rows, cols);
 //        for (int row = 0; row < rows; row++) {
@@ -400,7 +511,7 @@ if (debug) {
 //            }
 //        }
     }
-    
+
     public static Matrix lrJoin(Matrix l, Matrix r) throws Exception {
         if (l.rows != r.rows) {
             throw new Exception("Matrices are different heights!");
@@ -412,12 +523,12 @@ if (debug) {
         for (int x = 0; x < l.cols; x++) {
             for (int y = 0; y < l.rows; y++) {
                 result.val[x][y] = l.val[x][y];
-            }            
+            }
         }
         for (int x = 0; x < r.cols; x++) {
             for (int y = 0; y < r.rows; y++) {
                 result.val[x + l.cols][y] = r.val[x][y];
-            }            
+            }
         }
         return result;
     }
@@ -431,22 +542,39 @@ if (debug) {
         for (int x = 0; x < l.cols; x++) {
             for (int y = 0; y < l.rows; y++) {
                 l.val[x][y] = lr.val[x][y];
-            }            
+            }
         }
         for (int x = 0; x < r.cols; x++) {
             for (int y = 0; y < r.rows; y++) {
                 r.val[x][y] = lr.val[x + l.cols][y];
-            }            
+            }
         }
         Matrix[] result = {l, r};
         return result;
     }
-    
+
     public static Matrix lrMult(Matrix l, Matrix r) throws Exception {
         if (l.cols != r.rows) {
             throw new Exception("Dims don't match for multiplication!");
         }
         Matrix result = new Matrix(r.cols, l.rows);
+        for (int col = 0; col < result.cols; col++) {
+            for (int row = 0; row < result.rows; row++) {
+                double sum = 0;
+                for (int i = 0; i < r.rows; i++) {
+                    sum += l.val[i][row] * r.val[col][i];
+                }
+                result.val[col][row] = sum;
+            }
+        }
+        return result;
+    }
+
+    public static Matrix lrMultWCache(Matrix l, Matrix r) throws Exception {
+        if (l.cols != r.rows) {
+            throw new Exception("Dims don't match for multiplication!");
+        }
+        Matrix result = Matrix.getCachedMatrix(r.cols, l.rows, false);
         for (int col = 0; col < result.cols; col++) {
             for (int row = 0; row < result.rows; row++) {
                 double sum = 0;
@@ -472,7 +600,7 @@ if (debug) {
         }
         return m;
     }
-    
+
     public static Matrix invert(Matrix m) throws Exception {
         if (m.cols != m.rows) {
             throw new Exception("Non-square matrix has no inverse! (More or less.)");
@@ -500,7 +628,7 @@ if (debug) {
         }
         return result;
     }
-    
+
     /**
      * This attempts to figure out what the coordinates of each vector are
      * in the provided basis.  It was specifically designed to handle subspaces,
@@ -520,33 +648,34 @@ if (debug) {
             return result;
         }
         // Set up the matrix
-        Matrix m = new Matrix(bases.get(0).dims + bases.size(), bases.size() + vectors.size());
+        //THINK This next matrix should MAYBE be initialized. - Nah, I think it does it all.
+        Matrix m = Matrix.getCachedMatrix(bases.get(0).dims + bases.size(), bases.size() + vectors.size(), false);//MTXOFT*
         {
-        int row = 0;
-        for (int i = 0; i < bases.size(); i++, row++) {
-            int col = 0;
-            for (int j = 0; j < bases.get(i).dims; j++, col++){
-                m.val[col][row] = bases.get(i).coords[j];
+            int row = 0;
+            for (int i = 0; i < bases.size(); i++, row++) {
+                int col = 0;
+                for (int j = 0; j < bases.get(i).dims; j++, col++) {
+                    m.val[col][row] = bases.get(i).coords[j];
+                }
+                for (int j = 0; j < bases.size(); j++, col++) {
+                    if (j == i) {
+                        m.val[col][row] = 1;
+                    } else {
+                        m.val[col][row] = 0;
+                    }
+                }
             }
-            for (int j = 0; j < bases.size(); j++, col++){
-                if (j == i) {
-                    m.val[col][row] = 1;
-                } else {
+            for (int i = 0; i < vectors.size(); i++, row++) {
+                int col = 0;
+                for (int j = 0; j < vectors.get(i).dims; j++, col++) {
+                    m.val[col][row] = vectors.get(i).coords[j];
+                }
+                for (int j = 0; j < bases.size(); j++, col++) {
                     m.val[col][row] = 0;
                 }
             }
         }
-        for (int i = 0; i < vectors.size(); i++, row++) {
-            int col = 0;
-            for (int j = 0; j < vectors.get(i).dims; j++, col++){
-                m.val[col][row] = vectors.get(i).coords[j];
-            }
-            for (int j = 0; j < bases.size(); j++, col++){
-                m.val[col][row] = 0;
-            }
-        }
-        }
-        
+
         // Now solve it.
         int skipped = 0;
         for (int row = 0; row < bases.size(); row++) {
@@ -594,9 +723,9 @@ if (debug) {
                 }
             }
         }
-        
+
         //System.out.println(m);
-        
+
         // Extract the answer.
         NVector[] result = new NVector[vectors.size()];
         for (int i = 0; i < vectors.size(); i++) {
@@ -606,7 +735,8 @@ if (debug) {
             }
             result[i] = bucket;
         }
-        
+
+        m.doneWithMatrix();
         return result;
     }
 
@@ -631,31 +761,31 @@ if (debug) {
         // Set up the matrix        
         Matrix m = new Matrix(bases[0].dims + bases.length, bases.length + vectors.length);
         {
-        int row = 0;
-        for (int i = 0; i < bases.length; i++, row++) {
-            int col = 0;
-            for (int j = 0; j < bases[i].dims; j++, col++){
-                m.val[col][row] = bases[i].coords[j];
+            int row = 0;
+            for (int i = 0; i < bases.length; i++, row++) {
+                int col = 0;
+                for (int j = 0; j < bases[i].dims; j++, col++) {
+                    m.val[col][row] = bases[i].coords[j];
+                }
+                for (int j = 0; j < bases.length; j++, col++) {
+                    if (j == i) {
+                        m.val[col][row] = 1;
+                    } else {
+                        m.val[col][row] = 0;
+                    }
+                }
             }
-            for (int j = 0; j < bases.length; j++, col++){
-                if (j == i) {
-                    m.val[col][row] = 1;
-                } else {
+            for (int i = 0; i < vectors.length; i++, row++) {
+                int col = 0;
+                for (int j = 0; j < vectors[i].dims; j++, col++) {
+                    m.val[col][row] = vectors[i].coords[j];
+                }
+                for (int j = 0; j < bases.length; j++, col++) {
                     m.val[col][row] = 0;
                 }
             }
         }
-        for (int i = 0; i < vectors.length; i++, row++) {
-            int col = 0;
-            for (int j = 0; j < vectors[i].dims; j++, col++){
-                m.val[col][row] = vectors[i].coords[j];
-            }
-            for (int j = 0; j < bases.length; j++, col++){
-                m.val[col][row] = 0;
-            }
-        }
-        }
-        
+
         // Now solve it.
         int skipped = 0;
         for (int row = 0; row < bases.length; row++) {
@@ -702,9 +832,9 @@ if (debug) {
                 }
             }
         }
-        
+
         //System.out.println(m);
-        
+
         // Extract the answer.
         NVector[] result = new NVector[vectors.length];
         for (int i = 0; i < vectors.length; i++) {
@@ -714,7 +844,7 @@ if (debug) {
             }
             result[i] = bucket;
         }
-        
+
         return result;
     }
 
@@ -791,7 +921,7 @@ if (debug) {
         }
 //        return total.value;
     }
-    
+
     public Matrix copy() {
         Matrix result = new Matrix(cols, rows);
         for (int x = 0; x < cols; x++) {
@@ -802,7 +932,18 @@ if (debug) {
         }
         return result;
     }
-    
+
+    public Matrix copyWCache() {
+        Matrix result = Matrix.getCachedMatrix(cols, rows, false);
+        for (int x = 0; x < cols; x++) {
+            System.arraycopy(this.val[x], 0, result.val[x], 0, rows);
+//            for (int y = 0; y < rows; y++) {
+//                result.val[x][y] = this.val[x][y];
+//            }
+        }
+        return result;
+    }
+
     public static Matrix transpose(Matrix m) {
         Matrix result = new Matrix(m.rows, m.cols);
         for (int i = 0; i < m.cols; i++) {
@@ -813,10 +954,20 @@ if (debug) {
         return result;
     }
 
+    public static Matrix transposeWCache(Matrix m) {
+        Matrix result = Matrix.getCachedMatrix(m.rows, m.cols, false);
+        for (int i = 0; i < m.cols; i++) {
+            for (int j = 0; j < m.rows; j++) {
+                result.val[j][i] = m.val[i][j];
+            }
+        }
+        return result;
+    }
+
     public void ipRRowFormError() throws Exception { // Kinda.  It does its best to turn the left side into the identity matrix.
-if (debug) {
-    System.out.println(this);
-}
+        if (debug) {
+            System.out.println(this);
+        }
         for (int row = 0; row < rows; row++) {
             if (row >= cols) {
                 // Probably don't do anything for now.
@@ -833,9 +984,9 @@ if (debug) {
                             break;
                         }
                     }
-if (debug) {
-    System.out.println(this);
-}
+                    if (debug) {
+                        System.out.println(this);
+                    }
                     if (!found) {
                         // Maybe I should error here.  We'll leave it, for now.
                         throw new Exception("Matrix can't be left-identity.\n" + this);
@@ -848,9 +999,9 @@ if (debug) {
                     val[col][row] /= val[row][row];
                 }
                 val[row][row] = 1;
-if (debug) {
-    System.out.println(this);
-}
+                if (debug) {
+                    System.out.println(this);
+                }
                 // Apply this row to all other ones.
                 for (int y = 0; y < rows; y++) {
                     if (y != row) {
@@ -859,17 +1010,16 @@ if (debug) {
 //                            System.err.println("row=" + row + ";y=" + y + ";i=" + i);
                             val[i][y] -= factor * val[i][row];
                         }
-if (debug) {
-    System.out.println(this);
-}
+                        if (debug) {
+                            System.out.println(this);
+                        }
                     }
                 }
             }
         }
     }
-
     public int id = -2;
-    
+
     public void toBytes(DataOutputStream dos) throws IOException {
         dos.writeInt(cols);
         dos.writeInt(rows);
@@ -881,7 +1031,7 @@ if (debug) {
             }
         }
     }
-    
+
     public static Object fromBytes(DataInputStream dis) throws IOException {
         int cols = dis.readInt();
         int rows = dis.readInt();
@@ -895,7 +1045,7 @@ if (debug) {
         }
         return result;
     }
-    
+
     /**
      * This'll get an intersection of a line and an NPlane.  It works for fully determined systems,
      * but it also works for systems where technically the line might not quite intersect the nplane, actually.
@@ -928,5 +1078,11 @@ if (debug) {
         solver.ipRRowFormMod();
         double t = solver.val[solver.cols - 1][0];
         return lDir.multS(t).plusB(lPos);
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+
+        super.finalize();
     }
 }

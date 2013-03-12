@@ -17,7 +17,7 @@ package latticetestwork;
 public class BindingForm extends javax.swing.JFrame {
 
     public LatticeTestworkView parent = null;
-    
+
     /** Creates new form BindingForm */
     public BindingForm(LatticeTestworkView parent) {
         this.parent = parent;
@@ -34,56 +34,102 @@ public class BindingForm extends javax.swing.JFrame {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
-        radioBindNSphere = new javax.swing.JRadioButton();
-        radioBindNCube = new javax.swing.JRadioButton();
-        radioBindSkeletonShell = new javax.swing.JRadioButton();
-        radioBindInNSphere = new javax.swing.JRadioButton();
-        radioBindInNCube = new javax.swing.JRadioButton();
-        radioBindSkeletonSkin = new javax.swing.JRadioButton();
-        radioBindFunction = new javax.swing.JRadioButton();
+        jPanel1 = new javax.swing.JPanel();
+        jSplitPane1 = new javax.swing.JSplitPane();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tableRepulsionFunctions = new javax.swing.JTable();
+        jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         areaBindingFunction = new javax.swing.JTextArea();
-        btnBind = new javax.swing.JButton();
-        btnBind10 = new javax.swing.JButton();
-        btnBind100 = new javax.swing.JButton();
-        btnBind1000 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
-        boxRepel = new javax.swing.JCheckBox();
         jLabel1 = new javax.swing.JLabel();
+        radioBindFunction = new javax.swing.JRadioButton();
+        radioBindSkeletonSkin = new javax.swing.JRadioButton();
+        radioBindSkeletonShell = new javax.swing.JRadioButton();
+        boxRepel = new javax.swing.JCheckBox();
+        btnBind1000 = new javax.swing.JButton();
+        radioBindInNCube = new javax.swing.JRadioButton();
+        radioBindNCube = new javax.swing.JRadioButton();
+        btnBind100 = new javax.swing.JButton();
+        btnBind10 = new javax.swing.JButton();
+        radioBindInNSphere = new javax.swing.JRadioButton();
+        radioBindNSphere = new javax.swing.JRadioButton();
+        btnBind = new javax.swing.JButton();
+        jTextField1 = new javax.swing.JTextField();
+        radioBindRepulsionBindingFunction = new javax.swing.JRadioButton();
+
+        jPanel1.setName("jPanel1"); // NOI18N
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
 
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(latticetestwork.LatticeTestworkApp.class).getContext().getResourceMap(BindingForm.class);
         setTitle(resourceMap.getString("Form.title")); // NOI18N
         setName("Form"); // NOI18N
 
-        buttonGroup1.add(radioBindNSphere);
-        radioBindNSphere.setSelected(true);
-        radioBindNSphere.setText(resourceMap.getString("radioBindNSphere.text")); // NOI18N
-        radioBindNSphere.setName("radioBindNSphere"); // NOI18N
+        jSplitPane1.setDividerLocation(415);
+        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        jSplitPane1.setResizeWeight(1.0);
+        jSplitPane1.setName("jSplitPane1"); // NOI18N
 
-        buttonGroup1.add(radioBindNCube);
-        radioBindNCube.setText(resourceMap.getString("radioBindNCube.text")); // NOI18N
-        radioBindNCube.setName("radioBindNCube"); // NOI18N
+        jPanel2.setName("jPanel2"); // NOI18N
 
-        buttonGroup1.add(radioBindSkeletonShell);
-        radioBindSkeletonShell.setText(resourceMap.getString("radioBindSkeletonShell.text")); // NOI18N
-        radioBindSkeletonShell.setName("radioBindSkeletonShell"); // NOI18N
+        jScrollPane2.setName("jScrollPane2"); // NOI18N
 
-        buttonGroup1.add(radioBindInNSphere);
-        radioBindInNSphere.setText(resourceMap.getString("radioBindInNSphere.text")); // NOI18N
-        radioBindInNSphere.setName("radioBindInNSphere"); // NOI18N
+        tableRepulsionFunctions.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {new Integer(0), "N:N-1 NSphere", "F[v]=v((r/v'v)-1)"},
+                {new Integer(1), "2:1 N Smooth Donut", "F[x,y]={x,y}((r/{x,y}'{x,y})-1)"}
+            },
+            new String [] {
+                "ID", "Name", "Code"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+            };
 
-        buttonGroup1.add(radioBindInNCube);
-        radioBindInNCube.setText(resourceMap.getString("radioBindInNCube.text")); // NOI18N
-        radioBindInNCube.setName("radioBindInNCube"); // NOI18N
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        tableRepulsionFunctions.setColumnSelectionAllowed(true);
+        tableRepulsionFunctions.setName("tableRepulsionFunctions"); // NOI18N
+        jScrollPane2.setViewportView(tableRepulsionFunctions);
+        tableRepulsionFunctions.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tableRepulsionFunctions.getColumnModel().getColumn(0).setPreferredWidth(1);
+        tableRepulsionFunctions.getColumnModel().getColumn(0).setHeaderValue(resourceMap.getString("tableRepulsionFunctions.columnModel.title2")); // NOI18N
+        tableRepulsionFunctions.getColumnModel().getColumn(1).setHeaderValue(resourceMap.getString("tableRepulsionFunctions.columnModel.title0")); // NOI18N
+        tableRepulsionFunctions.getColumnModel().getColumn(2).setHeaderValue(resourceMap.getString("tableRepulsionFunctions.columnModel.title1")); // NOI18N
 
-        buttonGroup1.add(radioBindSkeletonSkin);
-        radioBindSkeletonSkin.setText(resourceMap.getString("radioBindSkeletonSkin.text")); // NOI18N
-        radioBindSkeletonSkin.setName("radioBindSkeletonSkin"); // NOI18N
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 623, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
-        buttonGroup1.add(radioBindFunction);
-        radioBindFunction.setText(resourceMap.getString("radioBindFunction.text")); // NOI18N
-        radioBindFunction.setToolTipText(resourceMap.getString("radioBindFunction.toolTipText")); // NOI18N
-        radioBindFunction.setName("radioBindFunction"); // NOI18N
+        jSplitPane1.setBottomComponent(jPanel2);
+
+        jPanel3.setName("jPanel3"); // NOI18N
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
@@ -92,106 +138,405 @@ public class BindingForm extends javax.swing.JFrame {
         areaBindingFunction.setName("areaBindingFunction"); // NOI18N
         jScrollPane1.setViewportView(areaBindingFunction);
 
-        btnBind.setText(resourceMap.getString("btnBind.text")); // NOI18N
-        btnBind.setName("btnBind"); // NOI18N
+        jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
+        jLabel1.setName("jLabel1"); // NOI18N
 
-        btnBind10.setText(resourceMap.getString("btnBind10.text")); // NOI18N
-        btnBind10.setName("btnBind10"); // NOI18N
+        buttonGroup1.add(radioBindFunction);
+        radioBindFunction.setText(resourceMap.getString("radioBindFunction.text")); // NOI18N
+        radioBindFunction.setToolTipText(resourceMap.getString("radioBindFunction.toolTipText")); // NOI18N
+        radioBindFunction.setName("radioBindFunction"); // NOI18N
 
-        btnBind100.setText(resourceMap.getString("btnBind100.text")); // NOI18N
-        btnBind100.setName("btnBind100"); // NOI18N
+        buttonGroup1.add(radioBindSkeletonSkin);
+        radioBindSkeletonSkin.setText(resourceMap.getString("radioBindSkeletonSkin.text")); // NOI18N
+        radioBindSkeletonSkin.setName("radioBindSkeletonSkin"); // NOI18N
 
-        btnBind1000.setText(resourceMap.getString("btnBind1000.text")); // NOI18N
-        btnBind1000.setName("btnBind1000"); // NOI18N
-
-        jTextField1.setText(resourceMap.getString("jTextField1.text")); // NOI18N
-        jTextField1.setName("jTextField1"); // NOI18N
+        buttonGroup1.add(radioBindSkeletonShell);
+        radioBindSkeletonShell.setText(resourceMap.getString("radioBindSkeletonShell.text")); // NOI18N
+        radioBindSkeletonShell.setName("radioBindSkeletonShell"); // NOI18N
 
         boxRepel.setSelected(true);
         boxRepel.setText(resourceMap.getString("boxRepel.text")); // NOI18N
         boxRepel.setName("boxRepel"); // NOI18N
 
-        jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
-        jLabel1.setName("jLabel1"); // NOI18N
+        btnBind1000.setText(resourceMap.getString("btnBind1000.text")); // NOI18N
+        btnBind1000.setName("btnBind1000"); // NOI18N
+        btnBind1000.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBind1000ActionPerformed(evt);
+            }
+        });
+
+        buttonGroup1.add(radioBindInNCube);
+        radioBindInNCube.setText(resourceMap.getString("radioBindInNCube.text")); // NOI18N
+        radioBindInNCube.setName("radioBindInNCube"); // NOI18N
+
+        buttonGroup1.add(radioBindNCube);
+        radioBindNCube.setText(resourceMap.getString("radioBindNCube.text")); // NOI18N
+        radioBindNCube.setName("radioBindNCube"); // NOI18N
+
+        btnBind100.setText(resourceMap.getString("btnBind100.text")); // NOI18N
+        btnBind100.setName("btnBind100"); // NOI18N
+        btnBind100.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBind100ActionPerformed(evt);
+            }
+        });
+
+        btnBind10.setText(resourceMap.getString("btnBind10.text")); // NOI18N
+        btnBind10.setName("btnBind10"); // NOI18N
+        btnBind10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBind10ActionPerformed(evt);
+            }
+        });
+
+        buttonGroup1.add(radioBindInNSphere);
+        radioBindInNSphere.setText(resourceMap.getString("radioBindInNSphere.text")); // NOI18N
+        radioBindInNSphere.setName("radioBindInNSphere"); // NOI18N
+
+        buttonGroup1.add(radioBindNSphere);
+        radioBindNSphere.setSelected(true);
+        radioBindNSphere.setText(resourceMap.getString("radioBindNSphere.text")); // NOI18N
+        radioBindNSphere.setName("radioBindNSphere"); // NOI18N
+
+        btnBind.setText(resourceMap.getString("btnBind.text")); // NOI18N
+        btnBind.setName("btnBind"); // NOI18N
+        btnBind.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBindActionPerformed(evt);
+            }
+        });
+
+        jTextField1.setText(resourceMap.getString("jTextField1.text")); // NOI18N
+        jTextField1.setName("jTextField1"); // NOI18N
+
+        buttonGroup1.add(radioBindRepulsionBindingFunction);
+        radioBindRepulsionBindingFunction.setText(resourceMap.getString("radioBindRepulsionBindingFunction.text")); // NOI18N
+        radioBindRepulsionBindingFunction.setName("radioBindRepulsionBindingFunction"); // NOI18N
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 623, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(radioBindFunction)
+                        .addGap(80, 80, 80)
+                        .addComponent(jLabel1))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(radioBindSkeletonSkin)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 439, Short.MAX_VALUE)
+                        .addComponent(boxRepel))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(radioBindNSphere)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 428, Short.MAX_VALUE)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnBind))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(radioBindInNSphere)
+                            .addComponent(radioBindNCube)
+                            .addComponent(radioBindInNCube)
+                            .addComponent(radioBindSkeletonShell))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 407, Short.MAX_VALUE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnBind10)
+                            .addComponent(btnBind100)
+                            .addComponent(btnBind1000)))
+                    .addComponent(radioBindRepulsionBindingFunction, javax.swing.GroupLayout.Alignment.LEADING))
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(radioBindNSphere)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(radioBindInNSphere)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(radioBindNCube)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(radioBindInNCube)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(radioBindSkeletonShell)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(radioBindSkeletonSkin)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(radioBindFunction)
+                            .addComponent(jLabel1)))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnBind)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnBind10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnBind100)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnBind1000)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(boxRepel)
+                        .addGap(42, 42, 42)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(radioBindRepulsionBindingFunction)
+                .addContainerGap())
+        );
+
+        jSplitPane1.setLeftComponent(jPanel3);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(radioBindNSphere)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 181, Short.MAX_VALUE)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnBind))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(radioBindNCube)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 224, Short.MAX_VALUE)
-                                .addComponent(btnBind100))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(radioBindSkeletonShell)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 186, Short.MAX_VALUE)
-                                .addComponent(boxRepel))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(radioBindInNSphere)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 176, Short.MAX_VALUE)
-                                .addComponent(btnBind10))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(radioBindInNCube)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 173, Short.MAX_VALUE)
-                                .addComponent(btnBind1000))
-                            .addComponent(radioBindSkeletonSkin)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(radioBindFunction)
-                                .addGap(101, 101, 101)
-                                .addComponent(jLabel1))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)))
-                .addContainerGap())
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 647, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(radioBindNSphere)
-                    .addComponent(btnBind)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(radioBindInNSphere)
-                    .addComponent(btnBind10))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(radioBindNCube)
-                    .addComponent(btnBind100))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(radioBindInNCube)
-                    .addComponent(btnBind1000))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(radioBindSkeletonShell)
-                    .addComponent(boxRepel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(radioBindSkeletonSkin)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(radioBindFunction)
-                    .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE)
         );
 
-        setBounds(100, 100, 410, 408);
+        setBounds(100, 100, 657, 757);
     }// </editor-fold>//GEN-END:initComponents
+    public static final int BIND_UNKNOWN = -1;
+    public static final int BIND_FUNCTION = 0;
+    public static final int BIND_IN_NCUBE = 1;
+    public static final int BIND_IN_NSPHERE = 2;
+    public static final int BIND_NCUBE = 3;
+    public static final int BIND_NSPHERE = 4;
+    public static final int BIND_REPULSION_BINDING_FUNCTION = 5;
+    public static final int BIND_SKELTON_SHELL = 6;
+    public static final int BIND_SKELETON_SKIN = 7;
+
+    public void doBind(int mode, boolean repel) {
+        switch (mode) {
+            case BIND_FUNCTION:
+                break;
+            case BIND_IN_NCUBE:
+                break;
+            case BIND_IN_NSPHERE:
+                break;
+            case BIND_NCUBE:
+                break;
+            case BIND_NSPHERE:
+                break;
+            case BIND_REPULSION_BINDING_FUNCTION:
+                int row = tableRepulsionFunctions.getSelectedRow();
+                if (row != -1) {
+                    if (repel) {
+                        parent.engine.repel(0.0003);
+                    }
+                    switch ((Integer) tableRepulsionFunctions.getModel().getValueAt(row, 0)) {
+                        case 0:
+                            for (NPoint i : parent.engine.lattice.points) {
+                                double length = i.pos.length();
+                                if (length == 0) {
+                                    for (int j = 0; j < parent.engine.dims; j++) {
+                                        i.pos.coords[j] = (parent.engine.r.nextDouble() * 2) - 1;
+                                    }
+                                    length = i.pos.length();
+                                    // It had better not be 0 now.
+                                }
+                                int R = 1;
+                                i.pos.plusBIP(i.pos.multS((R / length) - 1));
+                            }
+                            break;
+                        case 1:
+                            if (parent.engine.lattice.dims - parent.engine.lattice.internalDims != parent.engine.lattice.internalDims) {
+                                return;
+                            }
+                            for (NPoint i : parent.engine.lattice.points) {
+                                for (int k = 0; k < parent.engine.lattice.internalDims; k++) {
+                                    NVector v = new NVector(new double[]{i.pos.coords[2 * k], i.pos.coords[2 * k + 1]});
+                                    double length = v.length();
+                                    if (length == 0) {
+                                        v.coords[0] = (parent.engine.r.nextDouble() * 2) - 1;
+                                        v.coords[1] = (parent.engine.r.nextDouble() * 2) - 1;
+                                        length = v.length();
+                                        // It had better not be 0 now.
+                                    }
+                                    int R = 1;
+                                    v.plusBIP(v.multS((R / length) - 1));
+                                    i.pos.coords[2 * k] = v.coords[0];
+                                    i.pos.coords[2 * k + 1] = v.coords[1];
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                break;
+            case BIND_SKELTON_SHELL:
+                break;
+            case BIND_SKELETON_SKIN:
+                break;
+            case BIND_UNKNOWN:
+            default:
+                break;
+        }
+    }
+
+private void btnBindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBindActionPerformed
+    boolean repel = boxRepel.isSelected();
+    if (radioBindFunction.isSelected()) {
+        doBind(BIND_FUNCTION, repel);
+    } else if (radioBindInNCube.isSelected()) {
+        doBind(BIND_IN_NCUBE, repel);
+    } else if (radioBindInNSphere.isSelected()) {
+        doBind(BIND_IN_NSPHERE, repel);
+    } else if (radioBindNCube.isSelected()) {
+        doBind(BIND_NCUBE, repel);
+    } else if (radioBindNSphere.isSelected()) {
+        doBind(BIND_NSPHERE, repel);
+    } else if (radioBindRepulsionBindingFunction.isSelected()) {
+        doBind(BIND_REPULSION_BINDING_FUNCTION, repel);
+    } else if (radioBindSkeletonShell.isSelected()) {
+        doBind(BIND_SKELTON_SHELL, repel);
+    } else if (radioBindSkeletonSkin.isSelected()) {
+        doBind(BIND_SKELETON_SKIN, repel);
+    } else {
+        doBind(BIND_UNKNOWN, repel);
+    }
+    parent.dp.repaint();
+}//GEN-LAST:event_btnBindActionPerformed
+
+private void btnBind10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBind10ActionPerformed
+    boolean repel = boxRepel.isSelected();
+    int cap = 10;
+    if (radioBindFunction.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_FUNCTION, repel);
+        }
+    } else if (radioBindInNCube.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_IN_NCUBE, repel);
+        }
+    } else if (radioBindInNSphere.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_IN_NSPHERE, repel);
+        }
+    } else if (radioBindNCube.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_NCUBE, repel);
+        }
+    } else if (radioBindNSphere.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_NSPHERE, repel);
+        }
+    } else if (radioBindRepulsionBindingFunction.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_REPULSION_BINDING_FUNCTION, repel);
+        }
+    } else if (radioBindSkeletonShell.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_SKELTON_SHELL, repel);
+        }
+    } else if (radioBindSkeletonSkin.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_SKELETON_SKIN, repel);
+        }
+    } else {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_UNKNOWN, repel);
+        }
+    }
+    parent.dp.repaint();
+}//GEN-LAST:event_btnBind10ActionPerformed
+
+private void btnBind100ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBind100ActionPerformed
+    boolean repel = boxRepel.isSelected();
+    int cap = 100;
+    if (radioBindFunction.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_FUNCTION, repel);
+        }
+    } else if (radioBindInNCube.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_IN_NCUBE, repel);
+        }
+    } else if (radioBindInNSphere.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_IN_NSPHERE, repel);
+        }
+    } else if (radioBindNCube.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_NCUBE, repel);
+        }
+    } else if (radioBindNSphere.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_NSPHERE, repel);
+        }
+    } else if (radioBindRepulsionBindingFunction.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_REPULSION_BINDING_FUNCTION, repel);
+        }
+    } else if (radioBindSkeletonShell.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_SKELTON_SHELL, repel);
+        }
+    } else if (radioBindSkeletonSkin.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_SKELETON_SKIN, repel);
+        }
+    } else {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_UNKNOWN, repel);
+        }
+    }
+    parent.dp.repaint();
+}//GEN-LAST:event_btnBind100ActionPerformed
+
+private void btnBind1000ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBind1000ActionPerformed
+    boolean repel = boxRepel.isSelected();
+    int cap = 1000;
+    if (radioBindFunction.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_FUNCTION, repel);
+        }
+    } else if (radioBindInNCube.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_IN_NCUBE, repel);
+        }
+    } else if (radioBindInNSphere.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_IN_NSPHERE, repel);
+        }
+    } else if (radioBindNCube.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_NCUBE, repel);
+        }
+    } else if (radioBindNSphere.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_NSPHERE, repel);
+        }
+    } else if (radioBindRepulsionBindingFunction.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_REPULSION_BINDING_FUNCTION, repel);
+        }
+    } else if (radioBindSkeletonShell.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_SKELTON_SHELL, repel);
+        }
+    } else if (radioBindSkeletonSkin.isSelected()) {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_SKELETON_SKIN, repel);
+        }
+    } else {
+        for (int i = 0; i < cap; i++) {
+            doBind(BIND_UNKNOWN, repel);
+        }
+    }
+    parent.dp.repaint();
+}//GEN-LAST:event_btnBind1000ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -237,14 +582,21 @@ public class BindingForm extends javax.swing.JFrame {
     private javax.swing.JButton btnBind1000;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JRadioButton radioBindFunction;
     private javax.swing.JRadioButton radioBindInNCube;
     private javax.swing.JRadioButton radioBindInNSphere;
     private javax.swing.JRadioButton radioBindNCube;
     private javax.swing.JRadioButton radioBindNSphere;
+    private javax.swing.JRadioButton radioBindRepulsionBindingFunction;
     private javax.swing.JRadioButton radioBindSkeletonShell;
     private javax.swing.JRadioButton radioBindSkeletonSkin;
+    private javax.swing.JTable tableRepulsionFunctions;
     // End of variables declaration//GEN-END:variables
 }

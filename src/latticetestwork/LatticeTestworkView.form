@@ -21,7 +21,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jSplitPane1" pref="1076" max="32767" attributes="0"/>
+                  <Component id="jSplitPane1" pref="1078" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -59,7 +59,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="1072" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="1074" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -88,7 +88,11 @@
                                   </Group>
                                   <Component id="radio32Tri" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="radio33Tri" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="btnClear" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="btnClear" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="btnClearEdges" min="-2" max="-2" attributes="0"/>
+                                  </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="btnRepel" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
@@ -234,7 +238,10 @@
                               <Component id="spinLatticeDims" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="btnClear" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="btnClear" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnClearEdges" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="btnPlacePoints" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -344,7 +351,7 @@
                               <Component id="btnFinishPrep" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="btnPlaceCamera" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="76" max="32767" attributes="0"/>
+                          <EmptySpace pref="54" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -808,6 +815,15 @@
                     <Property name="toolTipText" type="java.lang.String" resourceKey="editMaxLength.toolTipText"/>
                     <Property name="name" type="java.lang.String" value="editMaxLength" noResource="true"/>
                   </Properties>
+                </Component>
+                <Component class="javax.swing.JButton" name="btnClearEdges">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" resourceKey="btnClearEdges.text"/>
+                    <Property name="name" type="java.lang.String" value="btnClearEdges" noResource="true"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnClearEdgesActionPerformed"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>
