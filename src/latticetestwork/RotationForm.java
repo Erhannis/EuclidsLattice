@@ -447,8 +447,8 @@ private void btnPareSticksActionPerformed(java.awt.event.ActionEvent evt) {//GEN
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollBar barTransX;
-    private javax.swing.JScrollBar barTransY;
+    public javax.swing.JScrollBar barTransX;
+    public javax.swing.JScrollBar barTransY;
     public javax.swing.JCheckBox boxHideComplete;
     public javax.swing.JCheckBox boxHideImmune;
     public javax.swing.JCheckBox boxHideIncomplete;

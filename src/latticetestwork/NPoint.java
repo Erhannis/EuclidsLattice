@@ -19,6 +19,8 @@ import java.util.HashSet;
  */
 public class NPoint implements Streamable {
 
+    public int debugID = Engine.r.nextInt();
+    
     public int dims = 0;
     public NVector pos = null;
     public NVector posOffhand = null;
@@ -28,6 +30,7 @@ public class NPoint implements Streamable {
     public NVector force = null;
 
     // This just stores where the point was last shown to allow one to click on it.
+    public boolean displayed = false;
     public Point2D displayPoint = new Point2D.Double();
     public Point2D displayPointStereo = new Point2D.Double();
     

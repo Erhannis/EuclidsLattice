@@ -21,9 +21,9 @@ public class Matrix implements Streamable {
     /** The binary digits after which two numbers are considered equal */
     public static int APRX = 24;
     public static CachedMatrix[][][] cache = null;
-    public static final int CACHED_ROWS = 10;
-    public static final int CACHED_COLS = 10;
-    public static final int CACHED_COPIES = 5;
+    public static final int CACHED_ROWS = 20;
+    public static final int CACHED_COLS = 20;
+    public static final int CACHED_COPIES = 20;
     public int usedCached = -1;
 
     static {

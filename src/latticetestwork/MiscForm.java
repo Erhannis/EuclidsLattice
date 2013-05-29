@@ -50,6 +50,9 @@ public class MiscForm extends javax.swing.JFrame {
         btnFullCheckIncomplete = new javax.swing.JButton();
         btnAddGround = new javax.swing.JButton();
         editGroundElevation = new javax.swing.JTextField();
+        btnMakeCompletePtsImmune = new javax.swing.JButton();
+        btnClearImmunity = new javax.swing.JButton();
+        btnClearLoggedDisplayPts = new javax.swing.JButton();
 
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(latticetestwork.LatticeTestworkApp.class).getContext().getResourceMap(MiscForm.class);
         setTitle(resourceMap.getString("Form.title")); // NOI18N
@@ -158,6 +161,30 @@ public class MiscForm extends javax.swing.JFrame {
         editGroundElevation.setToolTipText(resourceMap.getString("editGroundElevation.toolTipText")); // NOI18N
         editGroundElevation.setName("editGroundElevation"); // NOI18N
 
+        btnMakeCompletePtsImmune.setText(resourceMap.getString("btnMakeCompletePtsImmune.text")); // NOI18N
+        btnMakeCompletePtsImmune.setName("btnMakeCompletePtsImmune"); // NOI18N
+        btnMakeCompletePtsImmune.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMakeCompletePtsImmuneActionPerformed(evt);
+            }
+        });
+
+        btnClearImmunity.setText(resourceMap.getString("btnClearImmunity.text")); // NOI18N
+        btnClearImmunity.setName("btnClearImmunity"); // NOI18N
+        btnClearImmunity.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearImmunityActionPerformed(evt);
+            }
+        });
+
+        btnClearLoggedDisplayPts.setText(resourceMap.getString("btnClearLoggedDisplayPts.text")); // NOI18N
+        btnClearLoggedDisplayPts.setName("btnClearLoggedDisplayPts"); // NOI18N
+        btnClearLoggedDisplayPts.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearLoggedDisplayPtsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -168,9 +195,17 @@ public class MiscForm extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(bntBindSphere)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnBindSphereX100))
-                    .addComponent(btnClearOuterFaces)
-                    .addComponent(btnTruncate)
+                        .addComponent(btnBindSphereX100)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 216, Short.MAX_VALUE)
+                        .addComponent(btnClearImmunity))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnClearOuterFaces)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 139, Short.MAX_VALUE)
+                        .addComponent(btnMakeCompletePtsImmune))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnTruncate)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 173, Short.MAX_VALUE)
+                        .addComponent(btnClearLoggedDisplayPts))
                     .addComponent(btnNewTruncate)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btnCheckIncomplete)
@@ -184,7 +219,7 @@ public class MiscForm extends javax.swing.JFrame {
                         .addComponent(btnAddGround)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(editGroundElevation, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(161, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -192,13 +227,21 @@ public class MiscForm extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(bntBindSphere)
-                    .addComponent(btnBindSphereX100))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnBindSphereX100)
+                        .addComponent(btnClearImmunity)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnClearOuterFaces)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnTruncate)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnNewTruncate)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnClearOuterFaces)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnTruncate)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnNewTruncate))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnMakeCompletePtsImmune)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnClearLoggedDisplayPts)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCheckIncomplete)
@@ -228,7 +271,7 @@ public class MiscForm extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(71, Short.MAX_VALUE))
+                .addContainerGap(63, Short.MAX_VALUE))
         );
 
         setBounds(50, 400, 511, 474);
@@ -339,6 +382,34 @@ private void btnAddGroundActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
     }
 }//GEN-LAST:event_btnAddGroundActionPerformed
 
+private void btnClearImmunityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearImmunityActionPerformed
+    if (parent.engine != null && parent.engine.lattice != null) {
+        for (NPoint p : parent.engine.lattice.points) {
+            p.immune = false;
+        }
+        parent.dp.repaint();
+    }
+}//GEN-LAST:event_btnClearImmunityActionPerformed
+
+private void btnMakeCompletePtsImmuneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMakeCompletePtsImmuneActionPerformed
+    if (parent.engine != null && parent.engine.lattice != null) {
+        for (NPoint p : parent.engine.lattice.points) {
+            if (p.calcComplete()) {
+                p.immune = true;
+            }
+        }
+        parent.dp.repaint();
+    }
+}//GEN-LAST:event_btnMakeCompletePtsImmuneActionPerformed
+
+private void btnClearLoggedDisplayPtsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearLoggedDisplayPtsActionPerformed
+    if (parent.engine != null && parent.engine.lattice != null) {
+        for (NPoint p : parent.engine.lattice.points) {
+            p.displayed = false;
+        }
+    }
+}//GEN-LAST:event_btnClearLoggedDisplayPtsActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -381,9 +452,12 @@ private void btnAddGroundActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
     private javax.swing.JButton btnCellVolumes;
     private javax.swing.JButton btnCheckDuplicates;
     private javax.swing.JButton btnCheckIncomplete;
+    private javax.swing.JButton btnClearImmunity;
+    private javax.swing.JButton btnClearLoggedDisplayPts;
     private javax.swing.JButton btnClearOuterFaces;
     private javax.swing.JButton btnFullCheckIncomplete;
     private javax.swing.JButton btnKatanaMath;
+    private javax.swing.JButton btnMakeCompletePtsImmune;
     private javax.swing.JButton btnNewTruncate;
     private javax.swing.JButton btnTruncate;
     private javax.swing.JTextField editGroundElevation;

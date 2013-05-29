@@ -347,6 +347,7 @@ public class LatticeTestworkView extends FrameView {
         jMenuItem6 = new javax.swing.JMenuItem();
         jMenuItem7 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem8 = new javax.swing.JMenuItem();
         javax.swing.JMenu helpMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem aboutMenuItem = new javax.swing.JMenuItem();
         modeGroup = new javax.swing.ButtonGroup();
@@ -1038,6 +1039,15 @@ public class LatticeTestworkView extends FrameView {
         });
         jMenu1.add(jMenuItem3);
 
+        jMenuItem8.setText(resourceMap.getString("jMenuItem8.text")); // NOI18N
+        jMenuItem8.setName("jMenuItem8"); // NOI18N
+        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem8ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem8);
+
         menuBar.add(jMenu1);
 
         helpMenu.setText(resourceMap.getString("helpMenu.text")); // NOI18N
@@ -1282,6 +1292,7 @@ private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         mobBoss.lattice = engine.lattice;
     }
     updateOptions();
+    //Engine.r.setSeed(0);
 }//GEN-LAST:event_btnClearActionPerformed
 
 private void btnRepelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRepelActionPerformed
@@ -1664,8 +1675,20 @@ private void btnClearEdgesActionPerformed(java.awt.event.ActionEvent evt) {//GEN
         engine.radiusNearestAverageCount = -1;
         engine.clearEdges();
         dp.repaint();
+        //Engine.r.setSeed(2);
     }
 }//GEN-LAST:event_btnClearEdgesActionPerformed
+
+    public GraphForm graphForm = null;
+
+private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+    if (graphForm != null) {
+        graphForm.setVisible(true);
+    } else {
+        graphForm = new GraphForm(this);
+        graphForm.setVisible(true);
+    }
+}//GEN-LAST:event_jMenuItem8ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox boxAutoNCorners;
@@ -1726,6 +1749,7 @@ private void btnClearEdgesActionPerformed(java.awt.event.ActionEvent evt) {//GEN
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
+    private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JPanel mainPanel;

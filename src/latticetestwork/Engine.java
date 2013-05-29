@@ -221,6 +221,7 @@ public class Engine {
                                 bucket.y = i.pos.coords[1] - 0.01;
                                 bucket.width = 0.02;
                                 bucket.height = 0.02;
+                                i.displayed = true;
                                 i.displayPoint.setLocation(bucket.x, bucket.y);
                                 g.draw(bucket);
                             }
@@ -457,6 +458,7 @@ public class Engine {
                                                 bucket.width = 0.01;
                                                 bucket.height = 0.01;
                                             }
+                                            i.displayed = true;
                                             if (hasStereo == 0) {
                                                 i.displayPoint.setLocation(bucket.x, bucket.y);
                                             } else {
@@ -1166,6 +1168,9 @@ public class Engine {
                         NPoint closest = null;
                         double dist = 0;
                         for (NPoint i : lattice.points) {
+                            if (!i.displayed) {
+                                continue;
+                            }
                             double newdist = 10;
                             if (stereo) {
                                 newdist = Math.min(i.displayPoint.distance(p), i.displayPointStereo.distance(p));
@@ -1177,6 +1182,9 @@ public class Engine {
                                 closest = i;
                                 dist = newdist;
                             }
+                        }
+                        if (closest == null) {
+                            break;
                         }
                         if (chosens.contains(closest)) {
                             chosens.remove(closest);
@@ -2099,6 +2107,7 @@ public class Engine {
                                 lattice.incompleteFaces.remove(leaf);
 
                                 faceBottom = faceNum;
+                                //System.out.println("debugID " + i.debugID);
                                 System.out.println("Found face at " + faceNum);
                                 sticksChanged = true;
 
@@ -4723,6 +4732,14 @@ public class Engine {
             sticksChanged = true;
             for (NPoint p : lattice.points) {
                 p.faces.clear();
+                p.complete = false;
+                p.immune = false;
+                if (p.candidates != null) {
+                    p.candidates.clear();
+                }
+                if (p.faceIDs != null) {
+                    p.faceIDs.clear();
+                }
             }
         }
     }

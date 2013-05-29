@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.Console;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Random;
@@ -48,6 +49,21 @@ public class MainTest {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
+        {
+            Object dbls = Array.newInstance(double.class, 2, 3, 4);
+            MeUtils.setInNArray(dbls, 5.3, 0, 1, 2);
+            double[][][] randdbl = (double[][][])MeUtils.randomDArray(new Random(), 2,2,2);
+            if (1==1) return;
+        }
+        {
+            //NewClass<NPoint> blah = new NewClass<NPoint>();
+            //NPoint[] npa = blah.genericArray(5);
+            double[] rdbl = (double[])MeUtils.concatArrays(new double[]{1,2,3.5}, new double[]{1,2.1,3,4});
+            char[] rchar = (char[])MeUtils.concatArrays(new char[]{'a','b','c'}, "what".toCharArray(),"the".toCharArray(),"deuce".toCharArray());
+            int[] rint = (int[])MeUtils.concatArrays(new int[]{1,2,3}, new int[]{1,2,3,4});
+            NPoint[] rnpoint = (NPoint[])MeUtils.concatArrays(new NPoint[]{new NPoint(5), new NPoint(3), new NPoint(6)}, new NPoint[]{new NPoint(1),new NPoint(2),new NPoint(3),new NPoint(4)});
+            if (1==1) return;
+        }
         NVector av = new NVector(new double[] {1, 0, 0, 0});
         NVector bv = new NVector(new double[] {0, 1, 0, 0});
         System.out.println(NVector.angle(av, bv));
@@ -63,21 +79,7 @@ public class MainTest {
         System.out.println(large + " " + small);
         if (1==1) return;
         SSHClient sc = new SSHClient();
-        //This needs to disappear.
         char[] pwd = new char[8];
-        pwd[0] = 'N';
-        pwd[3] = '0';
-        pwd[1] = 'I';
-        pwd[7] = 'e';
-        pwd[1] = '7';
-        pwd[6] = 'm';
-        pwd[0] = 'e';
-        pwd[2] = '2';
-        pwd[1] = 'T';
-        pwd[0] = 'M';
-        pwd[4] = '1';
-        pwd[1] = 'E';
-        pwd[5] = '2';
         String pswd = String.copyValueOf(pwd);
         ArrayList<String> hosts = new ArrayList<String>();
         Process pr = Runtime.getRuntime().exec(new String[]{"bash", "-c", "/home/mewer12/stuff/nmap/usr/bin/nmap -p 22 10.101.6.1-255 | grep -E -o \"report.*[0-9]\" | grep -o -E \"[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\""});
