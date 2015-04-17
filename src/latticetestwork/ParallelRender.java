@@ -308,7 +308,8 @@ public class ParallelRender {
                 }
                 // Theoretically, now hitFace has what face we hit, and hit has where we ended up.
                 // Go there, and subtract from dtl.
-                dtl -= hit.minusB(pos).length();
+                //dtl -= hit.minusB(pos).length();//dtl = 0
+                dtl -= Math.max(hit.minusB(pos).length(), 0.01);
                 try {
                     percentOfIncidence = 2 * NVector.angle(Matrix.lrvMult(hitFace.basis.projection, pos.minusB(hit)), pos.minusB(hit)) / (Math.PI);
                 } catch (Exception ex) {

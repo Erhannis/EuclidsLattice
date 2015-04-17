@@ -1517,10 +1517,10 @@ private void btnFullActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                 }
             }
 
-            if (!slow) {
+            if (!slow) {//slow = false ; slow = true
                 dp.repaint();
             } else {
-                if (verySlow) {
+                if (verySlow) { //verySlow = false ; verySlow = true
                     dp.paintImmediately(dp.getBounds());
                 } else {
                     synchronized (repaint) {
