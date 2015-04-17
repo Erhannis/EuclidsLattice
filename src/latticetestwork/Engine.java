@@ -15,6 +15,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.lang.reflect.Array;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,12 +34,10 @@ public class Engine {
     }
     public static Random r = new Random();
     public int dims = 0;
-    public LatticeTestworkView parent = null;
     public ArrayList<NLatticeBone> skeleton = null;
 
-    public Engine(int dims, LatticeTestworkView parent) {
+    public Engine(int dims) {
         this.dims = dims;
-        this.parent = parent;
     }
     public Lattice lattice = null;
     public int mode = 0;
@@ -270,6 +269,7 @@ public class Engine {
                                     g.draw(line);
                                     break;
                                 case 3:
+                                    Matrix augmented = null;
                                     try {
                                         double[][] crossA = new double[chosens.size() - 2][dims];
                                         for (int i = 1; i < chosens.size() - 1; i++) {
@@ -315,7 +315,7 @@ public class Engine {
 
                                         boolean aNotZero = false;
                                         boolean bNotZero = false;
-                                        Matrix augmented = new Matrix(3, dims);
+                                        augmented = Matrix.maybeGetCachedMatrix(3, dims, false);
                                         for (int i = 0; i < dims; i++) {
                                             augmented.val[0][i] = aNorm[i];
                                             if (aNorm[i] != 0) {
@@ -334,6 +334,7 @@ public class Engine {
                                             throw new Exception("A norm is 0!");
                                         }
                                         IntersectionResult solution = augmented.solveIntersect();
+                                        augmented.doneWithMatrix(); augmented = null;
                                         NPoint center = new NPoint(dims);
                                         if (solution.q12 == 1) {
                                             for (int i = 0; i < dims; i++) {
@@ -378,6 +379,7 @@ public class Engine {
                                     } catch (Exception e) {
                                         Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, e);
                                     }
+                                    if (augmented != null) augmented.doneWithMatrix();
                                     break;
                             }
                         }
@@ -1441,6 +1443,7 @@ public class Engine {
     public NCell lastCell = null;
 
     public ArrayList<NPoint> findCircleContents(ArrayList<NPoint> anchors) {
+        Matrix augmented = null;
         try {
             //TODO I need to figure out how to do this in arbitrary dimensions.
             // Two dimensions, for now:
@@ -1516,7 +1519,7 @@ public class Engine {
 
             boolean aNotZero = false;
             boolean bNotZero = false;
-            Matrix augmented = new Matrix(3, dims);
+            augmented = Matrix.maybeGetCachedMatrix(3, dims, false);
             for (int i = 0; i < dims; i++) {
                 augmented.val[0][i] = aNorm[i];
                 if (aNorm[i] != 0) {
@@ -1551,6 +1554,7 @@ public class Engine {
                 }
             }
             IntersectionResult solution = augmented.solveIntersect();
+            augmented.doneWithMatrix(); augmented = null;
             NPoint center = new NPoint(dims);
             if (solution.q12 == 1) {
                 for (int i = 0; i < dims; i++) {
@@ -1608,6 +1612,8 @@ public class Engine {
             ArrayList<NPoint> scratch = new ArrayList<NPoint>();
             scratch.add(new NPoint(dims));
             return scratch;
+        } finally {
+            if (augmented != null) augmented.doneWithMatrix();            
         }
     }
 
@@ -2560,6 +2566,7 @@ public class Engine {
             ptVectors[i] = frame.get(i).pos;
         }
         NVector[] result = Matrix.ipTransformCoords(volBasis.bases, ptVectors);
+        //TODO Could maybe be cached
         Matrix m = new Matrix(simplexDims, simplexDims);
         for (int i = 1; i < result.length; i++) {
             NVector diff = result[i].minusB(result[0]);
@@ -2879,7 +2886,7 @@ public class Engine {
                 } catch (Exception ex) {
                     Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                newCam.camForm = new CameraForm(this, newCam, parent);
+                newCam.camForm = new NewCameraForm(this, newCam);
                 lattice.cameras.add(newCam);
                 newCam.camForm.show();
             } else {
@@ -2899,13 +2906,13 @@ public class Engine {
 //                } catch (Exception ex) {
 //                    Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
 //                }
-                newCam.camForm = new CameraForm(this, newCam, parent);
-                newCam.camForm.render = false;
-                newCam.camForm.boxRenderMain.setSelected(true);
+                newCam.camForm = new NewCameraForm(this, newCam);
+//                newCam.camForm.render = false; //NEW
+//                newCam.camForm.boxRenderMain.setSelected(true); //NEW
                 lattice.cameras.add(newCam);
                 newCam.camForm.show();
             }
-            parent.dp.repaint();
+//            parent.dp.repaint(); //NEW
         }
     }
     public double donutCircumfrence = 30;
@@ -4276,6 +4283,7 @@ public class Engine {
             ptVectors[i] = points[i];
         }
         NVector[] result = Matrix.ipTransformCoords(volBasis.bases, ptVectors);
+        //TODO Could maybe be cached
         Matrix m = new Matrix(simplexDims, simplexDims);
         for (int i = 1; i < result.length; i++) {
             NVector diff = result[i].minusB(result[0]);
@@ -4320,6 +4328,7 @@ public class Engine {
             //ptVectors[i] = points[i].pos;
         }
         NVector[] result = Matrix.ipTransformCoords(volBasis.bases, ptVectors);
+        //TODO Could maybe be cached
         Matrix m = new Matrix(simplexDims, simplexDims);
         for (int i = 1; i < result.length; i++) {
             NVector diff = result[i].minusB(result[0]);
@@ -4573,7 +4582,7 @@ public class Engine {
     public void addGround(double elevation, int type) {
         switch (type) {
             case GROUND_COLORFUL:
-                NSurface ground = new NSurface(lattice.dims, lattice.dims - 1, new Color(0, true));
+                NSurface ground = new NSurface(lattice.dims, lattice.dims - 1, new Color(r.nextInt(), true));
                 ground.points[0] = new NPoint(dims);
                 ground.points[0].pos.coords[0] = elevation;
                 for (int i = 1; i < dims; i++) {
@@ -4680,7 +4689,7 @@ public class Engine {
      * @param cameraForm
      * @return 
      */
-    public Camera createIndependentCamera(boolean orient, CameraForm cameraForm) {
+    public Camera createIndependentCamera(boolean orient, NewCameraForm cameraForm) {
         Camera newCam = null;
         if (lattice != null) {
             if (orient) {
@@ -4741,6 +4750,102 @@ public class Engine {
                     p.faceIDs.clear();
                 }
             }
+        }
+    }
+    
+    
+    // New
+    
+    public void add3dTriPoints() {
+        if (dims != 3) throw new InvalidParameterException("Dims must be 3");
+
+        double scale = 100;
+        
+        //TODO I could probably make this a more equilateral tetrahedron.
+        
+        NPoint bucket = new NPoint(dims);
+        bucket.pos.coords[0] = 0;
+        bucket.pos.coords[1] = 0;
+        bucket.pos.coords[2] = 1 * scale;
+        lattice.addPoint(bucket);
+
+        bucket = new NPoint(dims);
+        bucket.pos.coords[0] = -0.5 * scale;
+        bucket.pos.coords[1] = -0.5 * scale;
+        bucket.pos.coords[2] = -0.5 * scale;
+        lattice.addPoint(bucket);
+
+        bucket = new NPoint(dims);
+        bucket.pos.coords[0] = 0.5 * scale;
+        bucket.pos.coords[1] = -0.5 * scale;
+        bucket.pos.coords[2] = -0.5 * scale;
+        lattice.addPoint(bucket);
+
+        bucket = new NPoint(dims);
+        bucket.pos.coords[0] = 0;
+        bucket.pos.coords[1] = 0.5 * scale;
+        bucket.pos.coords[2] = -0.5 * scale;
+        lattice.addPoint(bucket);
+    }
+
+    public void placeCameraAtOrigin(boolean orient) {
+        if (lattice != null) {
+            if (orient) {
+                Camera newCam = new Camera(dims, lattice.internalDims, lattice);
+                NCell cell = lattice.cells.get(r.nextInt(lattice.cells.size()));
+                NVector center = new NVector(dims);
+                for (NPoint i : cell.points) {
+                    center = center.plusB(i.pos);
+                }
+                center = center.multS(1.0 / cell.points.length);
+                newCam.pos = center;
+                try {
+                    newCam.realignOrientation(cell);
+                } catch (Exception ex) {
+                    Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                newCam.camForm = new NewCameraForm(this, newCam);
+                lattice.cameras.add(newCam);
+                newCam.camForm.show();
+            } else {
+                Camera newCam = new Camera(dims, lattice.internalDims, lattice);
+                NCell cell = lattice.cells.get(r.nextInt(lattice.cells.size()));
+                newCam.cell = cell;
+                NVector center = new NVector(dims);
+                for (NPoint i : cell.points) {
+                    center = center.plusB(i.pos);
+                }
+                center = center.multS(1.0 / cell.points.length);
+                //newCam.pos = center;
+                permacenter.pos = center;
+                permaradius = cell.points[0].pos.minusB(center).length();
+                newCam.camForm = new NewCameraForm(this, newCam);
+//                newCam.camForm.render = false; //NEW
+                lattice.cameras.add(newCam);
+                newCam.camForm.show();
+            }
+//            parent.dp.repaint(); //NEW
+        }
+    }
+    
+    // NOTE: I've only written this to deal with one large cell.  Otherwise, fix it.
+    public void addSurface(double[][] coords) {
+        NSurface ground = new NSurface(lattice.dims, lattice.dims - 1, new Color(r.nextInt(), true));
+        ground.points[0] = new NPoint(dims);
+        ground.points[0].pos.coords[0] = coords[0][0];
+        ground.points[0].pos.coords[1] = coords[0][1];
+        ground.points[0].pos.coords[2] = coords[0][2];
+        ground.points[1] = new NPoint(dims);
+        ground.points[1].pos.coords[0] = coords[1][0];
+        ground.points[1].pos.coords[1] = coords[1][1];
+        ground.points[1].pos.coords[2] = coords[1][2];
+        ground.points[2] = new NPoint(dims);
+        ground.points[2].pos.coords[0] = coords[2][0];
+        ground.points[2].pos.coords[1] = coords[2][1];
+        ground.points[2].pos.coords[2] = coords[2][2];
+        ground.makeBasis();
+        for (NCell c : lattice.cells) {
+            c.surfaces.add(ground);
         }
     }
 }

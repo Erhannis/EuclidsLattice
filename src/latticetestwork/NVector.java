@@ -19,6 +19,85 @@ public class NVector {
     public int dims = 0;
     public double[] coords = null;
 
+    public static CachedNVector[][] cache = null;
+    public static final int CACHED_DIMS = 11;
+    public static final int CACHED_COPIES = 30;
+    public int usedCached = -1;
+
+    static {
+        cache = new CachedNVector[CACHED_DIMS][CACHED_COPIES];
+        for (int i = 0; i < CACHED_DIMS; i++) {
+            for (int j = 0; j < CACHED_COPIES; j++) {
+                cache[i][j] = new CachedNVector(i, j);
+            }
+        }
+    }
+
+    public static class CachedNVector {
+        // Warning: Not thread safe yet
+
+        public boolean inUse = false;
+        public NVector nVector = null;
+
+        public CachedNVector(int dims, int copy) {
+            nVector = new NVector(dims);
+            nVector.usedCached = copy;
+        }
+    }
+    
+    private static int cacheOverflows = 0;
+    
+    /**
+     * Currently hard-coded to have up to size 10 NVectors in cache.  Will crash
+     * if you try to access one that isn't there.  If you want bigger ones cached,
+     * init the cache yourself like (except, I haven't redone this for NVectors)<br/>
+     * cache = new CachedMatrix[CACHED_COLS][CACHED_ROWS][CACHED_COPIES];<br/>
+     * for (int i = 0; i &lt; CACHED_COLS; i++) {<br/>
+     *     for (int j = 0; j &lt; CACHED_ROWS; j++) {<br/>
+     *         for (int k = 0; k &lt; CACHED_COPIES; k++) {<br/>
+     *             cache[i][j][k] = new CachedMatrix(i, j, k);<br/>
+     *         }<br/>
+     *     }<br/>
+     * }<br/>
+     * 
+     * @param dims
+     * @param init 
+     */
+    public static NVector getCachedNVector(int dims, boolean init) {
+        for (int k = 0; k < CACHED_COPIES; k++) {
+            if (!cache[dims][k].inUse) {
+                cache[dims][k].inUse = true;
+                cache[dims][k].nVector.usedCached = k;
+                if (!init) {
+                    return cache[dims][k].nVector;
+                } else {
+                    for (int i = 0; i < dims; i++) {
+                        cache[dims][k].nVector.coords[i] = 0;
+                    }
+                    return cache[dims][k].nVector;
+                }
+            }
+        }
+        System.err.println("NVector cache overflows: " + (++cacheOverflows));
+        return new NVector(dims);
+    }
+
+    public static boolean USE_CACHED = true;  // Currently == whether single threaded
+    
+    public static NVector maybeGetCachedNVector(int dims, boolean init) {
+        if (USE_CACHED) {
+            return getCachedNVector(dims, init);
+        } else {
+            return new NVector(dims);
+        }
+    }
+    
+    public void doneWithNVector() {
+        if (usedCached != -1) {
+            cache[dims][usedCached].inUse = false;
+        }
+    }
+    
     public NVector(int dims) {
         this.dims = dims;
         coords = new double[dims];
@@ -39,7 +118,16 @@ public class NVector {
     }
 
     public NVector plusB(NVector b) {
-        NVector result = new NVector(dims);
+        return plusB(b, false);
+    }
+    
+    public NVector plusB(NVector b, boolean maybeUseCache) {
+        NVector result;
+        if (maybeUseCache) {
+            result = NVector.maybeGetCachedNVector(dims, false);
+        } else {
+            result = new NVector(dims);
+        }
         for (int i = 0; i < dims; i++) {
             result.coords[i] = this.coords[i] + b.coords[i];
         }
@@ -47,7 +135,16 @@ public class NVector {
     }
 
     public NVector minusB(NVector b) {
-        NVector result = new NVector(dims);
+        return minusB(b, false);
+    }
+    
+    public NVector minusB(NVector b, boolean maybeUseCache) {
+        NVector result;
+        if (maybeUseCache) {
+            result = NVector.maybeGetCachedNVector(dims, false);
+        } else {
+            result = new NVector(dims);
+        }
         for (int i = 0; i < dims; i++) {
             result.coords[i] = this.coords[i] - b.coords[i];
         }
@@ -120,6 +217,14 @@ public class NVector {
         }
         result.append("}");
         return result.toString();
+    }
+
+    public NVector copyToCache() {
+        NVector result = NVector.maybeGetCachedNVector(dims, false);
+        for (int i = 0; i < dims; i++) {
+            result.coords[i] = this.coords[i];
+        }
+        return result;
     }
 
     public NVector copy() {
@@ -205,7 +310,7 @@ public class NVector {
         int dims = v.dims;
 
         ArrayList<NVector> bases = new ArrayList<NVector>();
-        Matrix basis = new Matrix(2, dims);
+//        Matrix basis = new Matrix(2, dims);
 
 //        NVector basB = basisPtB.copy().ipNormalize();
 //        basis.val[0] = basB.coords;
@@ -235,7 +340,7 @@ public class NVector {
             bucket.coords[j] = basisPtC.coords[j];
         }
         bases.add(bucket);
-        basis = new Matrix(bases.size(), dims);
+        Matrix basis = Matrix.maybeGetCachedMatrix(bases.size(), dims, false);
         for (int i = 0; i < bases.size(); i++) {
             for (int j = 0; j < i; j++) {
                 bases.set(i, bases.get(i).minusB(NVector.lrProj(bases.get(j), bases.get(i))));
@@ -257,14 +362,17 @@ public class NVector {
         // Get the coordinates of the vectors 
         NVector[] transPoints = Matrix.ipTransformCoords(bases, points);
         NVector flatV = transPoints[0];
-        Matrix rotation = new Matrix(2, 2);
+        Matrix rotation = Matrix.maybeGetCachedMatrix(2, 2, false);
         rotation.val[0][0] = Math.cos(angle);
         rotation.val[1][1] = rotation.val[0][0];
         rotation.val[0][1] = Math.sin(angle);
         rotation.val[1][0] = -rotation.val[0][1];
         NVector rotV = Matrix.lrvMult(rotation, flatV);
+        rotation.doneWithMatrix();
         NVector newV = Matrix.lrvMult(basis, rotV);
+        basis.doneWithMatrix();
         newV = newV.plusB(difference);
+        
 
         return newV;
     }
@@ -482,5 +590,14 @@ public class NVector {
             }
         }
         return true;
+    }
+    
+    
+    // New
+    
+    public static NVector unitVector(int dims, int index) {
+        NVector v = new NVector(dims);
+        v.coords[index] = 1;
+        return v;
     }
 }

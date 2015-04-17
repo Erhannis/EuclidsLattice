@@ -34,7 +34,7 @@ public class Camera {
     public NVector latticeVelocity = null; // Just until I figure out which is more useful.
     public NCell cell = null;
     public int cellId = 0;
-    public CameraForm camForm = null;
+    public NewCameraForm camForm = null;
     public int id = -2;
     
     public Camera(int dims, int latticeDims, Lattice lattice) {
@@ -160,20 +160,22 @@ public class Camera {
     
     /** I don't think these work together, yet.  */
     //TODO Ooh, idea!  We could have a cool interactive routing diagram, like patchage!
-    public static final int DIST_NONE = LatticeTestworkView.DIST_NONE;
-    public static final int DIST_CPU  = LatticeTestworkView.DIST_CPU;
-    public static final int DIST_GPU  = LatticeTestworkView.DIST_GPU;
-    public static final int DIST_MOB  = LatticeTestworkView.DIST_MOB;
+    public static final int DIST_NONE = NewCameraForm.DIST_NONE;
+    public static final int DIST_CPU  = NewCameraForm.DIST_CPU;
+    public static final int DIST_GPU  = NewCameraForm.DIST_GPU;
+    public static final int DIST_MOB  = NewCameraForm.DIST_MOB;
     
-    public int projectionType = PROJ_MERCATOR;
+    public int projectionType = PROJ_FULL_360;
     public static final int PROJ_AZIMUTHAL = 1;
     public static final int PROJ_MERCATOR = 2;
+    public static final int PROJ_FULL_360 = 3;
     
     public void renderCamera(Graphics2D g, int cameraMode, int width, int height, double xOffset, double yOffset, double dtl, double fov, int graininess, int distribution) {
         switch (cameraMode) {
             case PROJ_AZIMUTHAL:
                 break;
             case PROJ_MERCATOR:
+            case PROJ_FULL_360:
                 //TODO So, this isn't actually general, like, for multiple dimensions.
                 int dWidth = width / graininess;
                 int dHeight = height / graininess;
@@ -182,9 +184,9 @@ public class Camera {
                     case DIST_CPU: {
                         int[] division = new int[picDims.length];
                         for (int i = 0; i < division.length; i++) {
-                            division[i] = 4;
+                            division[i] = 1;//4;
                         }
-                        Tensor<Integer> result = ParallelRender.aRender(dims, latticeDims, division, orientation, pos, cell, dtl, fov, picDims);
+                        Tensor<Integer> result = ParallelRender.aRender(dims, latticeDims, division, orientation, pos, cell, cameraMode, dtl, fov, picDims);
                         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
                         for (int x = 0; x < dWidth; x++) {
                             for (int y = 0; y < dHeight; y++) {
@@ -306,7 +308,7 @@ public class Camera {
                 ptVectors[i + 1] = f.points[i].pos;
             }
             NVector[] flatVectors = Matrix.ipTransformCoords(f.basis.bases, ptVectors);
-            Matrix baryM = new Matrix(flatVectors.length, (flatVectors.length > 0 ? flatVectors[0].coords.length : 0));
+            Matrix baryM = Matrix.maybeGetCachedMatrix(flatVectors.length, (flatVectors.length > 0 ? flatVectors[0].coords.length : 0), false);
             for (int x = 0; x < baryM.cols - 1; x++) {
                 for (int y = 0; y < baryM.rows; y++) {
                     baryM.val[x][y] = flatVectors[x + 1].coords[y] - flatVectors[flatVectors.length - 1].coords[y];
@@ -332,6 +334,7 @@ public class Camera {
             if (baryCoords[baryM.rows] < 0 || baryCoords[baryM.rows] > 1) {
                 outside = true;
             }
+            baryM.doneWithMatrix();
             if (!outside) {
                 break;
             }

@@ -44,8 +44,9 @@ public class Lattice {
     }
     
     public byte[] toByteArray() {
+        if (1 == 1) throw new RuntimeException("Method not imported");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        LatticeForm.saveLattice(baos, this);
+//        LatticeForm.saveLattice(baos, this);
         //THINK This has the potential to use memory stupidly.
         return baos.toByteArray();
     }
@@ -55,8 +56,10 @@ public class Lattice {
     }
     
     public static Lattice fromByteArray(byte[] lattice) {
+        if (1 == 1) throw new RuntimeException("Method not imported");
         ByteArrayInputStream bais = new ByteArrayInputStream(lattice);
-        Lattice l = LatticeForm.loadLattice(bais);
+//        Lattice l = LatticeForm.loadLattice(bais);
+        Lattice l = null;
         try {
             bais.close();
         } catch (IOException ex) {

@@ -95,8 +95,10 @@ public class Matrix implements Streamable {
 //        }
 //    }
     
+    private static int cacheOverflows = 0;
+    
     /**
-     * Currently hard-coded to have up to 10x10 matrices in cache.  Will crash
+     * Currently hard-coded to have up to 20x20 matrices in cache.  Will crash
      * if you try to access one that isn't there.  If you want bigger ones cached,
      * init the cache yourself like<br/>
      * cache = new CachedMatrix[CACHED_COLS][CACHED_ROWS][CACHED_COPIES];<br/>
@@ -129,16 +131,27 @@ public class Matrix implements Streamable {
                 }
             }
         }
+        System.err.println("Matrix cache overflows: " + (++cacheOverflows));
         return new Matrix(cols, rows);
     }
 
+    public static boolean USE_CACHED = true;  // Currently == whether single threaded
+    
+    public static Matrix maybeGetCachedMatrix(int cols, int rows, boolean init) {
+        if (USE_CACHED) {
+            return getCachedMatrix(cols, rows, init);
+        } else {
+            return new Matrix(cols, rows);
+        }
+    }
+    
     public void doneWithMatrix() {
         if (usedCached != -1) {
             cache[cols][rows][usedCached].inUse = false;
         }
     }
 
-    public Matrix(Matrix source) {
+    private Matrix(Matrix source) {
         this.cols = source.cols;
         this.rows = source.rows;
         this.val = new double[cols][rows];
@@ -261,9 +274,8 @@ public class Matrix implements Streamable {
     }
 
     public IntersectionResult solveIntersect() throws Exception {
-        Matrix backup = new Matrix(this);
-        IntersectionResult result = ipSolveIntersect();
-        this.val = backup.val;
+        Matrix copy = new Matrix(this);
+        IntersectionResult result = copy.ipSolveIntersect();
         return result;
     }
 
@@ -432,6 +444,8 @@ public class Matrix implements Streamable {
 //        }
     }
 
+    private static boolean showError = false;
+    
     public void ipRRowFormMod() { // Kinda.  It does its best to turn the left side into the identity matrix.
         if (debug) {
             System.out.println(this);
@@ -455,7 +469,7 @@ public class Matrix implements Streamable {
                     if (debug) {
                         System.out.println(this);
                     }
-                    if (!found) {
+                    if (!found && showError) {
                         // Maybe I should error here.  We'll leave it, for now.
                         System.err.println("Matrix can't be left-identity.");
                         System.err.println(this);
@@ -740,6 +754,10 @@ public class Matrix implements Streamable {
         return result;
     }
 
+    public static NVector[] ipTransformCoords(NVector[] bases, NVector[] vectors) {
+        return ipTransformCoords(bases, vectors, false);
+    }
+    
     /**
      * This attempts to figure out what the coordinates of each vector are
      * in the provided basis.  It was specifically designed to handle subspaces,
@@ -750,16 +768,22 @@ public class Matrix implements Streamable {
      * @param vectors
      * @return 
      */
-    public static NVector[] ipTransformCoords(NVector[] bases, NVector[] vectors) {
+    public static NVector[] ipTransformCoords(NVector[] bases, NVector[] vectors, boolean maybeCacheNVectors) {
         if (bases.length == 0) {
             NVector[] result = new NVector[vectors.length];
-            for (int i = 0; i < result.length; i++) {
-                result[i] = new NVector(0);
+            if (maybeCacheNVectors) {
+                for (int i = 0; i < result.length; i++) {
+                    result[i] = new NVector(0);
+                }
+            } else {
+                for (int i = 0; i < result.length; i++) {
+                    result[i] = NVector.maybeGetCachedNVector(0, false);
+                }
             }
             return result;
         }
-        // Set up the matrix        
-        Matrix m = new Matrix(bases[0].dims + bases.length, bases.length + vectors.length);
+        // Set up the matrix                
+        Matrix m = Matrix.maybeGetCachedMatrix(bases[0].dims + bases.length, bases.length + vectors.length, true); //TODO Maybe doesn't need initialization
         {
             int row = 0;
             for (int i = 0; i < bases.length; i++, row++) {
@@ -837,13 +861,24 @@ public class Matrix implements Streamable {
 
         // Extract the answer.
         NVector[] result = new NVector[vectors.length];
-        for (int i = 0; i < vectors.length; i++) {
-            NVector bucket = new NVector(bases.length);
-            for (int j = 0; j < bucket.dims; j++) {
-                bucket.coords[j] = -m.val[vectors[0].dims + j][bases.length + i];
+        if (maybeCacheNVectors) {
+            for (int i = 0; i < vectors.length; i++) {
+                NVector bucket = NVector.maybeGetCachedNVector(bases.length, false);
+                for (int j = 0; j < bucket.dims; j++) {
+                    bucket.coords[j] = -m.val[vectors[0].dims + j][bases.length + i];
+                }
+                result[i] = bucket;
             }
-            result[i] = bucket;
+        } else {
+            for (int i = 0; i < vectors.length; i++) {
+                NVector bucket = new NVector(bases.length);
+                for (int j = 0; j < bucket.dims; j++) {
+                    bucket.coords[j] = -m.val[vectors[0].dims + j][bases.length + i];
+                }
+                result[i] = bucket;
+            }
         }
+        m.doneWithMatrix();
 
         return result;
     }
@@ -1046,6 +1081,10 @@ public class Matrix implements Streamable {
         return result;
     }
 
+    public static NVector lineNPlaneIntersect(NVector lPos, NVector lDir, NVector origin, NVector... bases) {
+        return lineNPlaneIntersect(lPos, lDir, origin, false, bases);
+    }
+    
     /**
      * This'll get an intersection of a line and an NPlane.  It works for fully determined systems,
      * but it also works for systems where technically the line might not quite intersect the nplane, actually.
@@ -1058,8 +1097,8 @@ public class Matrix implements Streamable {
      * @param bases
      * @return 
      */
-    public static NVector lineNPlaneIntersect(NVector lPos, NVector lDir, NVector origin, NVector... bases) {
-        Matrix solver = new Matrix(2 + bases.length, lPos.dims);
+    public static NVector lineNPlaneIntersect(NVector lPos, NVector lDir, NVector origin, boolean maybeCacheNVector, NVector... bases) {
+        Matrix solver = Matrix.maybeGetCachedMatrix(2 + bases.length, lPos.dims, false);
         for (int y = 0; y < solver.rows; y++) {
             solver.val[0][y] = lDir.coords[y];
         }
@@ -1077,7 +1116,11 @@ public class Matrix implements Streamable {
         //TODO   I'm already done with it, for sure.
         solver.ipRRowFormMod();
         double t = solver.val[solver.cols - 1][0];
-        return lDir.multS(t).plusB(lPos);
+        solver.doneWithMatrix();
+        NVector bucket = lDir.copyToCache();
+        NVector result = bucket.multSIP(t).plusB(lPos, maybeCacheNVector);
+        bucket.doneWithNVector();
+        return result;
     }
 
     @Override
