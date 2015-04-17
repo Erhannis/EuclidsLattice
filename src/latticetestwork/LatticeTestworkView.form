@@ -1,7 +1,27 @@
-<?xml version="1.1" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
+        
 
-<Form version="1.5" maxVersion="1.7">
-  <NonVisualComponents>
+<!--
+            BASE="/home/erhannis/Repositories/EuclidsLattice/src"
+            FILE="LatticeTestworkView.form"
+            DIR="latticetestwork"
+            PBASE="/resources"
+            PROPS="latticetestwork/resources/LatticeTestworkView"
+            PROPFILE="/resources/latticetestwork/resources/LatticeTestworkView.properties"
+        --><Form version="1.5" maxVersion="1.7">
+  <NonVisualComponents xmlns:xalan="http://xml.apache.org/xalan"><Component class="net.megabyte.nosaf.MBAction" name="quitAction">
+            <Properties>
+            <Property name="propertiesFileName" type="java.lang.String" noResource="true" value="/resources/latticetestwork/resources/LatticeTestworkView.properties"/>
+            <Property name="form" type="java.lang.Object" editor="org.netbeans.modules.form.RADConnectionPropertyEditor"><Connection component="Form" type="bean"/></Property>
+            <Property name="code" type="java.lang.String" value="quit"/>
+            </Properties></Component>
+            <Component class="net.megabyte.nosaf.MBAction" name="showAboutBoxAction">
+            <Properties>
+            <Property name="propertiesFileName" type="java.lang.String" noResource="true" value="/resources/latticetestwork/resources/LatticeTestworkView.properties"/>
+            <Property name="form" type="java.lang.Object" editor="org.netbeans.modules.form.RADConnectionPropertyEditor"><Connection component="Form" type="bean"/></Property>
+            <Property name="code" type="java.lang.String" value="showAboutBox"/>
+            </Properties></Component>
+            
     <Container class="javax.swing.JPanel" name="mainPanel">
       <Properties>
         <Property name="name" type="java.lang.String" value="mainPanel" noResource="true"/>
@@ -359,15 +379,15 @@
               <SubComponents>
                 <Component class="javax.swing.JCheckBox" name="boxShowCrystallization">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="boxShowCrystallization.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="boxShowCrystallization.toolTipText"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="boxShowCrystallization.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="toolTipText"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="boxShowCrystallization.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="boxShowCrystallization" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnSwapHands">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="btnSwapHands.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="btnSwapHands.toolTipText"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnSwapHands.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="toolTipText"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnSwapHands.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="btnSwapHands" noResource="true"/>
                   </Properties>
                   <Events>
@@ -376,14 +396,14 @@
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel1">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="jLabel1.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="jLabel1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="jLabel1" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnJoggle">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="btnJoggle.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="btnJoggle.toolTipText"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnJoggle.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="toolTipText"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnJoggle.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="btnJoggle" noResource="true"/>
                   </Properties>
                   <Events>
@@ -392,15 +412,15 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="editSearchRadius">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="editSearchRadius.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="editSearchRadius.toolTipText"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editSearchRadius.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="toolTipText"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editSearchRadius.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="editSearchRadius" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnShear1">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="btnShear1.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="btnShear1.toolTipText"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnShear1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="toolTipText"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnShear1.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="btnShear1" noResource="true"/>
                   </Properties>
                   <Events>
@@ -409,7 +429,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="btnCrystallize">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="btnCrystallize.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnCrystallize.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="btnCrystallize" noResource="true"/>
                   </Properties>
                   <Events>
@@ -418,8 +438,8 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="btnShearN">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="btnShearN.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="btnShearN.toolTipText"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnShearN.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="toolTipText"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnShearN.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="btnShearN" noResource="true"/>
                   </Properties>
                   <Events>
@@ -428,7 +448,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="btnFull">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="btnFull.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnFull.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="btnFull" noResource="true"/>
                   </Properties>
                   <Events>
@@ -437,13 +457,13 @@
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="boxAutoNCorners">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="boxAutoNCorners.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="boxAutoNCorners.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="boxAutoNCorners" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnBind">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="btnBind.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnBind.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="btnBind" noResource="true"/>
                   </Properties>
                   <Events>
@@ -452,8 +472,8 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="btnSeed">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="btnSeed.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="btnSeed.toolTipText"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnSeed.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="toolTipText"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnSeed.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="btnSeed" noResource="true"/>
                   </Properties>
                   <Events>
@@ -463,13 +483,13 @@
                 <Component class="javax.swing.JCheckBox" name="boxSkipHardFaces">
                   <Properties>
                     <Property name="selected" type="boolean" value="true"/>
-                    <Property name="text" type="java.lang.String" resourceKey="boxSkipHardFaces.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="boxSkipHardFaces.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="boxSkipHardFaces" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnStatus">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="btnStatus.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnStatus.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="btnStatus" noResource="true"/>
                   </Properties>
                   <Events>
@@ -478,7 +498,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="btnRepel100">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="btnRepel100.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnRepel100.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="btnRepel100" noResource="true"/>
                   </Properties>
                   <Events>
@@ -487,7 +507,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="btnBind100">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="btnBind100.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnBind100.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="btnBind100" noResource="true"/>
                   </Properties>
                   <Events>
@@ -499,14 +519,14 @@
                     <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                       <ComponentRef name="modeGroup"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" resourceKey="radio32TriCube.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="radio32TriCube.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="radio32TriCube" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="editStereoDelta">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="editStereoDelta.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="editStereoDelta.toolTipText"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editStereoDelta.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="toolTipText"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editStereoDelta.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="editStereoDelta" noResource="true"/>
                   </Properties>
                   <Events>
@@ -515,7 +535,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="btnBind1000">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="btnBind1000.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnBind1000.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="btnBind1000" noResource="true"/>
                   </Properties>
                   <Events>
@@ -524,21 +544,21 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="editMaxThinness">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="editMaxThinness.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="editMaxThinness.toolTipText"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editMaxThinness.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="toolTipText"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editMaxThinness.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="editMaxThinness" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel2">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="jLabel2.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="jLabel2.toolTipText"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="jLabel2.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="toolTipText"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="jLabel2.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="jLabel2" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="btn34Preset">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="btn34Preset.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btn34Preset.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="btn34Preset" noResource="true"/>
                   </Properties>
                   <Events>
@@ -547,21 +567,21 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="editDonutCircumfrence">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="editDonutCircumfrence.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="editDonutCircumfrence.toolTipText"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editDonutCircumfrence.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="toolTipText"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editDonutCircumfrence.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="editDonutCircumfrence" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="editJoggleScale">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="editJoggleScale.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="editJoggleScale.toolTipText"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editJoggleScale.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="toolTipText"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editJoggleScale.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="editJoggleScale" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnFinishPrep">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="btnFinishPrep.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnFinishPrep.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="btnFinishPrep" noResource="true"/>
                   </Properties>
                   <Events>
@@ -570,13 +590,13 @@
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="jCheckBox1">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="jCheckBox1.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="jCheckBox1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="jCheckBox1" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnPlaceNCube">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="btnPlaceNCube.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnPlaceNCube.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="btnPlaceNCube" noResource="true"/>
                   </Properties>
                   <Events>
@@ -586,7 +606,7 @@
                 <Component class="javax.swing.JCheckBox" name="boxStereo">
                   <Properties>
                     <Property name="selected" type="boolean" value="true"/>
-                    <Property name="text" type="java.lang.String" resourceKey="boxStereo.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="boxStereo.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="boxStereo" noResource="true"/>
                   </Properties>
                   <Events>
@@ -595,8 +615,8 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="editStereoDegrees">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="editStereoDegrees.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="editStereoDegrees.toolTipText"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editStereoDegrees.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="toolTipText"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editStereoDegrees.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="editStereoDegrees" noResource="true"/>
                   </Properties>
                   <Events>
@@ -605,8 +625,8 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="btnPlaceCamera">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="btnPlaceCamera.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="btnPlaceCamera.toolTipText"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnPlaceCamera.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="toolTipText"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnPlaceCamera.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="btnPlaceCamera" noResource="true"/>
                   </Properties>
                   <Events>
@@ -615,7 +635,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="btnCalcProperties">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="btnCalcProperties.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnCalcProperties.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="btnCalcProperties" noResource="true"/>
                   </Properties>
                   <Events>
@@ -624,8 +644,8 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="btnPlaceNDonut">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="btnPlaceNDonut.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="btnPlaceNDonut.toolTipText"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnPlaceNDonut.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="toolTipText"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnPlaceNDonut.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="btnPlaceNDonut" noResource="true"/>
                   </Properties>
                   <Events>
@@ -638,7 +658,7 @@
                       <ComponentRef name="modeGroup"/>
                     </Property>
                     <Property name="selected" type="boolean" value="true"/>
-                    <Property name="text" type="java.lang.String" resourceKey="radio22Tri.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="radio22Tri.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="radio22Tri" noResource="true"/>
                   </Properties>
                 </Component>
@@ -647,7 +667,7 @@
                     <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                       <ComponentRef name="modeGroup"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" resourceKey="radio43Tri.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="radio43Tri.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="radio43Tri" noResource="true"/>
                   </Properties>
                 </Component>
@@ -656,13 +676,13 @@
                     <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                       <ComponentRef name="modeGroup"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" resourceKey="radioManual.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="radioManual.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="radioManual" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnRepel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="btnRepel.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnRepel.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="btnRepel" noResource="true"/>
                   </Properties>
                   <Events>
@@ -671,7 +691,7 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="editNumPoints">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="editNumPoints.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editNumPoints.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="editNumPoints" noResource="true"/>
                   </Properties>
                 </Component>
@@ -682,7 +702,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="btnClear">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="btnClear.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnClear.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="btnClear" noResource="true"/>
                   </Properties>
                   <Events>
@@ -696,7 +716,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="btnPlacePoints">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="btnPlacePoints.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnPlacePoints.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="btnPlacePoints" noResource="true"/>
                   </Properties>
                   <Events>
@@ -708,7 +728,7 @@
                     <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                       <ComponentRef name="modeGroup"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" resourceKey="radio33Tri.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="radio33Tri.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="radio33Tri" noResource="true"/>
                   </Properties>
                 </Component>
@@ -717,14 +737,14 @@
                     <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                       <ComponentRef name="modeGroup"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" resourceKey="radio32Tri.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="radio32Tri.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="radio32Tri" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnCheckCell">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="btnCheckCell.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="btnCheckCell.toolTipText"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnCheckCell.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="toolTipText"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnCheckCell.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="btnCheckCell" noResource="true"/>
                   </Properties>
                   <Events>
@@ -733,92 +753,92 @@
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel3">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="jLabel3.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="jLabel3.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="jLabel3" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="editContainmentFudgeValue">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="editContainmentFudgeValue.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="editContainmentFudgeValue.toolTipText"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editContainmentFudgeValue.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="toolTipText"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editContainmentFudgeValue.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="editContainmentFudgeValue" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel4">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="jLabel4.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="jLabel4.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="jLabel4" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="editMinAngle">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="editMinAngle.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="editMinAngle.toolTipText"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editMinAngle.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="toolTipText"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editMinAngle.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="editMinAngle" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel5">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="jLabel5.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="jLabel5.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="jLabel5" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="editMaxVolume">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="editMaxVolume.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="editMaxVolume.toolTipText"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editMaxVolume.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="toolTipText"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editMaxVolume.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="editMaxVolume" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="boxSlowCrystallization">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="boxSlowCrystallization.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="boxSlowCrystallization.toolTipText"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="boxSlowCrystallization.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="toolTipText"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="boxSlowCrystallization.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="boxSlowCrystallization" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel7">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="jLabel7.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="jLabel7.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="jLabel7" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="editMinVolume">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="editMinVolume.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="editMinVolume.toolTipText"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editMinVolume.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="toolTipText"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editMinVolume.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="editMinVolume" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel8">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="jLabel8.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="jLabel8.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="jLabel8" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel6">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="jLabel6.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="jLabel6.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="jLabel6" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="editMinLength">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="editMinLength.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="editMinLength.toolTipText"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editMinLength.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="toolTipText"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editMinLength.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="editMinLength" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="editMaxLength">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="editMaxLength.text"/>
-                    <Property name="toolTipText" type="java.lang.String" resourceKey="editMaxLength.toolTipText"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editMaxLength.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="toolTipText"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="editMaxLength.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="editMaxLength" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnClearEdges">
                   <Properties>
-                    <Property name="text" type="java.lang.String" resourceKey="btnClearEdges.text"/>
+                    <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="btnClearEdges.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                     <Property name="name" type="java.lang.String" value="btnClearEdges" noResource="true"/>
                   </Properties>
                   <Events>
@@ -842,22 +862,23 @@
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="fileMenu">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="fileMenu.text"/>
+            <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="fileMenu.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
             <Property name="name" type="java.lang.String" value="fileMenu" noResource="true"/>
           </Properties>
-          <AuxValues>
+          <AuxValues><AuxValue name="FormSettings_formBundle" type="java.lang.String" value="latticetestwork/resources/LatticeTestworkView"/>
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
           </AuxValues>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="exitMenuItem">
               <Properties>
-                <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
-                  <action class="org.jdesktop.application.Application" id="quit" methodName="quit"/>
-                </Property>
+                <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.ComponentChooserEditor">
+              <ComponentRef name="quitAction"/>
+          </Property><Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="quit.Action.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+        
                 <Property name="name" type="java.lang.String" value="exitMenuItem" noResource="true"/>
               </Properties>
-              <AuxValues>
+              <AuxValues><AuxValue name="FormSettings_formBundle" type="java.lang.String" value="latticetestwork/resources/LatticeTestworkView"/>
                 <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
               </AuxValues>
@@ -866,13 +887,13 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenu1">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="jMenu1.text"/>
+            <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="jMenu1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
             <Property name="name" type="java.lang.String" value="jMenu1" noResource="true"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem1.text"/>
+                <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="jMenuItem1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                 <Property name="name" type="java.lang.String" value="jMenuItem1" noResource="true"/>
               </Properties>
               <Events>
@@ -881,7 +902,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem2">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem2.text"/>
+                <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="jMenuItem2.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                 <Property name="name" type="java.lang.String" value="jMenuItem2" noResource="true"/>
               </Properties>
               <Events>
@@ -890,7 +911,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem4">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem4.text"/>
+                <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="jMenuItem4.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                 <Property name="name" type="java.lang.String" value="jMenuItem4" noResource="true"/>
               </Properties>
               <Events>
@@ -899,7 +920,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem5">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem5.text"/>
+                <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="jMenuItem5.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                 <Property name="name" type="java.lang.String" value="jMenuItem5" noResource="true"/>
               </Properties>
               <Events>
@@ -908,7 +929,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem6">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem6.text"/>
+                <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="jMenuItem6.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                 <Property name="name" type="java.lang.String" value="jMenuItem6" noResource="true"/>
               </Properties>
               <Events>
@@ -917,7 +938,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem7">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem7.text"/>
+                <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="jMenuItem7.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                 <Property name="name" type="java.lang.String" value="jMenuItem7" noResource="true"/>
               </Properties>
               <Events>
@@ -926,7 +947,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem3">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem3.text"/>
+                <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="jMenuItem3.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                 <Property name="name" type="java.lang.String" value="jMenuItem3" noResource="true"/>
               </Properties>
               <Events>
@@ -935,7 +956,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem8">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem8.text"/>
+                <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="jMenuItem8.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
                 <Property name="name" type="java.lang.String" value="jMenuItem8" noResource="true"/>
               </Properties>
               <Events>
@@ -946,22 +967,23 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="helpMenu">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="helpMenu.text"/>
+            <Property editor="org.netbeans.modules.i18n.form.FormI18nStringEditor" type="java.lang.String" name="text"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="helpMenu.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
             <Property name="name" type="java.lang.String" value="helpMenu" noResource="true"/>
           </Properties>
-          <AuxValues>
+          <AuxValues><AuxValue name="FormSettings_formBundle" type="java.lang.String" value="latticetestwork/resources/LatticeTestworkView"/>
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
           </AuxValues>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="aboutMenuItem">
               <Properties>
-                <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
-                  <action class="latticetestwork.LatticeTestworkView" id="showAboutBox" methodName="showAboutBox"/>
-                </Property>
+                <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.ComponentChooserEditor">
+              <ComponentRef name="showAboutBoxAction"/>
+          </Property><Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor"><ResourceString bundle="latticetestwork/resources/LatticeTestworkView.properties" key="showAboutBox.Action.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/></Property>
+        
                 <Property name="name" type="java.lang.String" value="aboutMenuItem" noResource="true"/>
               </Properties>
-              <AuxValues>
+              <AuxValues><AuxValue name="FormSettings_formBundle" type="java.lang.String" value="latticetestwork/resources/LatticeTestworkView"/>
                 <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
               </AuxValues>
@@ -981,7 +1003,7 @@
       <ComponentRef name="menuBar"/>
     </Property>
   </Properties>
-  <AuxValues>
+  <AuxValues><AuxValue name="FormSettings_formBundle" type="java.lang.String" value="latticetestwork/resources/LatticeTestworkView" xmlns:xalan="http://xml.apache.org/xalan"/>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="2"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="true"/>
     <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>

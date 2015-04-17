@@ -104,8 +104,8 @@ public class SkeletonForm extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         jMenuItem4 = new javax.swing.JMenuItem();
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(latticetestwork.LatticeTestworkApp.class).getContext().getResourceMap(SkeletonForm.class);
-        setTitle(resourceMap.getString("Form.title")); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("latticetestwork/resources/SkeletonForm"); // NOI18N
+        setTitle(bundle.getString("Form.title")); // NOI18N
         setName("Form"); // NOI18N
 
         jSplitPane1.setDividerLocation(89);
@@ -138,7 +138,6 @@ public class SkeletonForm extends javax.swing.JFrame {
         });
         tblPoints.setName("tblPoints"); // NOI18N
         jScrollPane1.setViewportView(tblPoints);
-        tblPoints.getColumnModel().getColumn(0).setHeaderValue(resourceMap.getString("tblPoints.columnModel.title0")); // NOI18N
 
         jSplitPane1.setLeftComponent(jScrollPane1);
 
@@ -162,13 +161,10 @@ public class SkeletonForm extends javax.swing.JFrame {
         });
         tblBones.setName("tblBones"); // NOI18N
         jScrollPane2.setViewportView(tblBones);
-        tblBones.getColumnModel().getColumn(0).setHeaderValue(resourceMap.getString("tblBones.columnModel.title0")); // NOI18N
-        tblBones.getColumnModel().getColumn(1).setHeaderValue(resourceMap.getString("tblBones.columnModel.title1")); // NOI18N
-        tblBones.getColumnModel().getColumn(2).setHeaderValue(resourceMap.getString("tblBones.columnModel.title2")); // NOI18N
 
         jSplitPane1.setRightComponent(jScrollPane2);
 
-        btnAddPt.setText(resourceMap.getString("btnAddPt.text")); // NOI18N
+        btnAddPt.setText(bundle.getString("btnAddPt.text")); // NOI18N
         btnAddPt.setName("btnAddPt"); // NOI18N
         btnAddPt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -176,7 +172,7 @@ public class SkeletonForm extends javax.swing.JFrame {
             }
         });
 
-        btnAddBone.setText(resourceMap.getString("btnAddBone.text")); // NOI18N
+        btnAddBone.setText(bundle.getString("btnAddBone.text")); // NOI18N
         btnAddBone.setName("btnAddBone"); // NOI18N
         btnAddBone.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -184,7 +180,7 @@ public class SkeletonForm extends javax.swing.JFrame {
             }
         });
 
-        btnDelPt.setText(resourceMap.getString("btnDelPt.text")); // NOI18N
+        btnDelPt.setText(bundle.getString("btnDelPt.text")); // NOI18N
         btnDelPt.setName("btnDelPt"); // NOI18N
         btnDelPt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -192,7 +188,7 @@ public class SkeletonForm extends javax.swing.JFrame {
             }
         });
 
-        btnDelBone.setText(resourceMap.getString("btnDelBone.text")); // NOI18N
+        btnDelBone.setText(bundle.getString("btnDelBone.text")); // NOI18N
         btnDelBone.setName("btnDelBone"); // NOI18N
         btnDelBone.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -200,7 +196,7 @@ public class SkeletonForm extends javax.swing.JFrame {
             }
         });
 
-        btnApply.setText(resourceMap.getString("btnApply.text")); // NOI18N
+        btnApply.setText(bundle.getString("btnApply.text")); // NOI18N
         btnApply.setName("btnApply"); // NOI18N
         btnApply.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -209,10 +205,10 @@ public class SkeletonForm extends javax.swing.JFrame {
         });
 
         boxPreserve.setSelected(true);
-        boxPreserve.setText(resourceMap.getString("boxPreserve.text")); // NOI18N
+        boxPreserve.setText(bundle.getString("boxPreserve.text")); // NOI18N
         boxPreserve.setName("boxPreserve"); // NOI18N
 
-        btnBind100.setText(resourceMap.getString("btnBind100.text")); // NOI18N
+        btnBind100.setText(bundle.getString("btnBind100.text")); // NOI18N
         btnBind100.setName("btnBind100"); // NOI18N
         btnBind100.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -222,20 +218,20 @@ public class SkeletonForm extends javax.swing.JFrame {
 
         groupSnapping.add(radioHardSnap);
         radioHardSnap.setSelected(true);
-        radioHardSnap.setText(resourceMap.getString("radioHardSnap.text")); // NOI18N
+        radioHardSnap.setText(bundle.getString("radioHardSnap.text")); // NOI18N
         radioHardSnap.setName("radioHardSnap"); // NOI18N
 
         groupSnapping.add(radioElasticSnap);
-        radioElasticSnap.setText(resourceMap.getString("radioElasticSnap.text")); // NOI18N
+        radioElasticSnap.setText(bundle.getString("radioElasticSnap.text")); // NOI18N
         radioElasticSnap.setEnabled(false);
         radioElasticSnap.setName("radioElasticSnap"); // NOI18N
 
         jMenuBar1.setName("jMenuBar1"); // NOI18N
 
-        jMenu1.setText(resourceMap.getString("jMenu1.text")); // NOI18N
+        jMenu1.setText(bundle.getString("jMenu1.text")); // NOI18N
         jMenu1.setName("jMenu1"); // NOI18N
 
-        jMenuItem1.setText(resourceMap.getString("jMenuItem1.text")); // NOI18N
+        jMenuItem1.setText(bundle.getString("jMenuItem1.text")); // NOI18N
         jMenuItem1.setName("jMenuItem1"); // NOI18N
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -244,11 +240,11 @@ public class SkeletonForm extends javax.swing.JFrame {
         });
         jMenu1.add(jMenuItem1);
 
-        jMenuItem3.setText(resourceMap.getString("jMenuItem3.text")); // NOI18N
+        jMenuItem3.setText(bundle.getString("jMenuItem3.text")); // NOI18N
         jMenuItem3.setName("jMenuItem3"); // NOI18N
         jMenu1.add(jMenuItem3);
 
-        jMenuItem2.setText(resourceMap.getString("jMenuItem2.text")); // NOI18N
+        jMenuItem2.setText(bundle.getString("jMenuItem2.text")); // NOI18N
         jMenuItem2.setName("jMenuItem2"); // NOI18N
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -259,10 +255,10 @@ public class SkeletonForm extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setText(resourceMap.getString("jMenu2.text")); // NOI18N
+        jMenu2.setText(bundle.getString("jMenu2.text")); // NOI18N
         jMenu2.setName("jMenu2"); // NOI18N
 
-        jMenuItem4.setText(resourceMap.getString("jMenuItem4.text")); // NOI18N
+        jMenuItem4.setText(bundle.getString("jMenuItem4.text")); // NOI18N
         jMenuItem4.setName("jMenuItem4"); // NOI18N
         jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -282,7 +278,7 @@ public class SkeletonForm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 514, Short.MAX_VALUE)
+                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnDelPt)
@@ -291,7 +287,7 @@ public class SkeletonForm extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(radioHardSnap)
                             .addComponent(radioElasticSnap))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 107, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(boxPreserve)
@@ -308,7 +304,7 @@ public class SkeletonForm extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
                 .addGap(6, 6, 6)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAddPt)
@@ -325,7 +321,7 @@ public class SkeletonForm extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        setBounds(0, 0, 548, 555);
+        setBounds(0, 0, 550, 555);
     }// </editor-fold>//GEN-END:initComponents
     public int pointCount = 0;
 private void btnAddPtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddPtActionPerformed

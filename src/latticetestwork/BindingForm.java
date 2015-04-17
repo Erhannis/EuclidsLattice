@@ -71,8 +71,8 @@ public class BindingForm extends javax.swing.JFrame {
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(latticetestwork.LatticeTestworkApp.class).getContext().getResourceMap(BindingForm.class);
-        setTitle(resourceMap.getString("Form.title")); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("latticetestwork/resources/BindingForm"); // NOI18N
+        setTitle(bundle.getString("Form.title")); // NOI18N
         setName("Form"); // NOI18N
 
         jSplitPane1.setDividerLocation(415);
@@ -86,8 +86,8 @@ public class BindingForm extends javax.swing.JFrame {
 
         tableRepulsionFunctions.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {new Integer(0), "N:N-1 NSphere", "F[v]=v((r/v'v)-1)"},
-                {new Integer(1), "2:1 N Smooth Donut", "F[x,y]={x,y}((r/{x,y}'{x,y})-1)"}
+                { new Integer(0), "N:N-1 NSphere", "F[v]=v((r/v'v)-1)"},
+                { new Integer(1), "2:1 N Smooth Donut", "F[x,y]={x,y}((r/{x,y}'{x,y})-1)"}
             },
             new String [] {
                 "ID", "Name", "Code"
@@ -105,10 +105,9 @@ public class BindingForm extends javax.swing.JFrame {
         tableRepulsionFunctions.setName("tableRepulsionFunctions"); // NOI18N
         jScrollPane2.setViewportView(tableRepulsionFunctions);
         tableRepulsionFunctions.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        tableRepulsionFunctions.getColumnModel().getColumn(0).setPreferredWidth(1);
-        tableRepulsionFunctions.getColumnModel().getColumn(0).setHeaderValue(resourceMap.getString("tableRepulsionFunctions.columnModel.title2")); // NOI18N
-        tableRepulsionFunctions.getColumnModel().getColumn(1).setHeaderValue(resourceMap.getString("tableRepulsionFunctions.columnModel.title0")); // NOI18N
-        tableRepulsionFunctions.getColumnModel().getColumn(2).setHeaderValue(resourceMap.getString("tableRepulsionFunctions.columnModel.title1")); // NOI18N
+        if (tableRepulsionFunctions.getColumnModel().getColumnCount() > 0) {
+            tableRepulsionFunctions.getColumnModel().getColumn(0).setPreferredWidth(1);
+        }
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -116,7 +115,7 @@ public class BindingForm extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 623, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -138,27 +137,27 @@ public class BindingForm extends javax.swing.JFrame {
         areaBindingFunction.setName("areaBindingFunction"); // NOI18N
         jScrollPane1.setViewportView(areaBindingFunction);
 
-        jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
+        jLabel1.setText(bundle.getString("jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
         buttonGroup1.add(radioBindFunction);
-        radioBindFunction.setText(resourceMap.getString("radioBindFunction.text")); // NOI18N
-        radioBindFunction.setToolTipText(resourceMap.getString("radioBindFunction.toolTipText")); // NOI18N
+        radioBindFunction.setText(bundle.getString("radioBindFunction.text")); // NOI18N
+        radioBindFunction.setToolTipText(bundle.getString("radioBindFunction.toolTipText")); // NOI18N
         radioBindFunction.setName("radioBindFunction"); // NOI18N
 
         buttonGroup1.add(radioBindSkeletonSkin);
-        radioBindSkeletonSkin.setText(resourceMap.getString("radioBindSkeletonSkin.text")); // NOI18N
+        radioBindSkeletonSkin.setText(bundle.getString("radioBindSkeletonSkin.text")); // NOI18N
         radioBindSkeletonSkin.setName("radioBindSkeletonSkin"); // NOI18N
 
         buttonGroup1.add(radioBindSkeletonShell);
-        radioBindSkeletonShell.setText(resourceMap.getString("radioBindSkeletonShell.text")); // NOI18N
+        radioBindSkeletonShell.setText(bundle.getString("radioBindSkeletonShell.text")); // NOI18N
         radioBindSkeletonShell.setName("radioBindSkeletonShell"); // NOI18N
 
         boxRepel.setSelected(true);
-        boxRepel.setText(resourceMap.getString("boxRepel.text")); // NOI18N
+        boxRepel.setText(bundle.getString("boxRepel.text")); // NOI18N
         boxRepel.setName("boxRepel"); // NOI18N
 
-        btnBind1000.setText(resourceMap.getString("btnBind1000.text")); // NOI18N
+        btnBind1000.setText(bundle.getString("btnBind1000.text")); // NOI18N
         btnBind1000.setName("btnBind1000"); // NOI18N
         btnBind1000.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -167,14 +166,14 @@ public class BindingForm extends javax.swing.JFrame {
         });
 
         buttonGroup1.add(radioBindInNCube);
-        radioBindInNCube.setText(resourceMap.getString("radioBindInNCube.text")); // NOI18N
+        radioBindInNCube.setText(bundle.getString("radioBindInNCube.text")); // NOI18N
         radioBindInNCube.setName("radioBindInNCube"); // NOI18N
 
         buttonGroup1.add(radioBindNCube);
-        radioBindNCube.setText(resourceMap.getString("radioBindNCube.text")); // NOI18N
+        radioBindNCube.setText(bundle.getString("radioBindNCube.text")); // NOI18N
         radioBindNCube.setName("radioBindNCube"); // NOI18N
 
-        btnBind100.setText(resourceMap.getString("btnBind100.text")); // NOI18N
+        btnBind100.setText(bundle.getString("btnBind100.text")); // NOI18N
         btnBind100.setName("btnBind100"); // NOI18N
         btnBind100.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -182,7 +181,7 @@ public class BindingForm extends javax.swing.JFrame {
             }
         });
 
-        btnBind10.setText(resourceMap.getString("btnBind10.text")); // NOI18N
+        btnBind10.setText(bundle.getString("btnBind10.text")); // NOI18N
         btnBind10.setName("btnBind10"); // NOI18N
         btnBind10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -191,15 +190,15 @@ public class BindingForm extends javax.swing.JFrame {
         });
 
         buttonGroup1.add(radioBindInNSphere);
-        radioBindInNSphere.setText(resourceMap.getString("radioBindInNSphere.text")); // NOI18N
+        radioBindInNSphere.setText(bundle.getString("radioBindInNSphere.text")); // NOI18N
         radioBindInNSphere.setName("radioBindInNSphere"); // NOI18N
 
         buttonGroup1.add(radioBindNSphere);
         radioBindNSphere.setSelected(true);
-        radioBindNSphere.setText(resourceMap.getString("radioBindNSphere.text")); // NOI18N
+        radioBindNSphere.setText(bundle.getString("radioBindNSphere.text")); // NOI18N
         radioBindNSphere.setName("radioBindNSphere"); // NOI18N
 
-        btnBind.setText(resourceMap.getString("btnBind.text")); // NOI18N
+        btnBind.setText(bundle.getString("btnBind.text")); // NOI18N
         btnBind.setName("btnBind"); // NOI18N
         btnBind.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -207,11 +206,11 @@ public class BindingForm extends javax.swing.JFrame {
             }
         });
 
-        jTextField1.setText(resourceMap.getString("jTextField1.text")); // NOI18N
+        jTextField1.setText(bundle.getString("jTextField1.text")); // NOI18N
         jTextField1.setName("jTextField1"); // NOI18N
 
         buttonGroup1.add(radioBindRepulsionBindingFunction);
-        radioBindRepulsionBindingFunction.setText(resourceMap.getString("radioBindRepulsionBindingFunction.text")); // NOI18N
+        radioBindRepulsionBindingFunction.setText(bundle.getString("radioBindRepulsionBindingFunction.text")); // NOI18N
         radioBindRepulsionBindingFunction.setName("radioBindRepulsionBindingFunction"); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -221,18 +220,18 @@ public class BindingForm extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 623, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
                         .addComponent(radioBindFunction)
                         .addGap(80, 80, 80)
                         .addComponent(jLabel1))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
                         .addComponent(radioBindSkeletonSkin)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 439, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 462, Short.MAX_VALUE)
                         .addComponent(boxRepel))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
                         .addComponent(radioBindNSphere)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 428, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 450, Short.MAX_VALUE)
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnBind))
@@ -242,7 +241,7 @@ public class BindingForm extends javax.swing.JFrame {
                             .addComponent(radioBindNCube)
                             .addComponent(radioBindInNCube)
                             .addComponent(radioBindSkeletonShell))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 407, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 427, Short.MAX_VALUE)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(btnBind10)
                             .addComponent(btnBind100)
@@ -297,14 +296,14 @@ public class BindingForm extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 647, Short.MAX_VALUE)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSplitPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE)
         );
 
-        setBounds(100, 100, 657, 757);
+        setBounds(100, 100, 670, 757);
     }// </editor-fold>//GEN-END:initComponents
     public static final int BIND_UNKNOWN = -1;
     public static final int BIND_FUNCTION = 0;

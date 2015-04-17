@@ -70,18 +70,18 @@ public class DistributedComputingForm extends javax.swing.JFrame {
         btnLaunchLocal = new javax.swing.JButton();
         btnRecruit = new javax.swing.JButton();
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(latticetestwork.LatticeTestworkApp.class).getContext().getResourceMap(DistributedComputingForm.class);
-        setTitle(resourceMap.getString("Form.title")); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("latticetestwork/resources/DistributedComputingForm"); // NOI18N
+        setTitle(bundle.getString("Form.title")); // NOI18N
         setName("Form"); // NOI18N
 
-        editAddress.setText(resourceMap.getString("editAddress.text")); // NOI18N
-        editAddress.setToolTipText(resourceMap.getString("editAddress.toolTipText")); // NOI18N
+        editAddress.setText(bundle.getString("editAddress.text")); // NOI18N
+        editAddress.setToolTipText(bundle.getString("editAddress.toolTipText")); // NOI18N
         editAddress.setName("editAddress"); // NOI18N
 
         org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, boxDCEnabled, org.jdesktop.beansbinding.ELProperty.create("${selected}"), editAddress, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
-        btnConnect.setText(resourceMap.getString("btnConnect.text")); // NOI18N
+        btnConnect.setText(bundle.getString("btnConnect.text")); // NOI18N
         btnConnect.setName("btnConnect"); // NOI18N
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, boxDCEnabled, org.jdesktop.beansbinding.ELProperty.create("${selected}"), btnConnect, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
@@ -93,7 +93,7 @@ public class DistributedComputingForm extends javax.swing.JFrame {
             }
         });
 
-        spinPort.setToolTipText(resourceMap.getString("spinPort.toolTipText")); // NOI18N
+        spinPort.setToolTipText(bundle.getString("spinPort.toolTipText")); // NOI18N
         spinPort.setName("spinPort"); // NOI18N
         spinPort.setValue(10700);
 
@@ -127,13 +127,9 @@ public class DistributedComputingForm extends javax.swing.JFrame {
         bindingGroup.addBinding(binding);
 
         jScrollPane1.setViewportView(tableWorkers);
-        tableWorkers.getColumnModel().getColumn(0).setHeaderValue(resourceMap.getString("tableWorkers.columnModel.title0")); // NOI18N
-        tableWorkers.getColumnModel().getColumn(1).setHeaderValue(resourceMap.getString("tableWorkers.columnModel.title1")); // NOI18N
-        tableWorkers.getColumnModel().getColumn(2).setHeaderValue(resourceMap.getString("tableWorkers.columnModel.title2")); // NOI18N
-        tableWorkers.getColumnModel().getColumn(3).setHeaderValue(resourceMap.getString("tableWorkers.columnModel.title3")); // NOI18N
 
-        btnPoll.setText(resourceMap.getString("btnPoll.text")); // NOI18N
-        btnPoll.setToolTipText(resourceMap.getString("btnPoll.toolTipText")); // NOI18N
+        btnPoll.setText(bundle.getString("btnPoll.text")); // NOI18N
+        btnPoll.setToolTipText(bundle.getString("btnPoll.toolTipText")); // NOI18N
         btnPoll.setName("btnPoll"); // NOI18N
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, boxDCEnabled, org.jdesktop.beansbinding.ELProperty.create("${selected}"), btnPoll, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
@@ -145,7 +141,7 @@ public class DistributedComputingForm extends javax.swing.JFrame {
             }
         });
 
-        boxDCEnabled.setText(resourceMap.getString("boxDCEnabled.text")); // NOI18N
+        boxDCEnabled.setText(bundle.getString("boxDCEnabled.text")); // NOI18N
         boxDCEnabled.setName("boxDCEnabled"); // NOI18N
         boxDCEnabled.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -153,7 +149,7 @@ public class DistributedComputingForm extends javax.swing.JFrame {
             }
         });
 
-        btnLaunchLocal.setText(resourceMap.getString("btnLaunchLocal.text")); // NOI18N
+        btnLaunchLocal.setText(bundle.getString("btnLaunchLocal.text")); // NOI18N
         btnLaunchLocal.setName("btnLaunchLocal"); // NOI18N
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, boxDCEnabled, org.jdesktop.beansbinding.ELProperty.create("${selected}"), btnLaunchLocal, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
@@ -165,7 +161,7 @@ public class DistributedComputingForm extends javax.swing.JFrame {
             }
         });
 
-        btnRecruit.setText(resourceMap.getString("btnRecruit.text")); // NOI18N
+        btnRecruit.setText(bundle.getString("btnRecruit.text")); // NOI18N
         btnRecruit.setName("btnRecruit"); // NOI18N
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, boxDCEnabled, org.jdesktop.beansbinding.ELProperty.create("${selected}"), btnRecruit, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
@@ -186,17 +182,17 @@ public class DistributedComputingForm extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(boxDCEnabled)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 239, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 269, Short.MAX_VALUE)
                         .addComponent(btnRecruit)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnLaunchLocal))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(editAddress, javax.swing.GroupLayout.DEFAULT_SIZE, 494, Short.MAX_VALUE)
+                                .addComponent(editAddress, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(spinPort, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 566, Short.MAX_VALUE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnConnect, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -222,7 +218,7 @@ public class DistributedComputingForm extends javax.swing.JFrame {
                         .addComponent(btnPoll)
                         .addGap(252, 252, 252))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addContainerGap())))
         );
 

@@ -1,12 +1,14 @@
-<?xml version="1.1" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <Properties>
-    <Property name="title" type="java.lang.String" resourceKey="Form.title"/>
+    <Property name="title" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+      <ResourceString bundle="latticetestwork/resources/MiscForm.properties" key="Form.title" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+    </Property>
     <Property name="name" type="java.lang.String" value="Form" noResource="true"/>
   </Properties>
   <SyntheticProperties>
-    <SyntheticProperty name="formSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,-38,0,0,1,-1"/>
+    <SyntheticProperty name="formSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,-38,0,0,2,10"/>
     <SyntheticProperty name="formPosition" type="java.awt.Point" value="-84,-19,0,5,115,114,0,14,106,97,118,97,46,97,119,116,46,80,111,105,110,116,-74,-60,-118,114,52,126,-56,38,2,0,2,73,0,1,120,73,0,1,121,120,112,0,0,0,50,0,0,1,-112"/>
     <SyntheticProperty name="formSizePolicy" type="int" value="0"/>
     <SyntheticProperty name="generatePosition" type="boolean" value="true"/>
@@ -14,8 +16,9 @@
     <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
   <AuxValues>
-    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="2"/>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="1"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_formBundle" type="java.lang.String" value="latticetestwork/resources/MiscForm"/>
     <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
     <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
@@ -43,7 +46,9 @@
   <SubComponents>
     <Container class="javax.swing.JPanel" name="jPanel1">
       <Properties>
-        <Property name="toolTipText" type="java.lang.String" resourceKey="jPanel1.toolTipText"/>
+        <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="latticetestwork/resources/MiscForm.properties" key="jPanel1.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
         <Property name="name" type="java.lang.String" value="jPanel1" noResource="true"/>
       </Properties>
 
@@ -57,17 +62,17 @@
                           <Component id="bntBindSphere" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="btnBindSphereX100" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="216" max="32767" attributes="0"/>
+                          <EmptySpace pref="238" max="32767" attributes="0"/>
                           <Component id="btnClearImmunity" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="btnClearOuterFaces" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="139" max="32767" attributes="0"/>
+                          <EmptySpace pref="176" max="32767" attributes="0"/>
                           <Component id="btnMakeCompletePtsImmune" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="btnTruncate" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="173" max="32767" attributes="0"/>
+                          <EmptySpace pref="205" max="32767" attributes="0"/>
                           <Component id="btnClearLoggedDisplayPts" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Component id="btnNewTruncate" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -142,7 +147,9 @@
       <SubComponents>
         <Component class="javax.swing.JButton" name="bntBindSphere">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="bntBindSphere.text"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="latticetestwork/resources/MiscForm.properties" key="bntBindSphere.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
             <Property name="name" type="java.lang.String" value="bntBindSphere" noResource="true"/>
           </Properties>
           <Events>
@@ -151,7 +158,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnBindSphereX100">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="btnBindSphereX100.text"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="latticetestwork/resources/MiscForm.properties" key="btnBindSphereX100.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
             <Property name="name" type="java.lang.String" value="btnBindSphereX100" noResource="true"/>
           </Properties>
           <Events>
@@ -160,7 +169,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnClearOuterFaces">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="btnClearOuterFaces.text"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="latticetestwork/resources/MiscForm.properties" key="btnClearOuterFaces.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
             <Property name="name" type="java.lang.String" value="btnClearOuterFaces" noResource="true"/>
           </Properties>
           <Events>
@@ -169,7 +180,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnTruncate">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="btnTruncate.text"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="latticetestwork/resources/MiscForm.properties" key="btnTruncate.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
             <Property name="name" type="java.lang.String" value="btnTruncate" noResource="true"/>
           </Properties>
           <Events>
@@ -178,7 +191,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnNewTruncate">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="btnNewTruncate.text"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="latticetestwork/resources/MiscForm.properties" key="btnNewTruncate.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
             <Property name="name" type="java.lang.String" value="btnNewTruncate" noResource="true"/>
           </Properties>
           <Events>
@@ -187,7 +202,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnCheckIncomplete">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="btnCheckIncomplete.text"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="latticetestwork/resources/MiscForm.properties" key="btnCheckIncomplete.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
             <Property name="name" type="java.lang.String" value="btnCheckIncomplete" noResource="true"/>
           </Properties>
           <Events>
@@ -196,7 +213,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnCheckDuplicates">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="btnCheckDuplicates.text"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="latticetestwork/resources/MiscForm.properties" key="btnCheckDuplicates.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
             <Property name="name" type="java.lang.String" value="btnCheckDuplicates" noResource="true"/>
           </Properties>
           <Events>
@@ -205,7 +224,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnKatanaMath">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="btnKatanaMath.text"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="latticetestwork/resources/MiscForm.properties" key="btnKatanaMath.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
             <Property name="name" type="java.lang.String" value="btnKatanaMath" noResource="true"/>
           </Properties>
           <Events>
@@ -214,7 +235,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnCellVolumes">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="btnCellVolumes.text"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="latticetestwork/resources/MiscForm.properties" key="btnCellVolumes.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
             <Property name="name" type="java.lang.String" value="btnCellVolumes" noResource="true"/>
           </Properties>
           <Events>
@@ -223,7 +246,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButton1">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="jButton1.text"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="latticetestwork/resources/MiscForm.properties" key="jButton1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
             <Property name="name" type="java.lang.String" value="jButton1" noResource="true"/>
           </Properties>
           <Events>
@@ -232,7 +257,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnFullCheckIncomplete">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="btnFullCheckIncomplete.text"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="latticetestwork/resources/MiscForm.properties" key="btnFullCheckIncomplete.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
             <Property name="name" type="java.lang.String" value="btnFullCheckIncomplete" noResource="true"/>
           </Properties>
           <Events>
@@ -241,7 +268,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnAddGround">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="btnAddGround.text"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="latticetestwork/resources/MiscForm.properties" key="btnAddGround.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
             <Property name="name" type="java.lang.String" value="btnAddGround" noResource="true"/>
           </Properties>
           <Events>
@@ -250,14 +279,20 @@
         </Component>
         <Component class="javax.swing.JTextField" name="editGroundElevation">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="editGroundElevation.text"/>
-            <Property name="toolTipText" type="java.lang.String" resourceKey="editGroundElevation.toolTipText"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="latticetestwork/resources/MiscForm.properties" key="editGroundElevation.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
+            <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="latticetestwork/resources/MiscForm.properties" key="editGroundElevation.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
             <Property name="name" type="java.lang.String" value="editGroundElevation" noResource="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="btnMakeCompletePtsImmune">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="btnMakeCompletePtsImmune.text"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="latticetestwork/resources/MiscForm.properties" key="btnMakeCompletePtsImmune.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
             <Property name="name" type="java.lang.String" value="btnMakeCompletePtsImmune" noResource="true"/>
           </Properties>
           <Events>
@@ -266,7 +301,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnClearImmunity">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="btnClearImmunity.text"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="latticetestwork/resources/MiscForm.properties" key="btnClearImmunity.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
             <Property name="name" type="java.lang.String" value="btnClearImmunity" noResource="true"/>
           </Properties>
           <Events>
@@ -275,7 +312,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnClearLoggedDisplayPts">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="btnClearLoggedDisplayPts.text"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="latticetestwork/resources/MiscForm.properties" key="btnClearLoggedDisplayPts.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
             <Property name="name" type="java.lang.String" value="btnClearLoggedDisplayPts" noResource="true"/>
           </Properties>
           <Events>

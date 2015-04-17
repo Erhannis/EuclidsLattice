@@ -54,14 +54,14 @@ public class MiscForm extends javax.swing.JFrame {
         btnClearImmunity = new javax.swing.JButton();
         btnClearLoggedDisplayPts = new javax.swing.JButton();
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(latticetestwork.LatticeTestworkApp.class).getContext().getResourceMap(MiscForm.class);
-        setTitle(resourceMap.getString("Form.title")); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("latticetestwork/resources/MiscForm"); // NOI18N
+        setTitle(bundle.getString("Form.title")); // NOI18N
         setName("Form"); // NOI18N
 
-        jPanel1.setToolTipText(resourceMap.getString("jPanel1.toolTipText")); // NOI18N
+        jPanel1.setToolTipText(bundle.getString("jPanel1.toolTipText")); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
-        bntBindSphere.setText(resourceMap.getString("bntBindSphere.text")); // NOI18N
+        bntBindSphere.setText(bundle.getString("bntBindSphere.text")); // NOI18N
         bntBindSphere.setName("bntBindSphere"); // NOI18N
         bntBindSphere.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -69,7 +69,7 @@ public class MiscForm extends javax.swing.JFrame {
             }
         });
 
-        btnBindSphereX100.setText(resourceMap.getString("btnBindSphereX100.text")); // NOI18N
+        btnBindSphereX100.setText(bundle.getString("btnBindSphereX100.text")); // NOI18N
         btnBindSphereX100.setName("btnBindSphereX100"); // NOI18N
         btnBindSphereX100.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -77,7 +77,7 @@ public class MiscForm extends javax.swing.JFrame {
             }
         });
 
-        btnClearOuterFaces.setText(resourceMap.getString("btnClearOuterFaces.text")); // NOI18N
+        btnClearOuterFaces.setText(bundle.getString("btnClearOuterFaces.text")); // NOI18N
         btnClearOuterFaces.setName("btnClearOuterFaces"); // NOI18N
         btnClearOuterFaces.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -85,7 +85,7 @@ public class MiscForm extends javax.swing.JFrame {
             }
         });
 
-        btnTruncate.setText(resourceMap.getString("btnTruncate.text")); // NOI18N
+        btnTruncate.setText(bundle.getString("btnTruncate.text")); // NOI18N
         btnTruncate.setName("btnTruncate"); // NOI18N
         btnTruncate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -93,7 +93,7 @@ public class MiscForm extends javax.swing.JFrame {
             }
         });
 
-        btnNewTruncate.setText(resourceMap.getString("btnNewTruncate.text")); // NOI18N
+        btnNewTruncate.setText(bundle.getString("btnNewTruncate.text")); // NOI18N
         btnNewTruncate.setName("btnNewTruncate"); // NOI18N
         btnNewTruncate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -101,7 +101,7 @@ public class MiscForm extends javax.swing.JFrame {
             }
         });
 
-        btnCheckIncomplete.setText(resourceMap.getString("btnCheckIncomplete.text")); // NOI18N
+        btnCheckIncomplete.setText(bundle.getString("btnCheckIncomplete.text")); // NOI18N
         btnCheckIncomplete.setName("btnCheckIncomplete"); // NOI18N
         btnCheckIncomplete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -109,7 +109,7 @@ public class MiscForm extends javax.swing.JFrame {
             }
         });
 
-        btnCheckDuplicates.setText(resourceMap.getString("btnCheckDuplicates.text")); // NOI18N
+        btnCheckDuplicates.setText(bundle.getString("btnCheckDuplicates.text")); // NOI18N
         btnCheckDuplicates.setName("btnCheckDuplicates"); // NOI18N
         btnCheckDuplicates.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -117,7 +117,7 @@ public class MiscForm extends javax.swing.JFrame {
             }
         });
 
-        btnKatanaMath.setText(resourceMap.getString("btnKatanaMath.text")); // NOI18N
+        btnKatanaMath.setText(bundle.getString("btnKatanaMath.text")); // NOI18N
         btnKatanaMath.setName("btnKatanaMath"); // NOI18N
         btnKatanaMath.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -125,7 +125,7 @@ public class MiscForm extends javax.swing.JFrame {
             }
         });
 
-        btnCellVolumes.setText(resourceMap.getString("btnCellVolumes.text")); // NOI18N
+        btnCellVolumes.setText(bundle.getString("btnCellVolumes.text")); // NOI18N
         btnCellVolumes.setName("btnCellVolumes"); // NOI18N
         btnCellVolumes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -133,7 +133,7 @@ public class MiscForm extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText(resourceMap.getString("jButton1.text")); // NOI18N
+        jButton1.setText(bundle.getString("jButton1.text")); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -141,7 +141,7 @@ public class MiscForm extends javax.swing.JFrame {
             }
         });
 
-        btnFullCheckIncomplete.setText(resourceMap.getString("btnFullCheckIncomplete.text")); // NOI18N
+        btnFullCheckIncomplete.setText(bundle.getString("btnFullCheckIncomplete.text")); // NOI18N
         btnFullCheckIncomplete.setName("btnFullCheckIncomplete"); // NOI18N
         btnFullCheckIncomplete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -149,7 +149,7 @@ public class MiscForm extends javax.swing.JFrame {
             }
         });
 
-        btnAddGround.setText(resourceMap.getString("btnAddGround.text")); // NOI18N
+        btnAddGround.setText(bundle.getString("btnAddGround.text")); // NOI18N
         btnAddGround.setName("btnAddGround"); // NOI18N
         btnAddGround.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -157,11 +157,11 @@ public class MiscForm extends javax.swing.JFrame {
             }
         });
 
-        editGroundElevation.setText(resourceMap.getString("editGroundElevation.text")); // NOI18N
-        editGroundElevation.setToolTipText(resourceMap.getString("editGroundElevation.toolTipText")); // NOI18N
+        editGroundElevation.setText(bundle.getString("editGroundElevation.text")); // NOI18N
+        editGroundElevation.setToolTipText(bundle.getString("editGroundElevation.toolTipText")); // NOI18N
         editGroundElevation.setName("editGroundElevation"); // NOI18N
 
-        btnMakeCompletePtsImmune.setText(resourceMap.getString("btnMakeCompletePtsImmune.text")); // NOI18N
+        btnMakeCompletePtsImmune.setText(bundle.getString("btnMakeCompletePtsImmune.text")); // NOI18N
         btnMakeCompletePtsImmune.setName("btnMakeCompletePtsImmune"); // NOI18N
         btnMakeCompletePtsImmune.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -169,7 +169,7 @@ public class MiscForm extends javax.swing.JFrame {
             }
         });
 
-        btnClearImmunity.setText(resourceMap.getString("btnClearImmunity.text")); // NOI18N
+        btnClearImmunity.setText(bundle.getString("btnClearImmunity.text")); // NOI18N
         btnClearImmunity.setName("btnClearImmunity"); // NOI18N
         btnClearImmunity.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -177,7 +177,7 @@ public class MiscForm extends javax.swing.JFrame {
             }
         });
 
-        btnClearLoggedDisplayPts.setText(resourceMap.getString("btnClearLoggedDisplayPts.text")); // NOI18N
+        btnClearLoggedDisplayPts.setText(bundle.getString("btnClearLoggedDisplayPts.text")); // NOI18N
         btnClearLoggedDisplayPts.setName("btnClearLoggedDisplayPts"); // NOI18N
         btnClearLoggedDisplayPts.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -196,15 +196,15 @@ public class MiscForm extends javax.swing.JFrame {
                         .addComponent(bntBindSphere)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnBindSphereX100)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 216, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 238, Short.MAX_VALUE)
                         .addComponent(btnClearImmunity))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btnClearOuterFaces)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 139, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 176, Short.MAX_VALUE)
                         .addComponent(btnMakeCompletePtsImmune))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btnTruncate)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 173, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 205, Short.MAX_VALUE)
                         .addComponent(btnClearLoggedDisplayPts))
                     .addComponent(btnNewTruncate)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -274,7 +274,7 @@ public class MiscForm extends javax.swing.JFrame {
                 .addContainerGap(63, Short.MAX_VALUE))
         );
 
-        setBounds(50, 400, 511, 474);
+        setBounds(50, 400, 522, 474);
     }// </editor-fold>//GEN-END:initComponents
 
 private void bntBindSphereActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntBindSphereActionPerformed

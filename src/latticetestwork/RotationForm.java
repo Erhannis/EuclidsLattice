@@ -111,8 +111,8 @@ public class RotationForm extends javax.swing.JFrame {
         btnResetRotations = new javax.swing.JButton();
         btnPareSticks = new javax.swing.JButton();
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(latticetestwork.LatticeTestworkApp.class).getContext().getResourceMap(RotationForm.class);
-        setTitle(resourceMap.getString("Form.title")); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("latticetestwork/resources/RotationForm"); // NOI18N
+        setTitle(bundle.getString("Form.title")); // NOI18N
         setName("Form"); // NOI18N
 
         jSplitPane1.setName("jSplitPane1"); // NOI18N
@@ -134,7 +134,7 @@ public class RotationForm extends javax.swing.JFrame {
 
         jPanel2.setName("jPanel2"); // NOI18N
 
-        boxHideImmune.setText(resourceMap.getString("boxHideImmune.text")); // NOI18N
+        boxHideImmune.setText(bundle.getString("boxHideImmune.text")); // NOI18N
         boxHideImmune.setName("boxHideImmune"); // NOI18N
         boxHideImmune.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -142,7 +142,7 @@ public class RotationForm extends javax.swing.JFrame {
             }
         });
 
-        btnRender.setText(resourceMap.getString("btnRender.text")); // NOI18N
+        btnRender.setText(bundle.getString("btnRender.text")); // NOI18N
         btnRender.setName("btnRender"); // NOI18N
         btnRender.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -150,7 +150,7 @@ public class RotationForm extends javax.swing.JFrame {
             }
         });
 
-        boxHideComplete.setText(resourceMap.getString("boxHideComplete.text")); // NOI18N
+        boxHideComplete.setText(bundle.getString("boxHideComplete.text")); // NOI18N
         boxHideComplete.setName("boxHideComplete"); // NOI18N
         boxHideComplete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -158,7 +158,7 @@ public class RotationForm extends javax.swing.JFrame {
             }
         });
 
-        btnZoomOut.setText(resourceMap.getString("btnZoomOut.text")); // NOI18N
+        btnZoomOut.setText(bundle.getString("btnZoomOut.text")); // NOI18N
         btnZoomOut.setName("btnZoomOut"); // NOI18N
         btnZoomOut.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -166,7 +166,7 @@ public class RotationForm extends javax.swing.JFrame {
             }
         });
 
-        btnZoomIn.setText(resourceMap.getString("btnZoomIn.text")); // NOI18N
+        btnZoomIn.setText(bundle.getString("btnZoomIn.text")); // NOI18N
         btnZoomIn.setName("btnZoomIn"); // NOI18N
         btnZoomIn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -190,7 +190,7 @@ public class RotationForm extends javax.swing.JFrame {
             }
         });
 
-        boxHideIncomplete.setText(resourceMap.getString("boxHideIncomplete.text")); // NOI18N
+        boxHideIncomplete.setText(bundle.getString("boxHideIncomplete.text")); // NOI18N
         boxHideIncomplete.setName("boxHideIncomplete"); // NOI18N
         boxHideIncomplete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -198,7 +198,7 @@ public class RotationForm extends javax.swing.JFrame {
             }
         });
 
-        boxHidePoints.setText(resourceMap.getString("boxHidePoints.text")); // NOI18N
+        boxHidePoints.setText(bundle.getString("boxHidePoints.text")); // NOI18N
         boxHidePoints.setName("boxHidePoints"); // NOI18N
         boxHidePoints.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -206,7 +206,7 @@ public class RotationForm extends javax.swing.JFrame {
             }
         });
 
-        btnRecalcSticks.setText(resourceMap.getString("btnRecalcSticks.text")); // NOI18N
+        btnRecalcSticks.setText(bundle.getString("btnRecalcSticks.text")); // NOI18N
         btnRecalcSticks.setName("btnRecalcSticks"); // NOI18N
         btnRecalcSticks.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -214,7 +214,7 @@ public class RotationForm extends javax.swing.JFrame {
             }
         });
 
-        btnResetRotations.setText(resourceMap.getString("btnResetRotations.text")); // NOI18N
+        btnResetRotations.setText(bundle.getString("btnResetRotations.text")); // NOI18N
         btnResetRotations.setName("btnResetRotations"); // NOI18N
         btnResetRotations.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -222,7 +222,7 @@ public class RotationForm extends javax.swing.JFrame {
             }
         });
 
-        btnPareSticks.setText(resourceMap.getString("btnPareSticks.text")); // NOI18N
+        btnPareSticks.setText(bundle.getString("btnPareSticks.text")); // NOI18N
         btnPareSticks.setName("btnPareSticks"); // NOI18N
         btnPareSticks.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -239,7 +239,7 @@ public class RotationForm extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(btnResetRotations)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 305, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 304, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(btnZoomIn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnZoomOut, javax.swing.GroupLayout.Alignment.TRAILING)))
@@ -253,7 +253,7 @@ public class RotationForm extends javax.swing.JFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(btnPareSticks)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
                                 .addComponent(barTransX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(barTransY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -300,14 +300,14 @@ public class RotationForm extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE)
         );
 
-        setBounds(50, 50, 463, 348);
+        setBounds(50, 50, 468, 348);
     }// </editor-fold>//GEN-END:initComponents
 
 private void boxHideImmuneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boxHideImmuneActionPerformed

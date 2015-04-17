@@ -117,8 +117,8 @@ public class CameraForm extends javax.swing.JFrame {
         editAngle = new javax.swing.JTextField();
         boxStereo = new javax.swing.JCheckBox();
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(latticetestwork.LatticeTestworkApp.class).getContext().getResourceMap(CameraForm.class);
-        setTitle(resourceMap.getString("Form.title")); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("latticetestwork/resources/CameraForm"); // NOI18N
+        setTitle(bundle.getString("Form.title")); // NOI18N
         setName("Form"); // NOI18N
 
         jSplitPane1.setDividerLocation(284);
@@ -131,7 +131,7 @@ public class CameraForm extends javax.swing.JFrame {
             }
         });
 
-        btnDTL.setText(resourceMap.getString("btnDTL.text")); // NOI18N
+        btnDTL.setText(bundle.getString("btnDTL.text")); // NOI18N
         btnDTL.setName("btnDTL"); // NOI18N
         btnDTL.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -139,7 +139,7 @@ public class CameraForm extends javax.swing.JFrame {
             }
         });
 
-        btnEncode.setText(resourceMap.getString("btnEncode.text")); // NOI18N
+        btnEncode.setText(bundle.getString("btnEncode.text")); // NOI18N
         btnEncode.setName("btnEncode"); // NOI18N
         btnEncode.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -147,7 +147,7 @@ public class CameraForm extends javax.swing.JFrame {
             }
         });
 
-        btnStrafeL.setText(resourceMap.getString("btnStrafeL.text")); // NOI18N
+        btnStrafeL.setText(bundle.getString("btnStrafeL.text")); // NOI18N
         btnStrafeL.setName("btnStrafeL"); // NOI18N
         btnStrafeL.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -155,7 +155,7 @@ public class CameraForm extends javax.swing.JFrame {
             }
         });
 
-        btnStrafeR.setText(resourceMap.getString("btnStrafeR.text")); // NOI18N
+        btnStrafeR.setText(bundle.getString("btnStrafeR.text")); // NOI18N
         btnStrafeR.setName("btnStrafeR"); // NOI18N
         btnStrafeR.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -163,7 +163,7 @@ public class CameraForm extends javax.swing.JFrame {
             }
         });
 
-        btnForward.setText(resourceMap.getString("btnForward.text")); // NOI18N
+        btnForward.setText(bundle.getString("btnForward.text")); // NOI18N
         btnForward.setName("btnForward"); // NOI18N
         btnForward.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -171,8 +171,8 @@ public class CameraForm extends javax.swing.JFrame {
             }
         });
 
-        btnForwardOne.setText(resourceMap.getString("btnForwardOne.text")); // NOI18N
-        btnForwardOne.setToolTipText(resourceMap.getString("btnForwardOne.toolTipText")); // NOI18N
+        btnForwardOne.setText(bundle.getString("btnForwardOne.text")); // NOI18N
+        btnForwardOne.setToolTipText(bundle.getString("btnForwardOne.toolTipText")); // NOI18N
         btnForwardOne.setName("btnForwardOne"); // NOI18N
         btnForwardOne.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -180,8 +180,8 @@ public class CameraForm extends javax.swing.JFrame {
             }
         });
 
-        btnRightOne.setText(resourceMap.getString("btnRightOne.text")); // NOI18N
-        btnRightOne.setToolTipText(resourceMap.getString("btnRightOne.toolTipText")); // NOI18N
+        btnRightOne.setText(bundle.getString("btnRightOne.text")); // NOI18N
+        btnRightOne.setToolTipText(bundle.getString("btnRightOne.toolTipText")); // NOI18N
         btnRightOne.setName("btnRightOne"); // NOI18N
         btnRightOne.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -189,8 +189,8 @@ public class CameraForm extends javax.swing.JFrame {
             }
         });
 
-        btnLeftOne.setText(resourceMap.getString("btnLeftOne.text")); // NOI18N
-        btnLeftOne.setToolTipText(resourceMap.getString("btnLeftOne.toolTipText")); // NOI18N
+        btnLeftOne.setText(bundle.getString("btnLeftOne.text")); // NOI18N
+        btnLeftOne.setToolTipText(bundle.getString("btnLeftOne.toolTipText")); // NOI18N
         btnLeftOne.setName("btnLeftOne"); // NOI18N
         btnLeftOne.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -198,8 +198,8 @@ public class CameraForm extends javax.swing.JFrame {
             }
         });
 
-        btnBackwardOne.setText(resourceMap.getString("btnBackwardOne.text")); // NOI18N
-        btnBackwardOne.setToolTipText(resourceMap.getString("btnBackwardOne.toolTipText")); // NOI18N
+        btnBackwardOne.setText(bundle.getString("btnBackwardOne.text")); // NOI18N
+        btnBackwardOne.setToolTipText(bundle.getString("btnBackwardOne.toolTipText")); // NOI18N
         btnBackwardOne.setName("btnBackwardOne"); // NOI18N
         btnBackwardOne.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -207,8 +207,8 @@ public class CameraForm extends javax.swing.JFrame {
             }
         });
 
-        btnUpOne.setText(resourceMap.getString("btnUpOne.text")); // NOI18N
-        btnUpOne.setToolTipText(resourceMap.getString("btnUpOne.toolTipText")); // NOI18N
+        btnUpOne.setText(bundle.getString("btnUpOne.text")); // NOI18N
+        btnUpOne.setToolTipText(bundle.getString("btnUpOne.toolTipText")); // NOI18N
         btnUpOne.setName("btnUpOne"); // NOI18N
         btnUpOne.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -216,8 +216,8 @@ public class CameraForm extends javax.swing.JFrame {
             }
         });
 
-        btnDownOne.setText(resourceMap.getString("btnDownOne.text")); // NOI18N
-        btnDownOne.setToolTipText(resourceMap.getString("btnDownOne.toolTipText")); // NOI18N
+        btnDownOne.setText(bundle.getString("btnDownOne.text")); // NOI18N
+        btnDownOne.setToolTipText(bundle.getString("btnDownOne.toolTipText")); // NOI18N
         btnDownOne.setName("btnDownOne"); // NOI18N
         btnDownOne.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -226,7 +226,7 @@ public class CameraForm extends javax.swing.JFrame {
         });
 
         boxRender.setSelected(true);
-        boxRender.setText(resourceMap.getString("boxRender.text")); // NOI18N
+        boxRender.setText(bundle.getString("boxRender.text")); // NOI18N
         boxRender.setName("boxRender"); // NOI18N
         boxRender.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -234,8 +234,8 @@ public class CameraForm extends javax.swing.JFrame {
             }
         });
 
-        btnRealign.setText(resourceMap.getString("btnRealign.text")); // NOI18N
-        btnRealign.setToolTipText(resourceMap.getString("btnRealign.toolTipText")); // NOI18N
+        btnRealign.setText(bundle.getString("btnRealign.text")); // NOI18N
+        btnRealign.setToolTipText(bundle.getString("btnRealign.toolTipText")); // NOI18N
         btnRealign.setName("btnRealign"); // NOI18N
         btnRealign.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -243,7 +243,7 @@ public class CameraForm extends javax.swing.JFrame {
             }
         });
 
-        btnCenter.setText(resourceMap.getString("btnCenter.text")); // NOI18N
+        btnCenter.setText(bundle.getString("btnCenter.text")); // NOI18N
         btnCenter.setMinimumSize(new java.awt.Dimension(71, 23));
         btnCenter.setName("btnCenter"); // NOI18N
         btnCenter.addActionListener(new java.awt.event.ActionListener() {
@@ -252,11 +252,11 @@ public class CameraForm extends javax.swing.JFrame {
             }
         });
 
-        boxRenderMain.setText(resourceMap.getString("boxRenderMain.text")); // NOI18N
-        boxRenderMain.setToolTipText(resourceMap.getString("boxRenderMain.toolTipText")); // NOI18N
+        boxRenderMain.setText(bundle.getString("boxRenderMain.text")); // NOI18N
+        boxRenderMain.setToolTipText(bundle.getString("boxRenderMain.toolTipText")); // NOI18N
         boxRenderMain.setName("boxRenderMain"); // NOI18N
 
-        btnTracer.setText(resourceMap.getString("btnTracer.text")); // NOI18N
+        btnTracer.setText(bundle.getString("btnTracer.text")); // NOI18N
         btnTracer.setMinimumSize(new java.awt.Dimension(71, 23));
         btnTracer.setName("btnTracer"); // NOI18N
         btnTracer.addActionListener(new java.awt.event.ActionListener() {
@@ -265,7 +265,7 @@ public class CameraForm extends javax.swing.JFrame {
             }
         });
 
-        btnControl.setText(resourceMap.getString("btnControl.text")); // NOI18N
+        btnControl.setText(bundle.getString("btnControl.text")); // NOI18N
         btnControl.setName("btnControl"); // NOI18N
         btnControl.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -281,33 +281,33 @@ public class CameraForm extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
+        jLabel1.setText(bundle.getString("jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
-        editGrainy.setText(resourceMap.getString("editGrainy.text")); // NOI18N
-        editGrainy.setToolTipText(resourceMap.getString("editGrainy.toolTipText")); // NOI18N
+        editGrainy.setText(bundle.getString("editGrainy.text")); // NOI18N
+        editGrainy.setToolTipText(bundle.getString("editGrainy.toolTipText")); // NOI18N
         editGrainy.setName("editGrainy"); // NOI18N
 
-        jLabel2.setText(resourceMap.getString("jLabel2.text")); // NOI18N
+        jLabel2.setText(bundle.getString("jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
-        editDTL.setText(resourceMap.getString("editDTL.text")); // NOI18N
-        editDTL.setToolTipText(resourceMap.getString("editDTL.toolTipText")); // NOI18N
+        editDTL.setText(bundle.getString("editDTL.text")); // NOI18N
+        editDTL.setToolTipText(bundle.getString("editDTL.toolTipText")); // NOI18N
         editDTL.setName("editDTL"); // NOI18N
 
-        jLabel3.setText(resourceMap.getString("jLabel3.text")); // NOI18N
+        jLabel3.setText(bundle.getString("jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
-        editGaitLength.setText(resourceMap.getString("editGaitLength.text")); // NOI18N
-        editGaitLength.setToolTipText(resourceMap.getString("editGaitLength.toolTipText")); // NOI18N
+        editGaitLength.setText(bundle.getString("editGaitLength.text")); // NOI18N
+        editGaitLength.setToolTipText(bundle.getString("editGaitLength.toolTipText")); // NOI18N
         editGaitLength.setName("editGaitLength"); // NOI18N
 
-        editAngle.setText(resourceMap.getString("editAngle.text")); // NOI18N
-        editAngle.setToolTipText(resourceMap.getString("editAngle.toolTipText")); // NOI18N
+        editAngle.setText(bundle.getString("editAngle.text")); // NOI18N
+        editAngle.setToolTipText(bundle.getString("editAngle.toolTipText")); // NOI18N
         editAngle.setName("editAngle"); // NOI18N
 
-        boxStereo.setText(resourceMap.getString("boxStereo.text")); // NOI18N
-        boxStereo.setToolTipText(resourceMap.getString("boxStereo.toolTipText")); // NOI18N
+        boxStereo.setText(bundle.getString("boxStereo.text")); // NOI18N
+        boxStereo.setToolTipText(bundle.getString("boxStereo.toolTipText")); // NOI18N
         boxStereo.setName("boxStereo"); // NOI18N
         boxStereo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -322,11 +322,11 @@ public class CameraForm extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, intrumentPanelLayout.createSequentialGroup()
                 .addGap(36, 36, 36)
                 .addGroup(intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(boxStereo, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
-                    .addComponent(btnControl, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
-                    .addComponent(btnTracer, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
-                    .addComponent(btnRealign, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
-                    .addComponent(btnCenter, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
+                    .addComponent(boxStereo, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
+                    .addComponent(btnControl, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
+                    .addComponent(btnTracer, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
+                    .addComponent(btnRealign, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
+                    .addComponent(btnCenter, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(editGrainy, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
@@ -341,26 +341,24 @@ public class CameraForm extends javax.swing.JFrame {
                     .addGroup(intrumentPanelLayout.createSequentialGroup()
                         .addComponent(boxRender)
                         .addGap(8, 8, 8)
-                        .addComponent(boxRenderMain)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, intrumentPanelLayout.createSequentialGroup()
-                        .addGroup(intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnEncode, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnStrafeR, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnForward, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnDTL, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnStrafeL, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, intrumentPanelLayout.createSequentialGroup()
-                                .addComponent(btnLeftOne, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnRightOne, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(btnBackwardOne, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnForwardOne, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, intrumentPanelLayout.createSequentialGroup()
-                                .addComponent(btnUpOne, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnDownOne, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap())))
+                        .addComponent(boxRenderMain))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(btnEncode, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnStrafeR, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnForward, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnDTL, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnStrafeL, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, intrumentPanelLayout.createSequentialGroup()
+                            .addComponent(btnLeftOne, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btnRightOne, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnBackwardOne, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnForwardOne, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, intrumentPanelLayout.createSequentialGroup()
+                            .addComponent(btnUpOne, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btnDownOne, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
         );
         intrumentPanelLayout.setVerticalGroup(
             intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -426,7 +424,7 @@ public class CameraForm extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

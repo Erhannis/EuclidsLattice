@@ -40,27 +40,27 @@ public class RepulsionForm extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         editRepulsionCutoff = new javax.swing.JTextField();
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(latticetestwork.LatticeTestworkApp.class).getContext().getResourceMap(RepulsionForm.class);
-        setTitle(resourceMap.getString("Form.title")); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("latticetestwork/resources/RepulsionForm"); // NOI18N
+        setTitle(bundle.getString("Form.title")); // NOI18N
         setName("Form"); // NOI18N
 
         groupRepulsionMode.add(radioRepelCurrent);
         radioRepelCurrent.setSelected(true);
-        radioRepelCurrent.setText(resourceMap.getString("radioRepelCurrent.text")); // NOI18N
+        radioRepelCurrent.setText(bundle.getString("radioRepelCurrent.text")); // NOI18N
         radioRepelCurrent.setName("radioRepelCurrent"); // NOI18N
 
         groupRepulsionMode.add(radioRepelStandard);
-        radioRepelStandard.setText(resourceMap.getString("radioRepelStandard.text")); // NOI18N
+        radioRepelStandard.setText(bundle.getString("radioRepelStandard.text")); // NOI18N
         radioRepelStandard.setName("radioRepelStandard"); // NOI18N
 
         groupRepulsionMode.add(radioRepelFunction);
-        radioRepelFunction.setText(resourceMap.getString("radioRepelFunction.text")); // NOI18N
+        radioRepelFunction.setText(bundle.getString("radioRepelFunction.text")); // NOI18N
         radioRepelFunction.setName("radioRepelFunction"); // NOI18N
 
-        jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
+        jLabel1.setText(bundle.getString("jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
-        editRepulsionCutoff.setText(resourceMap.getString("editRepulsionCutoff.text")); // NOI18N
+        editRepulsionCutoff.setText(bundle.getString("editRepulsionCutoff.text")); // NOI18N
         editRepulsionCutoff.setName("editRepulsionCutoff"); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -77,7 +77,7 @@ public class RepulsionForm extends javax.swing.JFrame {
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(editRepulsionCutoff, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(232, Short.MAX_VALUE))
+                .addContainerGap(230, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

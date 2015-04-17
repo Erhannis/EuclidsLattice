@@ -1,16 +1,20 @@
-<?xml version="1.1" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <Properties>
-    <Property name="title" type="java.lang.String" resourceKey="Form.title"/>
+    <Property name="title" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+      <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="Form.title" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+    </Property>
     <Property name="name" type="java.lang.String" value="Form" noResource="true"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
   <AuxValues>
-    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="2"/>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="1"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_formBundle" type="java.lang.String" value="latticetestwork/resources/CameraForm"/>
     <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
     <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
@@ -23,7 +27,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jSplitPane1" alignment="1" pref="499" max="32767" attributes="0"/>
+          <Component id="jSplitPane1" alignment="1" pref="500" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -60,11 +64,11 @@
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="boxStereo" pref="72" max="32767" attributes="0"/>
-                          <Component id="btnControl" alignment="1" pref="72" max="32767" attributes="1"/>
-                          <Component id="btnTracer" alignment="1" pref="72" max="32767" attributes="1"/>
-                          <Component id="btnRealign" alignment="1" pref="72" max="32767" attributes="1"/>
-                          <Component id="btnCenter" alignment="1" pref="72" max="32767" attributes="1"/>
+                          <Component id="boxStereo" pref="77" max="32767" attributes="0"/>
+                          <Component id="btnControl" alignment="1" pref="77" max="32767" attributes="1"/>
+                          <Component id="btnTracer" alignment="1" pref="77" max="32767" attributes="1"/>
+                          <Component id="btnRealign" alignment="1" pref="77" max="32767" attributes="1"/>
+                          <Component id="btnCenter" alignment="1" pref="77" max="32767" attributes="1"/>
                           <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="editGrainy" alignment="0" min="0" pref="0" max="32767" attributes="1"/>
                           <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -82,31 +86,28 @@
                               <Component id="boxRender" min="-2" max="-2" attributes="1"/>
                               <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
                               <Component id="boxRenderMain" min="-2" max="-2" attributes="1"/>
-                              <EmptySpace max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="1" attributes="0">
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="btnEncode" alignment="1" max="32767" attributes="1"/>
-                                  <Component id="btnStrafeR" alignment="1" max="32767" attributes="1"/>
-                                  <Component id="btnForward" alignment="1" max="32767" attributes="1"/>
-                                  <Component id="btnDTL" alignment="1" max="32767" attributes="1"/>
-                                  <Component id="btnStrafeL" alignment="1" max="32767" attributes="1"/>
-                                  <Group type="102" alignment="1" attributes="0">
-                                      <Component id="btnLeftOne" min="-2" pref="33" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="btnRightOne" alignment="1" min="-2" pref="34" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Component id="btnBackwardOne" alignment="1" max="32767" attributes="1"/>
-                                  <Component id="btnForwardOne" alignment="1" max="32767" attributes="1"/>
-                                  <Group type="102" alignment="1" attributes="0">
-                                      <Component id="btnUpOne" min="-2" pref="33" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="btnDownOne" min="-2" pref="34" max="-2" attributes="0"/>
-                                  </Group>
+                          <Group type="103" alignment="1" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="btnEncode" alignment="1" max="32767" attributes="1"/>
+                              <Component id="btnStrafeR" alignment="1" max="32767" attributes="1"/>
+                              <Component id="btnForward" alignment="1" max="32767" attributes="1"/>
+                              <Component id="btnDTL" alignment="1" max="32767" attributes="1"/>
+                              <Component id="btnStrafeL" alignment="1" max="32767" attributes="1"/>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Component id="btnLeftOne" min="-2" pref="33" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="btnRightOne" alignment="1" min="-2" pref="34" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="btnBackwardOne" alignment="1" max="32767" attributes="1"/>
+                              <Component id="btnForwardOne" alignment="1" max="32767" attributes="1"/>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Component id="btnUpOne" min="-2" pref="33" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="btnDownOne" min="-2" pref="34" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
                       </Group>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -184,7 +185,9 @@
           <SubComponents>
             <Component class="javax.swing.JButton" name="btnDTL">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="btnDTL.text"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="btnDTL.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="btnDTL" noResource="true"/>
               </Properties>
               <Events>
@@ -193,7 +196,9 @@
             </Component>
             <Component class="javax.swing.JButton" name="btnEncode">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="btnEncode.text"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="btnEncode.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="btnEncode" noResource="true"/>
               </Properties>
               <Events>
@@ -202,7 +207,9 @@
             </Component>
             <Component class="javax.swing.JButton" name="btnStrafeL">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="btnStrafeL.text"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="btnStrafeL.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="btnStrafeL" noResource="true"/>
               </Properties>
               <Events>
@@ -211,7 +218,9 @@
             </Component>
             <Component class="javax.swing.JButton" name="btnStrafeR">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="btnStrafeR.text"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="btnStrafeR.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="btnStrafeR" noResource="true"/>
               </Properties>
               <Events>
@@ -220,7 +229,9 @@
             </Component>
             <Component class="javax.swing.JButton" name="btnForward">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="btnForward.text"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="btnForward.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="btnForward" noResource="true"/>
               </Properties>
               <Events>
@@ -229,8 +240,12 @@
             </Component>
             <Component class="javax.swing.JButton" name="btnForwardOne">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="btnForwardOne.text"/>
-                <Property name="toolTipText" type="java.lang.String" resourceKey="btnForwardOne.toolTipText"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="btnForwardOne.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="btnForwardOne.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="btnForwardOne" noResource="true"/>
               </Properties>
               <Events>
@@ -239,8 +254,12 @@
             </Component>
             <Component class="javax.swing.JButton" name="btnRightOne">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="btnRightOne.text"/>
-                <Property name="toolTipText" type="java.lang.String" resourceKey="btnRightOne.toolTipText"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="btnRightOne.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="btnRightOne.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="btnRightOne" noResource="true"/>
               </Properties>
               <Events>
@@ -249,8 +268,12 @@
             </Component>
             <Component class="javax.swing.JButton" name="btnLeftOne">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="btnLeftOne.text"/>
-                <Property name="toolTipText" type="java.lang.String" resourceKey="btnLeftOne.toolTipText"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="btnLeftOne.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="btnLeftOne.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="btnLeftOne" noResource="true"/>
               </Properties>
               <Events>
@@ -259,8 +282,12 @@
             </Component>
             <Component class="javax.swing.JButton" name="btnBackwardOne">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="btnBackwardOne.text"/>
-                <Property name="toolTipText" type="java.lang.String" resourceKey="btnBackwardOne.toolTipText"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="btnBackwardOne.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="btnBackwardOne.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="btnBackwardOne" noResource="true"/>
               </Properties>
               <Events>
@@ -269,8 +296,12 @@
             </Component>
             <Component class="javax.swing.JButton" name="btnUpOne">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="btnUpOne.text"/>
-                <Property name="toolTipText" type="java.lang.String" resourceKey="btnUpOne.toolTipText"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="btnUpOne.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="btnUpOne.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="btnUpOne" noResource="true"/>
               </Properties>
               <Events>
@@ -279,8 +310,12 @@
             </Component>
             <Component class="javax.swing.JButton" name="btnDownOne">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="btnDownOne.text"/>
-                <Property name="toolTipText" type="java.lang.String" resourceKey="btnDownOne.toolTipText"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="btnDownOne.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="btnDownOne.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="btnDownOne" noResource="true"/>
               </Properties>
               <Events>
@@ -290,20 +325,27 @@
             <Component class="javax.swing.JCheckBox" name="boxRender">
               <Properties>
                 <Property name="selected" type="boolean" value="true"/>
-                <Property name="text" type="java.lang.String" resourceKey="boxRender.text"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="boxRender.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="boxRender" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="boxRenderActionPerformed"/>
               </Events>
               <AuxValues>
+                <AuxValue name="FormSettings_formBundle" type="java.lang.String" value="latticetestwork/resources/CameraForm"/>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
               </AuxValues>
             </Component>
             <Component class="javax.swing.JButton" name="btnRealign">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="btnRealign.text"/>
-                <Property name="toolTipText" type="java.lang.String" resourceKey="btnRealign.toolTipText"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="btnRealign.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="btnRealign.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="btnRealign" noResource="true"/>
               </Properties>
               <Events>
@@ -312,7 +354,9 @@
             </Component>
             <Component class="javax.swing.JButton" name="btnCenter">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="btnCenter.text"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="btnCenter.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[71, 23]"/>
                 </Property>
@@ -324,17 +368,24 @@
             </Component>
             <Component class="javax.swing.JCheckBox" name="boxRenderMain">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="boxRenderMain.text"/>
-                <Property name="toolTipText" type="java.lang.String" resourceKey="boxRenderMain.toolTipText"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="boxRenderMain.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="boxRenderMain.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="boxRenderMain" noResource="true"/>
               </Properties>
               <AuxValues>
+                <AuxValue name="FormSettings_formBundle" type="java.lang.String" value="latticetestwork/resources/CameraForm"/>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
               </AuxValues>
             </Component>
             <Component class="javax.swing.JButton" name="btnTracer">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="btnTracer.text"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="btnTracer.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[71, 23]"/>
                 </Property>
@@ -346,7 +397,9 @@
             </Component>
             <Component class="javax.swing.JButton" name="btnControl">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="btnControl.text"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="btnControl.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="btnControl" noResource="true"/>
               </Properties>
               <Events>
@@ -357,54 +410,80 @@
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel1">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jLabel1.text"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="jLabel1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="jLabel1" noResource="true"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="editGrainy">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="editGrainy.text"/>
-                <Property name="toolTipText" type="java.lang.String" resourceKey="editGrainy.toolTipText"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="editGrainy.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="editGrainy.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="editGrainy" noResource="true"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel2">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jLabel2.text"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="jLabel2.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="jLabel2" noResource="true"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="editDTL">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="editDTL.text"/>
-                <Property name="toolTipText" type="java.lang.String" resourceKey="editDTL.toolTipText"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="editDTL.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="editDTL.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="editDTL" noResource="true"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel3">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jLabel3.text"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="jLabel3.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="jLabel3" noResource="true"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="editGaitLength">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="editGaitLength.text"/>
-                <Property name="toolTipText" type="java.lang.String" resourceKey="editGaitLength.toolTipText"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="editGaitLength.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="editGaitLength.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="editGaitLength" noResource="true"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="editAngle">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="editAngle.text"/>
-                <Property name="toolTipText" type="java.lang.String" resourceKey="editAngle.toolTipText"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="editAngle.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="editAngle.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="editAngle" noResource="true"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JCheckBox" name="boxStereo">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="boxStereo.text"/>
-                <Property name="toolTipText" type="java.lang.String" resourceKey="boxStereo.toolTipText"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="boxStereo.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="latticetestwork/resources/CameraForm.properties" key="boxStereo.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="boxStereo" noResource="true"/>
               </Properties>
               <Events>
