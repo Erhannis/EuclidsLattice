@@ -390,6 +390,8 @@ public class ParallelRender {
                 // Go there, and subtract from dtl.
                 if (trueHit == null) {
                     System.err.println("Problem!");
+                    pos.doneWithNVector();
+                    return 0xFFFFFFFF;
                 }
                 NVector hMp = trueHit.minusB(pos, true);
                 dtl -= hMp.length();
@@ -414,7 +416,7 @@ public class ParallelRender {
                     cell = hitFace.crossCornerCell(cell);
                 } else {
                     pos.doneWithNVector();
-                    return cell.color.getRGB();
+                    return (((int) (cell.color.getRed() * percentOfIncidence)) * 0x010000) + (((int) (cell.color.getGreen() * percentOfIncidence)) * 0x000100) + ((int) (cell.color.getBlue() * percentOfIncidence));
                 }
                 crossedFace = hitFace;
 //            }

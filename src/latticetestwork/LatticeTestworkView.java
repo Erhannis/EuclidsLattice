@@ -5,7 +5,6 @@ package latticetestwork;
 
 import java.awt.Color;
 import java.awt.event.MouseEvent;
-import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.application.Action;
@@ -19,15 +18,13 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import javax.swing.Timer;
 import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import javax.swing.SwingUtilities;
+import javax.swing.JScrollPane;
 
 /**
  * The application's main frame.
@@ -54,6 +51,11 @@ public class LatticeTestworkView extends FrameView {
         super(app);
 
         initComponents();
+        
+        jSplitPane1.setLeftComponent(null);
+        JScrollPane sPane = new JScrollPane(jPanel1);
+        jSplitPane1.setLeftComponent(sPane);
+        
         spinDims.getModel().setValue(4);
         spinLatticeDims.getModel().setValue(2);
         dp = new DisplayPanel(true);
@@ -1306,14 +1308,16 @@ private void btnPlaceNDonutActionPerformed(java.awt.event.ActionEvent evt) {//GE
     if (engine != null) {
         updateOptions();
         try {
-            if ((evt.getModifiers() & ActionEvent.CTRL_MASK) != 0) {
-                engine.placeNSaltLattice();
-            } else if ((evt.getModifiers() & ActionEvent.SHIFT_MASK) != 0) {
+            if ((evt.getModifiers() & ActionEvent.SHIFT_MASK) != 0) {
                 engine.randomRange = Double.valueOf(editJoggleScale.getText());
-                engine.placeNDonut();
             } else {
                 engine.randomRange = -1;
-                engine.placeNMobiusDonut();
+            }
+            if ((evt.getModifiers() & ActionEvent.CTRL_MASK) != 0) {
+                engine.placeNSaltLattice();
+            } else {
+                engine.placeNDonut();
+//                engine.placeNMobiusDonut();
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());

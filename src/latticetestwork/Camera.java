@@ -180,7 +180,12 @@ public class Camera {
                 //TODO So, this isn't actually general, like, for multiple dimensions.
                 int dWidth = width / graininess;
                 int dHeight = height / graininess;
-                int[] picDims = new int[]{dWidth, dHeight};                
+                int[] picDims = null;
+                if (latticeDims > 2) {
+                    picDims = new int[]{dWidth, dHeight};                
+                } else {
+                    picDims = new int[]{dWidth};                
+                }
                 switch (distribution) {
                     case DIST_CPU: {
                         int[] division = new int[picDims.length];
@@ -189,14 +194,29 @@ public class Camera {
                         }
                         Tensor<Integer> result = ParallelRender.aRender(dims, latticeDims, division, orientation, pos, cell, cameraMode, dtl, fov, picDims);
                         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-                        for (int x = 0; x < dWidth; x++) {
-                            for (int y = 0; y < dHeight; y++) {
-//                        int rgb = result.get(x, y).getRGB();
-                                int rgb = result.get(x, y);//Integer.toHexString(result.get(x, y))
-                                rgb = 0xFF000000 + (0x00FFFFFF & rgb);
-                                for (int xi = 0; xi < graininess; xi++) {
-                                    for (int yi = 0; yi < graininess; yi++) {
-                                        image.setRGB((x * graininess) + xi, (y * graininess) + yi, rgb);
+                        if (latticeDims > 2) {
+                            for (int x = 0; x < dWidth; x++) {
+                                for (int y = 0; y < dHeight; y++) {
+//                                    int rgb = result.get(x, y).getRGB();
+                                    int rgb = result.get(x, y);//Integer.toHexString(result.get(x, y))
+                                    rgb = 0xFF000000 + (0x00FFFFFF & rgb);
+                                    for (int xi = 0; xi < graininess; xi++) {
+                                        for (int yi = 0; yi < graininess; yi++) {
+                                            image.setRGB((x * graininess) + xi, (y * graininess) + yi, rgb);
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            for (int x = 0; x < dWidth; x++) {
+                                for (int y = 0; y < dHeight; y++) {
+//                                    int rgb = result.get(x, y).getRGB();
+                                    int rgb = result.get(x);//Integer.toHexString(result.get(x, y))
+                                    rgb = 0xFF000000 + (0x00FFFFFF & rgb);
+                                    for (int xi = 0; xi < graininess; xi++) {
+                                        for (int yi = 0; yi < graininess; yi++) {
+                                            image.setRGB((x * graininess) + xi, (y * graininess) + yi, rgb);
+                                        }
                                     }
                                 }
                             }
