@@ -169,7 +169,7 @@ public class Camera {
     public static final int PROJ_AZIMUTHAL = 1;
     public static final int PROJ_MERCATOR = 2;
     public static final int PROJ_FULL_360 = 3;
-    public int divisionCount = 1;
+    public int divisionCount = 4;
     
     public void renderCamera(Graphics2D g, int cameraMode, int width, int height, double xOffset, double yOffset, double dtl, double fov, int graininess, int distribution) {
         switch (cameraMode) {

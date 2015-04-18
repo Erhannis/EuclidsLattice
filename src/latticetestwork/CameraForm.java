@@ -59,6 +59,7 @@ public class CameraForm extends javax.swing.JFrame {
             protected void paintComponent(Graphics g1) {
                 super.paintComponent(g1);
                 if (engine != null && render) {
+                    long start = System.currentTimeMillis();
                     System.out.println("Start render " + renderCount + "  - " + (System.currentTimeMillis()));
                     Graphics2D g = (Graphics2D) g1;
                     if (stereoRender) {
@@ -74,6 +75,7 @@ public class CameraForm extends javax.swing.JFrame {
                         camera.renderCamera(g, cameraMode, this.getWidth(), this.getHeight(), 0, 0, dtl, fov, graininess, parent.distribution);
                     }
                     System.out.println("Finish render " + (renderCount++) + "  - " + (System.currentTimeMillis()));
+                    System.out.println("time - " + ((System.currentTimeMillis() - start)) / 1000.0);
                     //engine.render(g, 0, this.getWidth(), this.getHeight(), transX, transY, scaleX, scaleY);
                 }
             }

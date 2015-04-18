@@ -60,7 +60,7 @@ public class NBasis implements Streamable {
      * and construct a basis matrix out of them.
      */
     public void orthogonalizeWCache() {
-        basis = Matrix.getCachedMatrix(bases.length, dims, false);//MTXOFT
+        basis = Matrix.maybeGetCachedMatrix(bases.length, dims, false);//MTXOFT
         // Gram-Schmidt orthogonalization
         for (int i = 0; i < bases.length; i++) {
             for (int j = 0; j < i; j++) {

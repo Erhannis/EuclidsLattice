@@ -21,7 +21,7 @@ public class NVector {
 
     public static CachedNVector[][] cache = null;
     public static final int CACHED_DIMS = 11;
-    public static final int CACHED_COPIES = 30;
+    public static final int CACHED_COPIES = 100;
     public int usedCached = -1;
 
     static {
@@ -63,7 +63,7 @@ public class NVector {
      * @param dims
      * @param init 
      */
-    public static NVector getCachedNVector(int dims, boolean init) {
+    public static synchronized NVector getCachedNVector(int dims, boolean init) {
         for (int k = 0; k < CACHED_COPIES; k++) {
             if (!cache[dims][k].inUse) {
                 cache[dims][k].inUse = true;
@@ -96,6 +96,18 @@ public class NVector {
         if (usedCached != -1) {
             cache[dims][usedCached].inUse = false;
         }
+    }
+    
+    public static synchronized int cachedVectorsInUse() {
+        int useCount = 0;
+        for (int i = 0; i < CACHED_DIMS; i++) {
+            for (int j = 0; j < CACHED_COPIES; j++) {
+                if (cache[i][j].inUse) {
+                    useCount++;
+                }
+            }
+        }
+        return useCount;
     }
     
     public NVector(int dims) {

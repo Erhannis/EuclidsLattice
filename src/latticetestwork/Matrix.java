@@ -114,7 +114,7 @@ public class Matrix implements Streamable {
      * @param rows
      * @param init 
      */
-    public static Matrix getCachedMatrix(int cols, int rows, boolean init) {
+    public static synchronized Matrix getCachedMatrix(int cols, int rows, boolean init) {
         for (int k = 0; k < CACHED_COPIES; k++) {
             if (!cache[cols][rows][k].inUse) {
                 cache[cols][rows][k].inUse = true;
@@ -151,6 +151,20 @@ public class Matrix implements Streamable {
         }
     }
 
+    public static synchronized int cachedMatricesInUse() {
+        int useCount = 0;
+        for (int i = 0; i < CACHED_COLS; i++) {
+            for (int j = 0; j < CACHED_ROWS; j++) {
+                for (int k = 0; k < CACHED_COPIES; k++) {
+                    if (cache[i][j][k].inUse) {
+                        useCount++;
+                    }
+                }
+            }
+        }
+        return useCount;
+    }
+    
     private Matrix(Matrix source) {
         this.cols = source.cols;
         this.rows = source.rows;
@@ -588,7 +602,7 @@ public class Matrix implements Streamable {
         if (l.cols != r.rows) {
             throw new Exception("Dims don't match for multiplication!");
         }
-        Matrix result = Matrix.getCachedMatrix(r.cols, l.rows, false);
+        Matrix result = Matrix.maybeGetCachedMatrix(r.cols, l.rows, false);
         for (int col = 0; col < result.cols; col++) {
             for (int row = 0; row < result.rows; row++) {
                 double sum = 0;
@@ -663,7 +677,7 @@ public class Matrix implements Streamable {
         }
         // Set up the matrix
         //THINK This next matrix should MAYBE be initialized. - Nah, I think it does it all.
-        Matrix m = Matrix.getCachedMatrix(bases.get(0).dims + bases.size(), bases.size() + vectors.size(), false);//MTXOFT*
+        Matrix m = Matrix.maybeGetCachedMatrix(bases.get(0).dims + bases.size(), bases.size() + vectors.size(), false);//MTXOFT*
         {
             int row = 0;
             for (int i = 0; i < bases.size(); i++, row++) {
@@ -969,7 +983,7 @@ public class Matrix implements Streamable {
     }
 
     public Matrix copyWCache() {
-        Matrix result = Matrix.getCachedMatrix(cols, rows, false);
+        Matrix result = Matrix.maybeGetCachedMatrix(cols, rows, false);
         for (int x = 0; x < cols; x++) {
             System.arraycopy(this.val[x], 0, result.val[x], 0, rows);
 //            for (int y = 0; y < rows; y++) {
@@ -990,7 +1004,7 @@ public class Matrix implements Streamable {
     }
 
     public static Matrix transposeWCache(Matrix m) {
-        Matrix result = Matrix.getCachedMatrix(m.rows, m.cols, false);
+        Matrix result = Matrix.maybeGetCachedMatrix(m.rows, m.cols, false);
         for (int i = 0; i < m.cols; i++) {
             for (int j = 0; j < m.rows; j++) {
                 result.val[j][i] = m.val[i][j];

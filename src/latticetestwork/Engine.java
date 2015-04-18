@@ -1667,7 +1667,7 @@ public class Engine {
                     bases.add(anchors.get(i).pos.minusB(anchors.get(0).pos));
                     points.add(anchors.get(i).pos.minusB(anchors.get(0).pos));
                 }
-                basis = Matrix.getCachedMatrix(bases.size(), dims, false);//MTXOFT*
+                basis = Matrix.maybeGetCachedMatrix(bases.size(), dims, false);//MTXOFT*
                 // Gram-Schmidt orthogonalization
                 for (int i = 0; i < bases.size(); i++) {
                     for (int j = 0; j < i; j++) {
@@ -1704,7 +1704,7 @@ public class Engine {
             }
             // NOPE Make vectors out of pi - p0.
             // Lay the vectors out and make them into a matrix.  We're using Cramer's Rule.
-            Matrix cramer = Matrix.getCachedMatrix(newAnchors.get(0).dims + 1, newAnchors.size(), false);
+            Matrix cramer = Matrix.maybeGetCachedMatrix(newAnchors.get(0).dims + 1, newAnchors.size(), false);
             for (int row = 0; row < newAnchors.size(); row++) {
                 for (int col = 0; col < newAnchors.get(0).dims; col++) {
                     cramer.val[col][row] = 2 * newAnchors.get(row).coords[col];
