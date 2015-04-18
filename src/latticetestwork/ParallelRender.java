@@ -388,6 +388,9 @@ public class ParallelRender {
                 }
                 // Theoretically, now hitFace has what face we hit, and hit has where we ended up.
                 // Go there, and subtract from dtl.
+                if (trueHit == null) {
+                    System.err.println("Problem!");
+                }
                 NVector hMp = trueHit.minusB(pos, true);
                 dtl -= hMp.length();
                 hMp.doneWithNVector();

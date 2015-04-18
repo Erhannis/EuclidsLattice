@@ -27,7 +27,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jSplitPane1" alignment="1" pref="500" max="32767" attributes="0"/>
+          <Component id="jSplitPane1" alignment="1" pref="455" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -40,6 +40,7 @@
     <Container class="javax.swing.JSplitPane" name="jSplitPane1">
       <Properties>
         <Property name="dividerLocation" type="int" value="284"/>
+        <Property name="resizeWeight" type="double" value="1.0"/>
         <Property name="name" type="java.lang.String" value="jSplitPane1" noResource="true"/>
       </Properties>
 
@@ -62,13 +63,13 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="boxStereo" pref="77" max="32767" attributes="0"/>
-                          <Component id="btnControl" alignment="1" pref="77" max="32767" attributes="1"/>
-                          <Component id="btnTracer" alignment="1" pref="77" max="32767" attributes="1"/>
-                          <Component id="btnRealign" alignment="1" pref="77" max="32767" attributes="1"/>
-                          <Component id="btnCenter" alignment="1" pref="77" max="32767" attributes="1"/>
+                          <Component id="boxStereo" pref="92" max="32767" attributes="0"/>
+                          <Component id="btnControl" alignment="1" pref="92" max="32767" attributes="1"/>
+                          <Component id="btnTracer" alignment="1" pref="92" max="32767" attributes="1"/>
+                          <Component id="btnRealign" alignment="1" pref="92" max="32767" attributes="1"/>
+                          <Component id="btnCenter" alignment="1" pref="92" max="32767" attributes="1"/>
                           <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="editGrainy" alignment="0" min="0" pref="0" max="32767" attributes="1"/>
                           <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>

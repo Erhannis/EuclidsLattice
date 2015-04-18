@@ -34,7 +34,7 @@ public class Camera {
     public NVector latticeVelocity = null; // Just until I figure out which is more useful.
     public NCell cell = null;
     public int cellId = 0;
-    public NewCameraForm camForm = null;
+    public CameraForm camForm = null;
     public int id = -2;
     
     public Camera(int dims, int latticeDims, Lattice lattice) {
@@ -160,15 +160,16 @@ public class Camera {
     
     /** I don't think these work together, yet.  */
     //TODO Ooh, idea!  We could have a cool interactive routing diagram, like patchage!
-    public static final int DIST_NONE = NewCameraForm.DIST_NONE;
-    public static final int DIST_CPU  = NewCameraForm.DIST_CPU;
-    public static final int DIST_GPU  = NewCameraForm.DIST_GPU;
-    public static final int DIST_MOB  = NewCameraForm.DIST_MOB;
+    public static final int DIST_NONE = LatticeTestworkView.DIST_NONE;
+    public static final int DIST_CPU  = LatticeTestworkView.DIST_CPU;
+    public static final int DIST_GPU  = LatticeTestworkView.DIST_GPU;
+    public static final int DIST_MOB  = LatticeTestworkView.DIST_MOB;
     
-    public int projectionType = PROJ_FULL_360;
+    public int projectionType = PROJ_MERCATOR;
     public static final int PROJ_AZIMUTHAL = 1;
     public static final int PROJ_MERCATOR = 2;
     public static final int PROJ_FULL_360 = 3;
+    public int divisionCount = 1;
     
     public void renderCamera(Graphics2D g, int cameraMode, int width, int height, double xOffset, double yOffset, double dtl, double fov, int graininess, int distribution) {
         switch (cameraMode) {
@@ -184,7 +185,7 @@ public class Camera {
                     case DIST_CPU: {
                         int[] division = new int[picDims.length];
                         for (int i = 0; i < division.length; i++) {
-                            division[i] = 1;//4;
+                            division[i] = divisionCount;
                         }
                         Tensor<Integer> result = ParallelRender.aRender(dims, latticeDims, division, orientation, pos, cell, cameraMode, dtl, fov, picDims);
                         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);

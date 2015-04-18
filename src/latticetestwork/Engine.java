@@ -34,10 +34,12 @@ public class Engine {
     }
     public static Random r = new Random();
     public int dims = 0;
+    public LatticeTestworkView parent = null;
     public ArrayList<NLatticeBone> skeleton = null;
 
-    public Engine(int dims) {
+    public Engine(int dims, LatticeTestworkView parent) {
         this.dims = dims;
+        this.parent = parent;
     }
     public Lattice lattice = null;
     public int mode = 0;
@@ -2886,7 +2888,7 @@ public class Engine {
                 } catch (Exception ex) {
                     Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                newCam.camForm = new NewCameraForm(this, newCam);
+                newCam.camForm = new CameraForm(this, newCam, parent);
                 lattice.cameras.add(newCam);
                 newCam.camForm.show();
             } else {
@@ -2906,13 +2908,13 @@ public class Engine {
 //                } catch (Exception ex) {
 //                    Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
 //                }
-                newCam.camForm = new NewCameraForm(this, newCam);
-//                newCam.camForm.render = false; //NEW
-//                newCam.camForm.boxRenderMain.setSelected(true); //NEW
+                newCam.camForm = new CameraForm(this, newCam, parent);
+                newCam.camForm.render = false;
+                newCam.camForm.boxRenderMain.setSelected(true);
                 lattice.cameras.add(newCam);
                 newCam.camForm.show();
             }
-//            parent.dp.repaint(); //NEW
+            parent.dp.repaint();
         }
     }
     public double donutCircumfrence = 30;
@@ -4689,7 +4691,7 @@ public class Engine {
      * @param cameraForm
      * @return 
      */
-    public Camera createIndependentCamera(boolean orient, NewCameraForm cameraForm) {
+    public Camera createIndependentCamera(boolean orient, CameraForm cameraForm) {
         Camera newCam = null;
         if (lattice != null) {
             if (orient) {
@@ -4804,7 +4806,7 @@ public class Engine {
                 } catch (Exception ex) {
                     Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                newCam.camForm = new NewCameraForm(this, newCam);
+                newCam.camForm = new CameraForm(this, newCam, parent);
                 lattice.cameras.add(newCam);
                 newCam.camForm.show();
             } else {
@@ -4819,7 +4821,7 @@ public class Engine {
                 //newCam.pos = center;
                 permacenter.pos = center;
                 permaradius = cell.points[0].pos.minusB(center).length();
-                newCam.camForm = new NewCameraForm(this, newCam);
+                newCam.camForm = new CameraForm(this, newCam, parent);
 //                newCam.camForm.render = false; //NEW
                 lattice.cameras.add(newCam);
                 newCam.camForm.show();

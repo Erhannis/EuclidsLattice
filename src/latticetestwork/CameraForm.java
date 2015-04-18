@@ -41,6 +41,7 @@ public class CameraForm extends javax.swing.JFrame {
     public boolean render;
     public double fov = 1.0;
     public boolean stereoRender = false;
+    public int cameraMode = Camera.PROJ_MERCATOR;
 
     /** Creates new form CameraForm */
     public CameraForm(final Engine engine0, Camera cam, final LatticeTestworkView parent) {
@@ -58,7 +59,7 @@ public class CameraForm extends javax.swing.JFrame {
             protected void paintComponent(Graphics g1) {
                 super.paintComponent(g1);
                 if (engine != null && render) {
-                    System.out.println("Start render " + renderCount);
+                    System.out.println("Start render " + renderCount + "  - " + (System.currentTimeMillis()));
                     Graphics2D g = (Graphics2D) g1;
                     if (stereoRender) {
                         Camera stereoCam = camera.copy();
@@ -67,12 +68,12 @@ public class CameraForm extends javax.swing.JFrame {
                         } catch (StackOverflowError e) {
                             System.err.println("Stack overflow! - " + stereoCam.checkFloating());
                         }
-                        camera.renderCamera(g, Camera.PROJ_MERCATOR, this.getWidth() / 2, this.getHeight(), 0, 0, dtl, fov, graininess, parent.distribution);
-                        stereoCam.renderCamera(g, Camera.PROJ_MERCATOR, this.getWidth() / 2, this.getHeight(), this.getWidth() / 2.0, 0, dtl, fov, graininess, parent.distribution);
+                        camera.renderCamera(g, cameraMode, this.getWidth() / 2, this.getHeight(), 0, 0, dtl, fov, graininess, parent.distribution);
+                        stereoCam.renderCamera(g, cameraMode, this.getWidth() / 2, this.getHeight(), this.getWidth() / 2.0, 0, dtl, fov, graininess, parent.distribution);
                     } else {
-                        camera.renderCamera(g, Camera.PROJ_MERCATOR, this.getWidth(), this.getHeight(), 0, 0, dtl, fov, graininess, parent.distribution);
+                        camera.renderCamera(g, cameraMode, this.getWidth(), this.getHeight(), 0, 0, dtl, fov, graininess, parent.distribution);
                     }
-                    System.out.println("Finish render " + renderCount++);
+                    System.out.println("Finish render " + (renderCount++) + "  - " + (System.currentTimeMillis()));
                     //engine.render(g, 0, this.getWidth(), this.getHeight(), transX, transY, scaleX, scaleY);
                 }
             }
@@ -122,6 +123,7 @@ public class CameraForm extends javax.swing.JFrame {
         setName("Form"); // NOI18N
 
         jSplitPane1.setDividerLocation(284);
+        jSplitPane1.setResizeWeight(1.0);
         jSplitPane1.setName("jSplitPane1"); // NOI18N
 
         intrumentPanel.setName("intrumentPanel"); // NOI18N
@@ -320,13 +322,13 @@ public class CameraForm extends javax.swing.JFrame {
         intrumentPanelLayout.setHorizontalGroup(
             intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, intrumentPanelLayout.createSequentialGroup()
-                .addGap(36, 36, 36)
+                .addContainerGap()
                 .addGroup(intrumentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(boxStereo, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
-                    .addComponent(btnControl, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
-                    .addComponent(btnTracer, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
-                    .addComponent(btnRealign, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
-                    .addComponent(btnCenter, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
+                    .addComponent(boxStereo, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+                    .addComponent(btnControl, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+                    .addComponent(btnTracer, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+                    .addComponent(btnRealign, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+                    .addComponent(btnCenter, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(editGrainy, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
@@ -424,7 +426,7 @@ public class CameraForm extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 455, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -451,7 +453,7 @@ public class CameraForm extends javax.swing.JFrame {
             for (int i = 0; i < division.length; i++) {
                 division[i] = 4;
             }
-            Tensor<Integer> result = ParallelRender.aRender(camera.dims, camera.latticeDims, division, camera.orientation, camera.pos, camera.cell, dtl, lfov, picDims);
+            Tensor<Integer> result = ParallelRender.aRender(camera.dims, camera.latticeDims, division, camera.orientation, camera.pos, camera.cell, cameraMode, dtl, lfov, picDims);
             BufferedImage image = new BufferedImage(imWidth, imHeight, BufferedImage.TYPE_3BYTE_BGR);
             for (int x = 0; x < imWidth; x++) {
                 for (int y = 0; y < imHeight; y++) {
@@ -840,7 +842,7 @@ public class CameraForm extends javax.swing.JFrame {
 private void btnTracerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTracerActionPerformed
     updateOptions();
     // Do tracer
-    camera.renderCameraTracer(Camera.PROJ_MERCATOR, renderPanel.getWidth(), this.getHeight(), 2);
+    camera.renderCameraTracer(cameraMode, renderPanel.getWidth(), this.getHeight(), 2);
     if (boxRender.isSelected()) {
         renderPanel.repaint();
     }
