@@ -115,6 +115,10 @@ public class NVector {
         coords = new double[dims];
     }
 
+    /**
+     * Warning: uses the coords object itself, not a copy.
+     * @param coords 
+     */
     public NVector(double[] coords) {
         this.dims = coords.length;
         this.coords = coords;

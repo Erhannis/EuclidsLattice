@@ -38,7 +38,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="63" max="32767" attributes="0"/>
+              <EmptySpace pref="60" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -67,7 +67,7 @@
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="btnClearOuterFaces" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="176" max="32767" attributes="0"/>
+                          <EmptySpace pref="141" max="32767" attributes="0"/>
                           <Component id="btnMakeCompletePtsImmune" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
@@ -75,20 +75,26 @@
                           <EmptySpace pref="205" max="32767" attributes="0"/>
                           <Component id="btnClearLoggedDisplayPts" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="btnNewTruncate" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="btnCheckIncomplete" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="btnFullCheckIncomplete" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <Component id="btnCheckDuplicates" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="btnKatanaMath" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="btnCellVolumes" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButton1" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="btnAddGround" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="editGroundElevation" min="-2" pref="75" max="-2" attributes="0"/>
+                      <Group type="102" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="btnNewTruncate" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="btnCheckIncomplete" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="btnFullCheckIncomplete" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="btnCheckDuplicates" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnKatanaMath" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnCellVolumes" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jButton1" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="btnAddGround" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="editGroundElevation" min="-2" pref="75" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="btnAddFunction" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -139,7 +145,9 @@
                       <Component id="btnAddGround" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="editGroundElevation" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="15" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="btnAddFunction" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -319,6 +327,17 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnClearLoggedDisplayPtsActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnAddFunction">
+          <Properties>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="latticetestwork/resources/MiscForm.properties" key="MiscForm.btnAddFunction.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="btnAddFunction" noResource="true"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddFunctionActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

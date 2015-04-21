@@ -28,6 +28,11 @@ public class NFace implements Streamable {
     public NVector bDir = null;
     public double angle = 0;
     
+    /**
+     * How many digits checked for equality, where relevant.
+     */
+    public int snapDigits = 10;
+    
     // Impermanent variables
     public int runTag = -1;
 
@@ -50,6 +55,34 @@ public class NFace implements Streamable {
         return false;
     }
 
+    /**
+     * Warning: an approximately equivalent face's points can still have different properties,
+     * like "faces" and stuff.  Be careful.
+     * @param f
+     * @param approximate
+     * @return 
+     */
+    public boolean equivalent(NFace f, boolean approximate) {
+        if (approximate) {
+            // Technically, checking a face with a superset of this's points would also return true.
+            for (int i = 0; i < this.points.length; i++) {
+                boolean found = false;
+                for (int j = 0; j < f.points.length; j++) {
+                    if (this.points[i].pos.approximatelyEquivalent(f.points[j].pos, snapDigits)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return equivalent(f);
+        }
+    }
+    
     public boolean equivalent(NFace f) {
         // Technically, checking a face with a superset of this's points would also return true.
         for (int i = 0; i < this.points.length; i++) {

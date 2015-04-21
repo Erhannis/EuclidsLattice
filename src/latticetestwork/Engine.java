@@ -2917,6 +2917,29 @@ public class Engine {
             parent.dp.repaint();
         }
     }
+    
+    public void placeFunctionTest() throws Exception {
+        if (lattice != null) {
+            if (dims != 4 || lattice.internalDims != 3) {
+                throw new Exception("Required: Dims = 4, LDims = 3");
+            }
+            double[] lower = new double[] {-4, -4, -4};
+            double[] upper = new double[] {4, 4, 4};
+            double[] step  = new double[] {0.5, 0.5, 0.5};
+            for (double u = lower[0]; u <= upper[0]; u += step[0]) {
+                for (double v = lower[1]; v <= upper[1]; v += step[1]) {
+                    for (double w = lower[2]; w <= upper[2]; w += step[2]) {
+                        double a = u + 0.5*v + 0.5*w;
+                        double b = v + 0.5*w;
+                        double c = w;
+                        double d = 1.0 / (Math.pow(a, 4) + Math.pow(b, 4) + Math.pow(c, 4) + 1);
+                        NPoint bucket = new NPoint(new double[]{a, b, c, d});
+                        lattice.addPoint(bucket);
+                    }
+                }
+            }
+        }
+    }
     public double donutCircumfrence = 30;
 
     public void placeNDonut() throws Exception {

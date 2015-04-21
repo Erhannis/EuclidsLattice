@@ -49,6 +49,23 @@ public class NPoint implements Streamable {
             color = Color.BLACK;
         }
     }
+    
+    /**
+     * Warning: uses the coords object itself; not a copy.
+     * @param coords 
+     */
+    public NPoint(NVector coords) {
+        this(coords.dims);
+        this.pos = coords;
+    }
+    
+    /**
+     * Warning: uses the coords object itself; not a copy.
+     * @param coords 
+     */
+    public NPoint(double[] coords) {
+        this(new NVector(coords));
+    }
 
     public double distSqr(NPoint p) {
         double dist = 0;

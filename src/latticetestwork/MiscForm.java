@@ -11,6 +11,8 @@
 package latticetestwork;
 
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -53,6 +55,7 @@ public class MiscForm extends javax.swing.JFrame {
         btnMakeCompletePtsImmune = new javax.swing.JButton();
         btnClearImmunity = new javax.swing.JButton();
         btnClearLoggedDisplayPts = new javax.swing.JButton();
+        btnAddFunction = new javax.swing.JButton();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("latticetestwork/resources/MiscForm"); // NOI18N
         setTitle(bundle.getString("Form.title")); // NOI18N
@@ -185,6 +188,14 @@ public class MiscForm extends javax.swing.JFrame {
             }
         });
 
+        btnAddFunction.setText(bundle.getString("MiscForm.btnAddFunction.text")); // NOI18N
+        btnAddFunction.setName("btnAddFunction"); // NOI18N
+        btnAddFunction.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddFunctionActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -200,25 +211,29 @@ public class MiscForm extends javax.swing.JFrame {
                         .addComponent(btnClearImmunity))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btnClearOuterFaces)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 176, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 141, Short.MAX_VALUE)
                         .addComponent(btnMakeCompletePtsImmune))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btnTruncate)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 205, Short.MAX_VALUE)
                         .addComponent(btnClearLoggedDisplayPts))
-                    .addComponent(btnNewTruncate)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnCheckIncomplete)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnFullCheckIncomplete))
-                    .addComponent(btnCheckDuplicates)
-                    .addComponent(btnKatanaMath)
-                    .addComponent(btnCellVolumes)
-                    .addComponent(jButton1)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnAddGround)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(editGroundElevation, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnNewTruncate)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnCheckIncomplete)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnFullCheckIncomplete))
+                            .addComponent(btnCheckDuplicates)
+                            .addComponent(btnKatanaMath)
+                            .addComponent(btnCellVolumes)
+                            .addComponent(jButton1)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnAddGround)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(editGroundElevation, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnAddFunction))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -258,7 +273,9 @@ public class MiscForm extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAddGround)
                     .addComponent(editGroundElevation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnAddFunction)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -271,7 +288,7 @@ public class MiscForm extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(63, Short.MAX_VALUE))
+                .addContainerGap(60, Short.MAX_VALUE))
         );
 
         setBounds(50, 400, 522, 474);
@@ -410,6 +427,18 @@ private void btnClearLoggedDisplayPtsActionPerformed(java.awt.event.ActionEvent 
     }
 }//GEN-LAST:event_btnClearLoggedDisplayPtsActionPerformed
 
+    private void btnAddFunctionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddFunctionActionPerformed
+        if (parent.engine != null) {
+            try {
+                parent.engine.placeFunctionTest();
+                parent.dp.repaint();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+                Logger.getLogger(MiscForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_btnAddFunctionActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -447,6 +476,7 @@ private void btnClearLoggedDisplayPtsActionPerformed(java.awt.event.ActionEvent 
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bntBindSphere;
+    private javax.swing.JButton btnAddFunction;
     private javax.swing.JButton btnAddGround;
     private javax.swing.JButton btnBindSphereX100;
     private javax.swing.JButton btnCellVolumes;
