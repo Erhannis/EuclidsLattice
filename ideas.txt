@@ -1,3 +1,6 @@
 Add Function button
 Apply Function button
 Simplify Mesh function?
+give points a set of all allowed neighbors? (particularly for function meshes)
+  would speed up crystallization
+  and also make it more stable
