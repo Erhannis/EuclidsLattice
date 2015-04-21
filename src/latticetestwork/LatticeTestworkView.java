@@ -1376,12 +1376,14 @@ private void btnFinishPrepActionPerformed(java.awt.event.ActionEvent evt) {//GEN
             c.makeBasis();
             c.color = new Color(c.color.getRed(), c.color.getGreen(), c.color.getBlue(), 0xFF);
         }
-        for (int i = 0; i < 25; i++) {
-            int j = engine.r.nextInt(engine.lattice.cells.size());
-            Color color = engine.lattice.cells.get(j).color;
-            engine.lattice.cells.get(j).color = new Color(color.getRed(), color.getGreen(), color.getBlue(), 0xFF);
-            //engine.lattice.cells.get(j).surfaces.add(new NSurface(engine.dims, engine.lattice.internalDims));
-            engine.lattice.cells.get(j).surfaces.add(null);
+        if ((evt.getModifiers() & ActionEvent.SHIFT_MASK) == 0) {
+            for (int i = 0; i < 25; i++) {
+                int j = engine.r.nextInt(engine.lattice.cells.size());
+                Color color = engine.lattice.cells.get(j).color;
+                engine.lattice.cells.get(j).color = new Color(color.getRed(), color.getGreen(), color.getBlue(), 0xFF);
+                //engine.lattice.cells.get(j).surfaces.add(new NSurface(engine.dims, engine.lattice.internalDims));
+                engine.lattice.cells.get(j).surfaces.add(null);
+            }
         }
         for (NFace f : engine.lattice.faces) {
             f.calcAll();//engine.highlightedCells.add(f.cellA);
