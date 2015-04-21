@@ -128,7 +128,7 @@ public class ParallelRender {
                 }
             }
         } else {//System.out.println(orientation[2]);
-            NVector dir = new NVector(dims);
+            NVector dir = new NVector(dims); //TODO Can/should this be cached?
             //NVector apDir = aperture[0];
             //TODO Fix this horrible patched mess here.  (Should have aperture.)  I just want to see the pretty pictures!
             // Actually, this works pretty well.  I might leave it.
@@ -389,7 +389,7 @@ public class ParallelRender {
                 // Theoretically, now hitFace has what face we hit, and hit has where we ended up.
                 // Go there, and subtract from dtl.
                 if (trueHit == null) {
-                    System.err.println("Problem!");
+                    System.err.println("Missing hit face!");
                     pos.doneWithNVector();
                     return 0xFFFFFFFF;
                 }
