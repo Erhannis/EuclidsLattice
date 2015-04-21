@@ -65,11 +65,11 @@
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="boxStereo" pref="92" max="32767" attributes="0"/>
-                          <Component id="btnControl" alignment="1" pref="92" max="32767" attributes="1"/>
-                          <Component id="btnTracer" alignment="1" pref="92" max="32767" attributes="1"/>
-                          <Component id="btnRealign" alignment="1" pref="92" max="32767" attributes="1"/>
-                          <Component id="btnCenter" alignment="1" pref="92" max="32767" attributes="1"/>
+                          <Component id="boxStereo" max="32767" attributes="0"/>
+                          <Component id="btnControl" alignment="1" max="32767" attributes="1"/>
+                          <Component id="btnTracer" alignment="1" max="32767" attributes="1"/>
+                          <Component id="btnRealign" alignment="1" max="32767" attributes="1"/>
+                          <Component id="btnCenter" alignment="1" max="32767" attributes="1"/>
                           <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="editGrainy" alignment="0" min="0" pref="0" max="32767" attributes="1"/>
                           <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>

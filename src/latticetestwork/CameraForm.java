@@ -438,8 +438,8 @@ public class CameraForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     public ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
-    public int imWidth = 256;
-    public int imHeight = 256;
+    public int imWidth = 2048;
+    public int imHeight = 1024;
     public int imagecount = 0;
     private void btnDTLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDTLActionPerformed
         updateOptions();
@@ -537,8 +537,8 @@ public class CameraForm extends javax.swing.JFrame {
         for (int count = 0; count < 2000; count++) {
             //count++;
 
-            //camera.move(camera.orientation[1].multS(-gaitLength), null);
-            camera.move(camera.orientation[0].multS(gaitLength), null);
+            camera.move(camera.orientation[1].multS(-gaitLength), null);
+            //camera.move(camera.orientation[0].multS(gaitLength), null);
             prevFloating = curFloating;
             curFloating = camera.checkFloating();
             if (curFloating > 0.005) {
@@ -558,19 +558,26 @@ public class CameraForm extends javax.swing.JFrame {
             }
 
             if (!parent.distributeComputing) {
-                int[] picDims = new int[]{imWidth, imHeight};
-                Tensor<Color> result = camera.aRender(dtl, fov, picDims);
-                BufferedImage image = new BufferedImage(imWidth, imHeight, BufferedImage.TYPE_3BYTE_BGR);
-                for (int x = 0; x < imWidth; x++) {
-                    for (int y = 0; y < imHeight; y++) {
-                        image.setRGB(x, y, result.get(x, y).getRGB());
-                    }
+                
+                BufferedImage bi = new BufferedImage(imWidth, imHeight, BufferedImage.TYPE_3BYTE_BGR);
+                Graphics2D g = bi.createGraphics();
+                
+                if (stereoRender) {
+                    Camera stereoCam = camera.copy();
+                    try {
+                        stereoCam.move(stereoCam.orientation[1].multS(-5 * gaitLength), null);
+                    } catch (StackOverflowError e) {
+                        System.err.println("Stack overflow! - " + stereoCam.checkFloating());
+                    }//System.out.println((bi.getRGB(10, 10) >> 0) & 0xFF)
+                    camera.renderCamera(g, cameraMode, imWidth / 2, imHeight, 0, 0, dtl, fov, graininess, parent.distribution);
+                    stereoCam.renderCamera(g, cameraMode, imWidth / 2, imHeight, imWidth / 2.0, 0, dtl, fov, graininess, parent.distribution);
+                } else {
+                    camera.renderCamera(g, cameraMode, imWidth, imHeight, 0, 0, dtl, fov, graininess, parent.distribution);
                 }
-
-
+                
                 try {
-                    java.io.FileOutputStream fout = new java.io.FileOutputStream("image" + imagecount++ + ".jpg");
-                    javax.imageio.ImageIO.write(image, "JPG", fout);
+                    java.io.FileOutputStream fout = new java.io.FileOutputStream("image" + (imagecount++) + ".jpg");
+                    javax.imageio.ImageIO.write(bi, "JPG", fout);
                     fout.close();
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(CameraForm.class.getName()).log(Level.SEVERE, null, ex);
