@@ -145,11 +145,6 @@ public class Engine {
     public static final int RMODE_CAMERA = 1;
     public boolean trueRendered = true;
 
-    public class PointAndCell {
-
-        public NCell cell;
-        public Point.Double point;
-    }
     public int lastWidth = 1;
     public int lastHeight = 1;
     public double lastTransX = 1;
@@ -186,6 +181,7 @@ public class Engine {
             return false;
         }
     }
+    
     public ArrayList<Stick> completeSticks = new ArrayList<Stick>();
     public ArrayList<Stick> incompleteSticks = new ArrayList<Stick>();
 
@@ -4872,5 +4868,97 @@ public class Engine {
         for (NCell c : lattice.cells) {
             c.surfaces.add(ground);
         }
+    }
+    
+    /**
+     * Note that this assumes that all references are as they should be, and we
+     * don't, like, have a cell with this point, but no reference chain the other way.
+     * Also, it doesn't currently remove points from Sticks.
+     * @param point 
+     */
+    public void deleteMeshPoint(NPoint point) {
+      if (lattice != null && point != null) {
+        System.out.println("deleting point " + point);
+        lattice.points.remove(point);
+        chosens.remove(point);
+        highlighteds.remove(point);
+        
+        if (point.candidates != null) {
+          for (NPoint neighbor : point.candidates) {
+            neighbor.candidates.remove(point);
+          }
+        }
+        
+        ArrayList<NFace> faces = new ArrayList<NFace>(point.faces);
+        for (NFace face : faces) {
+          deleteMeshFace(face); // This should also take care of relevant cells.
+        }
+      }
+    }
+
+    private int cellId = 0;
+    
+    public void deleteMeshFace(NFace face) {
+      if (lattice != null && face != null) {
+        System.out.println("deleting face " + face);
+        lattice.faces.remove(face);
+        
+        if (taggedFace == face) {
+          taggedFace = null;
+        }
+        
+        for (NPoint point : face.points) {
+          point.faces.remove(face);
+          point.complete = false;
+        }
+        
+        deleteMeshCell(face.cellB);
+        deleteMeshCell(face.cellA);
+        deleteMeshCell(face.cellBBackup);
+
+        lattice.incompleteFaces.remove(face);
+      }
+    }
+
+    /**
+     * Doesn't check cameras' `cell`.
+     * @param cell 
+     */
+    public void deleteMeshCell(NCell cell) {
+      if (lattice != null && cell != null) {
+        cell.id = cellId++;
+        System.out.println("deleting cell " + cell.id  + " " + cell);
+        highlightedCells.remove(cell);
+        
+        if (lastCell == cell) {
+          lastCell = null;
+        }
+        
+        if (taggedCell == cell) {
+          taggedCell = null;
+        }
+        
+        lattice.cells.remove(cell);
+        
+        for (NPoint point : cell.points) {
+          point.complete = false;
+        }
+        
+        for (NFace face : cell.faces) {
+          if (face.cellB == cell) {
+            face.cellB = null;
+          }
+          if (face.cellA == cell) {
+            face.cellA = face.cellB;
+            face.cellB = null;
+          }
+          if (face.cellBBackup == cell) {
+            face.cellBBackup = null;
+          }
+          if (!lattice.incompleteFaces.contains(face)) { //TODO Could be slow
+            lattice.incompleteFaces.add(face);
+          }
+        }
+      }
     }
 }

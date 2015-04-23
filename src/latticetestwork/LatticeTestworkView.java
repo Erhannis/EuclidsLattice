@@ -89,6 +89,13 @@ public class LatticeTestworkView extends FrameView {
                         JMenuItem itemShowFaceCells = m.add("Show face's cells");
                         JMenuItem itemNearest10 = m.add("Nearest 10 pts");
                         JMenuItem itemCoords = m.add("Coords");
+                        JMenuItem itemDeletePoints = m.add("Delete Point(s)");
+                        JMenuItem itemDeleteFace = m.add("Delete Face");
+                        JMenuItem itemDeleteCell = m.add("Delete Cell");
+                        JMenuItem itemInspectElement = m.add("Inspect");
+                        if (dp.engine.chosens.size() == 0) {
+                          itemDeletePoints.setEnabled(false);
+                        }
                         if (dp.engine.chosens.size() != 1) {
                             itemNearest10.setEnabled(false);
                             itemCoords.setEnabled(false);
@@ -100,13 +107,19 @@ public class LatticeTestworkView extends FrameView {
                             itemCircumsphere.setEnabled(false);
                             itemPlusStats.setEnabled(false);
                             itemTagCell.setEnabled(false);
+                            itemDeleteCell.setEnabled(false);
                         }
                         if (dp.engine.chosens.size() != (dp.engine.lattice.internalDims)) {
                             itemShowFaceCells.setEnabled(false);
                             itemTagFace.setEnabled(false);
+                            itemDeleteFace.setEnabled(false);
+                        }
+                        if ((dp.engine.chosens.size() != 1)
+                         && (dp.engine.chosens.size() != (dp.engine.lattice.internalDims + 1))
+                         && (dp.engine.chosens.size() != (dp.engine.lattice.internalDims))) {
+                          itemInspectElement.setEnabled(false);
                         }
                         itemCircumsphere.addActionListener(new ActionListener() {
-
                             public void actionPerformed(ActionEvent e) {
                                 dp.engine.highlighteds.clear();
                                 dp.engine.highlighteds.addAll(dp.engine.findCircleContentsALT(dp.engine.chosens, false, true));
@@ -114,7 +127,6 @@ public class LatticeTestworkView extends FrameView {
                             }
                         });
                         itemPlusStats.addActionListener(new ActionListener() {
-
                             public void actionPerformed(ActionEvent e) {
                                 dp.engine.highlighteds.clear();
                                 dp.engine.highlighteds.addAll(dp.engine.findCircleContentsALT(dp.engine.chosens, false, true));
@@ -123,7 +135,6 @@ public class LatticeTestworkView extends FrameView {
                             }
                         });
                         itemTagCell.addActionListener(new ActionListener() {
-
                             public void actionPerformed(ActionEvent e) {
                                 NCell bucket = new NCell(dp.engine.lattice.dims, dp.engine.lattice.internalDims);
                                 for (int i = 0; i < bucket.points.length; i++) {
@@ -133,13 +144,11 @@ public class LatticeTestworkView extends FrameView {
                             }
                         });
                         itemDistance.addActionListener(new ActionListener() {
-
                             public void actionPerformed(ActionEvent e) {
                                 JOptionPane.showMessageDialog(mainPanel, "D: " + engine.chosens.get(0).pos.dist(engine.chosens.get(1).pos));
                             }
                         });
                         itemTagFace.addActionListener(new ActionListener() {
-
                             public void actionPerformed(ActionEvent e) {
                                 NFace bucket = new NFace(dp.engine.lattice.dims, dp.engine.lattice.internalDims);
                                 for (int i = 0; i < bucket.points.length; i++) {
@@ -149,7 +158,6 @@ public class LatticeTestworkView extends FrameView {
                             }
                         });
                         itemShowFaceCells.addActionListener(new ActionListener() {
-
                             public void actionPerformed(ActionEvent e) {
                                 dp.engine.highlightedCells.clear();
                                 NFace bucket = new NFace(dp.engine.lattice.dims, dp.engine.lattice.internalDims);
@@ -173,7 +181,6 @@ public class LatticeTestworkView extends FrameView {
                             }
                         });
                         itemNearest10.addActionListener(new ActionListener() {
-
                             public void actionPerformed(ActionEvent e) {
                                 //TODO Inefficient.
                                 final NPoint pt = dp.engine.chosens.get(0);
@@ -207,7 +214,6 @@ public class LatticeTestworkView extends FrameView {
                             }
                         });
                         itemCoords.addActionListener(new ActionListener() {
-
                             public void actionPerformed(ActionEvent e) {
                                 //TODO Inefficient.
                                 final NPoint pt = dp.engine.chosens.get(0);
@@ -216,6 +222,80 @@ public class LatticeTestworkView extends FrameView {
                                     sb.append(i + ": " + pt.pos.coords[i] + "\n");
                                 }
                                 JOptionPane.showMessageDialog(null, sb.toString());
+                            }
+                        });
+                        itemDeletePoints.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                for (NPoint p : (ArrayList<NPoint>)dp.engine.chosens.clone()) {
+                                  dp.engine.deleteMeshPoint(p);
+                                }
+                            }
+                        });
+                        itemDeleteFace.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                NFace bucket = new NFace(dp.engine.lattice.dims, dp.engine.lattice.internalDims);
+                                for (int i = 0; i < bucket.points.length; i++) {
+                                    bucket.points[i] = dp.engine.chosens.get(i);
+                                }
+                                NFace toDelete = null;
+                                for (NFace face : dp.engine.lattice.faces) {
+                                  if (face.equivalent(bucket)) {
+                                    toDelete = face;
+                                    break;
+                                  }
+                                }
+                                if (toDelete != null) {
+                                  dp.engine.deleteMeshFace(toDelete);
+                                }
+                            }
+                        });
+                        itemDeleteCell.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                NCell bucket = new NCell(dp.engine.lattice.dims, dp.engine.lattice.internalDims);
+                                for (int i = 0; i < bucket.points.length; i++) {
+                                    bucket.points[i] = dp.engine.chosens.get(i);
+                                }
+                                NCell toDelete = null;
+                                for (NCell cell : dp.engine.lattice.cells) {
+                                  if (cell.equivalent(bucket)) {
+                                    toDelete = cell;
+                                    break;
+                                  }
+                                }
+                                if (toDelete != null) {
+                                  System.out.println("Deleting cell " + toDelete);
+                                  dp.engine.deleteMeshCell(toDelete);
+                                } else {
+                                  System.out.println("No cell found to delete: " + bucket);
+                                }
+                            }
+                        });
+                        itemInspectElement.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                               if (dp.engine.chosens.size() == 1) {
+                                NPoint bucket = dp.engine.chosens.get(0);
+                                System.out.println("point " + bucket);
+                              } else if (dp.engine.chosens.size() == dp.engine.lattice.internalDims) {
+                                NFace bucket = new NFace(dp.engine.lattice.dims, dp.engine.lattice.internalDims);
+                                for (int i = 0; i < bucket.points.length; i++) {
+                                    bucket.points[i] = dp.engine.chosens.get(i);
+                                }
+                                for (NFace face : dp.engine.lattice.faces) {
+                                  if (face.equivalent(bucket)) {//dp.engine.highlightedCells.clear()
+                                    System.out.println("face " + face);//dp.engine.highlightedCells.add(face.cellA)
+                                  }
+                                }
+                              } else if (dp.engine.chosens.size() == (dp.engine.lattice.internalDims + 1)) {
+                                NCell bucket = new NCell(dp.engine.lattice.dims, dp.engine.lattice.internalDims);
+                                for (int i = 0; i < bucket.points.length; i++) {
+                                    bucket.points[i] = dp.engine.chosens.get(i);
+                                }
+                                for (NCell cell : dp.engine.lattice.cells) {
+                                  if (cell.equivalent(bucket)) {
+                                    System.out.println("cell " + cell);
+                                  }
+                                }
+                              }
                             }
                         });
                         m.show(dp, e.getX(), e.getY());
@@ -1102,7 +1182,6 @@ public class LatticeTestworkView extends FrameView {
             }
         }
     }
-    public NGon was = null;
 
     public String latticeGenus() {
         if (engine != null) {
