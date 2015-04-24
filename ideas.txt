@@ -5,3 +5,5 @@ give points a set of all allowed neighbors? (particularly for function meshes)
   would speed up crystallization
   and also make it more stable
 let Lattice form single out an element and zoom to it (hiding others) on the display
+when you add a binding function or shape, you could also update a partitioning/raster of space, indicating how far it is to the closest binding surface, and in which direction.  When updating it, minimum distance overwrites the existing one.
+incorporate a distributed computing library
