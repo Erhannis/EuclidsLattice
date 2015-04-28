@@ -7,3 +7,7 @@ give points a set of all allowed neighbors? (particularly for function meshes)
 let Lattice form single out an element and zoom to it (hiding others) on the display
 when you add a binding function or shape, you could also update a partitioning/raster of space, indicating how far it is to the closest binding surface, and in which direction.  When updating it, minimum distance overwrites the existing one.
 incorporate a distributed computing library
+customize number of colored cells, or maybe a fraction rather than count
+points with faces >= 1, if all faces are complete, are themselves complete, and not available to add cells to.  Do I use this info?
+axis-aligned default view rotations
+* I suspect that there is something wrong with my crystallization algorithm; I think it's crystallizing things it shouldn't, which leads it into a dead end.

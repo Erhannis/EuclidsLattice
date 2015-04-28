@@ -2925,10 +2925,10 @@ public class Engine {
             for (double u = lower[0]; u <= upper[0]; u += step[0]) {
                 for (double v = lower[1]; v <= upper[1]; v += step[1]) {
                     for (double w = lower[2]; w <= upper[2]; w += step[2]) {
-                        double a = u + 0.5*v + 0.5*w;
-                        double b = v + 0.5*w;
+                        double a = u;//u + 0.5*v + 0.5*w;
+                        double b = v;//v + 0.5*w;
                         double c = w;
-                        double d = 1.0 / (Math.pow(a, 4) + Math.pow(b, 4) + Math.pow(c, 4) + 1);
+                        double d = 0;//1.0 / (Math.pow(a, 4) + Math.pow(b, 4) + Math.pow(c, 4) + 1);
                         NPoint bucket = new NPoint(new double[]{a, b, c, d});
                         lattice.addPoint(bucket);
                     }
@@ -2936,6 +2936,32 @@ public class Engine {
             }
         }
     }
+
+    public void applyFunctionTest() throws Exception {
+        if (lattice != null) {
+            if (dims != 4 || lattice.internalDims != 3) {
+                throw new Exception("Required: Dims = 4, LDims = 3");
+            }
+            for (NPoint p : lattice.points) {
+              double u = p.pos.coords[0];
+              double v = p.pos.coords[1];
+              double w = p.pos.coords[2];
+              double x = p.pos.coords[3];
+              
+              double a = u;//u + 0.5 * v + 0.5 * w;
+              double b = v;//v + 0.5 * w;
+              double c = w;
+              double d = 1.0 / (Math.pow(a, 4) + Math.pow(b, 4) + Math.pow(c, 4) + 1);
+              
+              p.pos.coords[0] = a;
+              p.pos.coords[1] = b;
+              p.pos.coords[2] = c;
+              p.pos.coords[3] = d;
+            }
+            sticksChanged = true;
+        }
+    }
+    
     public double donutCircumfrence = 30;
 
     public void placeNDonut() throws Exception {
