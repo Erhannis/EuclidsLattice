@@ -12,7 +12,7 @@ This program is...difficult to use.  It's also a minefield of unfinished code.  
 9.  Click "Finish Prep"
 10.  Click "Place Camera"
 
-Most mesh creation involves similar steps.  (Try doing 3-4 Triangulation instead.  It doesn't look as cool, but it's much faster to render, and kindof nifty.)  I've made forays into making more complicated 4D meshes, but I keep running into difficulty with their crystallization, and it's REALLY hard envisioning what's going wrong.
+This should get you a 4 dimensional sphere with a 3 dimensional surface, with a camera bound to the surface.  Most mesh creation involves similar steps.  (Try doing 3-4 Triangulation instead.  It doesn't look as cool, but it's much faster to render, and kindof nifty.)  I've made forays into making more complicated 4D meshes, but I keep running into difficulty with their crystallization, and it's REALLY hard envisioning what's going wrong.
 
 It takes a bit to render.  Making the window bigger will make it take longer.  Increase "Grainy" to decrease render time.  Click control to then use keyboard controls to move the camera.  Keys I remember are as follows:
 
