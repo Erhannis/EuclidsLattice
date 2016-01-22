@@ -1,0 +1,32 @@
+Distributes points in n dimensional space, within some constraint or according to some function, then attempts to connect them into an m dimensional mesh (eg., a 3-sphere, which has a 3 dimensional surface, or more exotic things like a Klein bottle and its higher dimensional analogs). Upon success, one can then place and maneuver cameras on the surface of the mesh, their vision restricted to said surface.
+
+This program is...difficult to use.  It's also a minefield of unfinished code.  :P  I also haven't really worked on it much in a few years.  I didn't really consider "other people using it" when I started writing it.  Or really at almost any part of writing it.  Gee, let's see...ok, try the following.
+1.  Select "4-3 Triangulation"
+2.  Click "Clear/Init"
+3.  Click "Place Points" twice
+4.  Click Bind's "x1000", say, four times.  It takes a bit.
+5.  Click "Seed"
+6.  Click "Full"
+7.  Increase "Max cell thinness" in increments of maybe 10, clicking "Full" after each increase, until there are no more incomplete faces (drawn in red, btw)
+8.  Click "Calc Properties"
+9.  Click "Finish Prep"
+10.  Click "Place Camera"
+
+Most mesh creation involves similar steps.  (Try doing 3-4 Triangulation instead.  It doesn't look as cool, but it's much faster to render, and kindof nifty.)  I've made forays into making more complicated 4D meshes, but I keep running into difficulty with their crystallization, and it's REALLY hard envisioning what's going wrong.
+
+It takes a bit to render.  Making the window bigger will make it take longer.  Increase "Grainy" to decrease render time.  Click control to then use keyboard controls to move the camera.  Keys I remember are as follows:
+
+Space - Rerender
+Up/Down - Forward/Backward
+Left/Right - Turn left/right
+Shift Up/Down - Pitch up/down
+Shift Left/Right - Strafe left/right
+
+Also, the stereo 3D is kindof cool.
+
+Also, the other buttons on the camera window may or may not do what they're labeled.  I may have hijacked one to automaticaly move the camera and save pictures of the trip.
+
+
+Released under the GPL v3.
+
+-Erhannis
